@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#####
+
 import rospy, sys
 import moveit_commander
 from moveit_msgs.msg import RobotTrajectory
