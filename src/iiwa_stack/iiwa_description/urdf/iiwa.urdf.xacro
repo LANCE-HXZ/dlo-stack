@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<robot name="iiwa" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <!-- Import Rviz colors -->
+  <xacro:include filename="$(find iiwa_description)/urdf/materials.xacro" />
+  <!--Import the lbr iiwa macro -->
+  <xacro:include filename="$(find iiwa_description)/urdf/iiwa.xacro"/>
+  <!-- Import all Gazebo-customization elements, including Gazebo colors -->
+  <xacro:include filename="$(find iiwa_description)/urdf/iiwa.gazebo.xacro" />
+  <!-- Import Transmissions -->
+  <xacro:include filename="$(find iiwa_description)/urdf/iiwa.transmission.xacro" />
+  
+  <xacro:arg name="hardware_interface" default="PositionJointInterface"/>
+  <xacro:arg name="robot_name" default="iiwa"/>
+  <!--z = 0.458-->
+  <xacro:arg name="L_origin_xyz" default="0.153055 0.0595 0.458"/>
+  <xacro:arg name="L_origin_rpy" default="-1.0471975512 -1.5707963268 3.1415926536"/>
+  <xacro:arg name="R_origin_xyz" default="-0.153055 0.0595 0.458"/>
+  <xacro:arg name="R_origin_rpy" default="-1.0471975512 1.5707963268 3.1415926536"/>
+
+  <!-- Fix to world just for testing -->
+  <link name="world" />
+
+  <!--body-=======================================================================-->
+  <joint name="world_body_joint" type="fixed">
+    <origin xyz="0 0.297 0.92" rpy="0 0 0"/>
+      <parent link="world"/>
+      <child link="body"/>
+  </joint>
+  <link name="body">
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="5"/>
+        <inertia ixx="0.05"  ixy="0"  ixz="0" iyy="0.06" iyz="0" izz="0.03" />
+      </inertial>
+      <visual>
+        <!--<origin xyz="-0.6264 -1.0574 -0.92" rpy="0 0 0"/>-->
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://iiwa_description/meshes/iiwa7/visual/body.stl"/>
+        </geometry>
+        <material name="White"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://iiwa_description/meshes/iiwa7/collision/body.stl"/>
+        </geometry>
+        <material name="White"/>
+      </collision>
+      </link>
+  <!--===========================================================================-->
+
+
+  <!--iiwa-======================================================================-->
+  <!--L_arm-->
+  <xacro:iiwa side="L" hardware_interface="$(arg hardware_interface)" parent="body">
+    <origin xyz="$(arg L_origin_xyz)" rpy="$(arg L_origin_rpy)" />
+  </xacro:iiwa>
+  <!--R_arm-->
+  <xacro:iiwa side="R" hardware_interface="$(arg hardware_interface)" parent="body">
+    <origin xyz="$(arg R_origin_xyz)" rpy="$(arg R_origin_rpy)" />
+  </xacro:iiwa>
+  <!--===========================================================================-->
+
+  
+
+  <!--desktop-===================================================================-->
+  <joint name="body_desktop_joint" type="fixed">
+      <origin xyz="0 -0.6 0.034" rpy="0 0 0"/>
+      <parent link="body"/>
+      <child link="desktop"/>
+  </joint>
+  <link name="desktop">
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="5"/>
+        <inertia ixx="0.05"  ixy="0"  ixz="0" iyy="0.06" iyz="0" izz="0.03" />
+      </inertial>
+      <visual>
+        <origin xyz=" 0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="1.6 1.1 0.068"/>
+        </geometry>
+        <material name="White"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="1.6 1.1 0.068"/>
+        </geometry>
+        <material name="White"/>
+      </collision>
+  </link>
+  <!--===========================================================================-->
+
+
+
+  <!-- Load Gazebo lib and set the robot namespace -->
+    <gazebo>
+      <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+        <robotNamespace>/iiwa</robotNamespace>
+        <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+        <legacyModeNS>true</legacyModeNS>
+      </plugin>
+    </gazebo>
+
+</robot>
