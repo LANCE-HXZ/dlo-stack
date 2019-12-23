@@ -12,3 +12,8 @@
     ```
     catkin_init_workspace src
     ```
+ - gedit ~/.bashrc
+    ```
+    export ROS_IP=192.168.168.3
+    export ROS_MASTER_URI=http://$ROS_IP:11311
+    ```
