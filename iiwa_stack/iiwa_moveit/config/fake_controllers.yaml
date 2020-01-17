@@ -1,0 +1,35 @@
+controller_list:
+  - name: fake_L_controller
+    joints:
+      - L_joint_1
+      - L_joint_2
+      - L_joint_3
+      - L_joint_4
+      - L_joint_5
+      - L_joint_6
+      - L_joint_7
+  - name: fake_R_controller
+    joints:
+      - R_joint_1
+      - R_joint_2
+      - R_joint_3
+      - R_joint_4
+      - R_joint_5
+      - R_joint_6
+      - R_joint_7
+  - name: fake_KUKA_controller
+    joints:
+      - L_joint_1
+      - L_joint_2
+      - L_joint_3
+      - L_joint_4
+      - L_joint_5
+      - L_joint_6
+      - L_joint_7
+      - R_joint_1
+      - R_joint_2
+      - R_joint_3
+      - R_joint_4
+      - R_joint_5
+      - R_joint_6
+      - R_joint_7

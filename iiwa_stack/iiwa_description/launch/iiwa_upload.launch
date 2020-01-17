@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<launch>
+
+   <!-- This lauch file just loads the URDF with the given hardware interface and robot name into the ROS Parameter Server -->
+  <arg name="hardware_interface" default="PositionJointInterface"/> 
+  <arg name="robot_name" default="iiwa"/>
+
+  <arg name="L_origin_xyz" default="'0.153055 0.0595 0.458'"/>
+  <arg name="L_origin_rpy" default="'-1.0471975512 -1.5707963268 3.1415926536'"/>
+  <arg name="R_origin_xyz" default="'-0.153055 0.0595 0.458'"/>
+  <arg name="R_origin_rpy" default="'-1.0471975512 1.5707963268 3.1415926536'"/>
+
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find iiwa_description)/urdf/iiwa.urdf.xacro'
+         hardware_interface:=$(arg hardware_interface) robot_name:=$(arg robot_name)
+         L_origin_xyz:=$(arg L_origin_xyz) L_origin_rpy:=$(arg L_origin_rpy)
+         R_origin_xyz:=$(arg R_origin_xyz) R_origin_rpy:=$(arg R_origin_rpy)" />
+</launch> 
