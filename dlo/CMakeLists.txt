@@ -9,9 +9,16 @@ add_compile_options(-std=c++11)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   cv_bridge
+  tf
   roscpp
+  image_transport
   rospy
   std_msgs
+  message_generation
+  moveit_core
+  moveit_ros_planning
+  moveit_ros_planning_interface
+  moveit_visual_tools
 )
 find_package(OpenCV REQUIRED)
 ## System dependencies are found with CMake's conventions
@@ -48,11 +55,12 @@ find_package(OpenCV REQUIRED)
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+add_message_files(
+   FILES
+   BoundingBox.msg
+   BoundingBoxes.msg
+   ClassList.msg
+)
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -69,10 +77,10 @@ find_package(OpenCV REQUIRED)
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs
-# )
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -104,10 +112,10 @@ find_package(OpenCV REQUIRED)
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES dlo
-#  CATKIN_DEPENDS roscpp rospy std_msgs
-#  DEPENDS system_lib
+  INCLUDE_DIRS include
+  LIBRARIES dlo
+  CATKIN_DEPENDS roscpp rospy std_msgs message_runtime
+  DEPENDS system_lib
 )
 
 ###########
@@ -215,25 +223,31 @@ include_directories(
 # catkin_add_nosetests(test)
 
 
-add_executable(Main
-  src/Main.cpp
+add_executable(dlo_recognize_and_untie
+  src/dlo_recognize_and_untie.cpp
 )
-add_dependencies(Main ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(Main
+add_dependencies(dlo_recognize_and_untie ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(dlo_recognize_and_untie
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
-  pch
+  dlo
 )
 
-add_library(pch
-  src/Test.cpp
-  src/Crop.cpp
-  src/Skeleton.cpp
-  src/Traversal.cpp
-  include/dlo/pch.h
+add_library(dlo
+  include/dlo.h
+  src/ros_image_converter.cpp
+  src/test_function.cpp
+  src/crop.cpp
+  src/skeleton.cpp
+  src/traversal.cpp
+  src/remove_background.cpp
+  src/visualization.cpp
+  src/strategy.cpp
+  src/move_kuka.cpp
+  include/move_kuka.h
 )
-add_dependencies(pch ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(pch
+add_dependencies(dlo ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(dlo
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
 )

@@ -23,9 +23,9 @@
     </node>
     
     <node pkg="tf" type="static_transform_publisher" name="kuka_broadcaster" 
-        args="-0.385999103555 0.477227370801 0.571346060849 
-        0.352416584421 0.610289906606 0.332479670911 0.626742410685 
-        R_link_0 frame 100"/> 
+        args="-0.423547301692246 0.38926934603736263 0.5414408158839721 
+        0.3635081261677261 0.5953871510703816 0.3866105904831357 0.6032480699319346  
+        R_link_0 camera_frame 100"/> 
 
     <!-- Run the robot within a Gazebo simulation. -->
     <group if="$(arg sim)">

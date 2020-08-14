@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/lance/Workspaces/yolo_ws/src/darknet_ros/darknet/install/setup.sh

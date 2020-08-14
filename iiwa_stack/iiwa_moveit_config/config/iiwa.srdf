@@ -10,14 +10,20 @@
     <!--CHAINS: When a chain is specified, all the links along the chain (including endpoints) are included in the group. Additionally, all the joints that are parents to included links are also included. This means that joints along the chain and the parent joint of the base link are included in the group-->
     <!--SUBGROUPS: Groups can also be formed by referencing to already defined group names-->
     <group name="L">
-        <chain base_link="L_link_0" tip_link="L_hand" />
+        <chain base_link="L_link_0" tip_link="L_link_ee" />
     </group>
     <group name="R">
-        <chain base_link="R_link_0" tip_link="R_hand" />
+        <chain base_link="R_link_0" tip_link="R_link_ee" />
     </group>
-    <group name="KUKA">
+    <group name="D">
         <group name="L" />
         <group name="R" />
+    </group>
+    <group name="L_G">
+        <joint name="L_finger_joint" />
+    </group>
+    <group name="R_G">
+        <joint name="R_finger_joint" />
     </group>
     <!--GROUP STATES: Purpose: Define a named state for a particular group, in terms of joint values. This is useful to define states like 'folded arms'-->
     <group_state name="L_HOME" group="L">
@@ -26,16 +32,16 @@
         <joint name="L_joint_3" value="0" />
         <joint name="L_joint_4" value="0" />
         <joint name="L_joint_5" value="0" />
-        <joint name="L_joint_6" value="0" />
+        <joint name="L_joint_6" value="-1.5707" />
         <joint name="L_joint_7" value="0" />
     </group_state>
     <group_state name="L_UP" group="L">
         <joint name="L_joint_1" value="0" />
-        <joint name="L_joint_2" value="1.5707" />
+        <joint name="L_joint_2" value="-1.5707" />
         <joint name="L_joint_3" value="0" />
         <joint name="L_joint_4" value="0" />
         <joint name="L_joint_5" value="0" />
-        <joint name="L_joint_6" value="0" />
+        <joint name="L_joint_6" value="1.5707" />
         <joint name="L_joint_7" value="0" />
     </group_state>
     <group_state name="R_HOME" group="R">
@@ -44,7 +50,7 @@
         <joint name="R_joint_3" value="0" />
         <joint name="R_joint_4" value="0" />
         <joint name="R_joint_5" value="0" />
-        <joint name="R_joint_6" value="0" />
+        <joint name="R_joint_6" value="-1.5707" />
         <joint name="R_joint_7" value="0" />
     </group_state>
     <group_state name="R_UP" group="R">
@@ -53,145 +59,547 @@
         <joint name="R_joint_3" value="0" />
         <joint name="R_joint_4" value="0" />
         <joint name="R_joint_5" value="0" />
-        <joint name="R_joint_6" value="0" />
+        <joint name="R_joint_6" value="1.5707" />
         <joint name="R_joint_7" value="0" />
     </group_state>
-    <group_state name="KUKA_HOME" group="KUKA">
+    <group_state name="KUKA_HOME" group="D">
         <joint name="L_joint_1" value="0" />
         <joint name="L_joint_2" value="0" />
         <joint name="L_joint_3" value="0" />
         <joint name="L_joint_4" value="0" />
         <joint name="L_joint_5" value="0" />
-        <joint name="L_joint_6" value="0" />
+        <joint name="L_joint_6" value="-1.5707" />
         <joint name="L_joint_7" value="0" />
         <joint name="R_joint_1" value="0" />
         <joint name="R_joint_2" value="0" />
         <joint name="R_joint_3" value="0" />
         <joint name="R_joint_4" value="0" />
         <joint name="R_joint_5" value="0" />
-        <joint name="R_joint_6" value="0" />
+        <joint name="R_joint_6" value="-1.5707" />
         <joint name="R_joint_7" value="0" />
     </group_state>
-    <group_state name="KUKA_UP" group="KUKA">
+    <group_state name="KUKA_UP" group="D">
         <joint name="L_joint_1" value="0" />
-        <joint name="L_joint_2" value="1.5707" />
+        <joint name="L_joint_2" value="-1.5707" />
         <joint name="L_joint_3" value="0" />
         <joint name="L_joint_4" value="0" />
         <joint name="L_joint_5" value="0" />
-        <joint name="L_joint_6" value="0" />
+        <joint name="L_joint_6" value="1.5707" />
         <joint name="L_joint_7" value="0" />
         <joint name="R_joint_1" value="0" />
         <joint name="R_joint_2" value="-1.5707" />
         <joint name="R_joint_3" value="0" />
         <joint name="R_joint_4" value="0" />
         <joint name="R_joint_5" value="0" />
-        <joint name="R_joint_6" value="0" />
+        <joint name="R_joint_6" value="1.5707" />
         <joint name="R_joint_7" value="0" />
     </group_state>
+    <group_state name="L_G_OPEN" group="L_G">
+        <joint name="L_finger_joint" value="0" />
+    </group_state>
+    <group_state name="L_G_CLOSE" group="L_G">
+        <joint name="L_finger_joint" value="0.6899" />
+    </group_state>
+    <group_state name="R_G_OPEN" group="R_G">
+        <joint name="R_finger_joint" value="0" />
+    </group_state>
+    <group_state name="R_G_CLOSE" group="R_G">
+        <joint name="R_finger_joint" value="0.6899" />
+    </group_state>
     <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
-    <end_effector name="L_END" parent_link="L_hand" group="L" />
-    <end_effector name="R_END" parent_link="R_hand" group="R" />
+    <end_effector name="left_ee" parent_link="L_link_ee" group="L" />
+    <end_effector name="right_ee" parent_link="R_link_ee" group="R" />
     <!--VIRTUAL JOINT: Purpose: this element defines a virtual joint between a robot link and an external frame of reference (considered fixed with respect to the robot)-->
     <virtual_joint name="virtual_joint" type="fixed" parent_frame="world" child_link="world" />
     <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
-    <disable_collisions link1="L_hand" link2="L_link_3" reason="Never" />
-    <disable_collisions link1="L_hand" link2="L_link_4" reason="Never" />
-    <disable_collisions link1="L_hand" link2="L_link_5" reason="Never" />
-    <disable_collisions link1="L_hand" link2="L_link_6" reason="Never" />
-    <disable_collisions link1="L_hand" link2="L_link_7" reason="Never" />
-    <disable_collisions link1="L_hand" link2="L_link_ee" reason="Adjacent" />
+    <disable_collisions link1="L_left_inner_finger" link2="L_left_inner_finger_pad" reason="Adjacent" />
+    <disable_collisions link1="L_left_inner_finger" link2="L_left_inner_knuckle" reason="Default" />
+    <disable_collisions link1="L_left_inner_finger" link2="L_left_outer_finger" reason="Adjacent" />
+    <disable_collisions link1="L_left_inner_finger" link2="L_left_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger" link2="L_link_1" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger" link2="L_link_3" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger" link2="L_link_4" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger" link2="L_link_5" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger" link2="L_link_6" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger" link2="L_link_7" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger" link2="L_right_inner_finger" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger" link2="L_right_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger" link2="L_right_inner_knuckle" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger" link2="L_right_outer_finger" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger" link2="L_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger" link2="L_robotiq_arg2f_base_link" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger" link2="R_left_inner_finger" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger" link2="R_left_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger" link2="R_left_inner_knuckle" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger" link2="R_left_outer_finger" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger" link2="R_left_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger" link2="R_right_inner_finger" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger" link2="R_right_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger" link2="R_right_outer_finger" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger" link2="R_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger" link2="R_robotiq_arg2f_base_link" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger" link2="reference_frame" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger_pad" link2="L_left_inner_knuckle" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger_pad" link2="L_left_outer_finger" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger_pad" link2="L_left_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger_pad" link2="L_link_1" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger_pad" link2="L_link_3" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger_pad" link2="L_link_4" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger_pad" link2="L_link_5" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger_pad" link2="L_link_6" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger_pad" link2="L_link_7" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger_pad" link2="L_right_inner_finger" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger_pad" link2="L_right_inner_knuckle" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger_pad" link2="L_right_outer_finger" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger_pad" link2="L_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger_pad" link2="L_robotiq_arg2f_base_link" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger_pad" link2="R_left_inner_finger" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger_pad" link2="R_left_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger_pad" link2="R_left_inner_knuckle" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger_pad" link2="R_left_outer_finger" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger_pad" link2="R_left_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger_pad" link2="R_right_inner_finger" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger_pad" link2="R_right_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger_pad" link2="R_right_outer_finger" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger_pad" link2="R_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_left_inner_finger_pad" link2="reference_frame" reason="Never" />
+    <disable_collisions link1="L_left_inner_knuckle" link2="L_left_outer_finger" reason="Never" />
+    <disable_collisions link1="L_left_inner_knuckle" link2="L_left_outer_knuckle" reason="Default" />
+    <disable_collisions link1="L_left_inner_knuckle" link2="L_link_1" reason="Never" />
+    <disable_collisions link1="L_left_inner_knuckle" link2="L_link_2" reason="Never" />
+    <disable_collisions link1="L_left_inner_knuckle" link2="L_link_3" reason="Never" />
+    <disable_collisions link1="L_left_inner_knuckle" link2="L_link_4" reason="Never" />
+    <disable_collisions link1="L_left_inner_knuckle" link2="L_link_5" reason="Never" />
+    <disable_collisions link1="L_left_inner_knuckle" link2="L_link_6" reason="Never" />
+    <disable_collisions link1="L_left_inner_knuckle" link2="L_link_7" reason="Never" />
+    <disable_collisions link1="L_left_inner_knuckle" link2="L_right_inner_finger" reason="Never" />
+    <disable_collisions link1="L_left_inner_knuckle" link2="L_right_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="L_left_inner_knuckle" link2="L_right_inner_knuckle" reason="Never" />
+    <disable_collisions link1="L_left_inner_knuckle" link2="L_right_outer_finger" reason="Never" />
+    <disable_collisions link1="L_left_inner_knuckle" link2="L_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_left_inner_knuckle" link2="L_robotiq_arg2f_base_link" reason="Adjacent" />
+    <disable_collisions link1="L_left_inner_knuckle" link2="R_left_inner_finger" reason="Never" />
+    <disable_collisions link1="L_left_inner_knuckle" link2="R_left_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="L_left_inner_knuckle" link2="R_left_inner_knuckle" reason="Never" />
+    <disable_collisions link1="L_left_inner_knuckle" link2="R_left_outer_finger" reason="Never" />
+    <disable_collisions link1="L_left_inner_knuckle" link2="R_left_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_left_inner_knuckle" link2="R_right_inner_finger" reason="Never" />
+    <disable_collisions link1="L_left_inner_knuckle" link2="R_right_outer_finger" reason="Never" />
+    <disable_collisions link1="L_left_inner_knuckle" link2="R_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_left_inner_knuckle" link2="R_robotiq_arg2f_base_link" reason="Never" />
+    <disable_collisions link1="L_left_inner_knuckle" link2="reference_frame" reason="Never" />
+    <disable_collisions link1="L_left_outer_finger" link2="L_left_outer_knuckle" reason="Adjacent" />
+    <disable_collisions link1="L_left_outer_finger" link2="L_link_1" reason="Never" />
+    <disable_collisions link1="L_left_outer_finger" link2="L_link_2" reason="Never" />
+    <disable_collisions link1="L_left_outer_finger" link2="L_link_3" reason="Never" />
+    <disable_collisions link1="L_left_outer_finger" link2="L_link_4" reason="Never" />
+    <disable_collisions link1="L_left_outer_finger" link2="L_link_5" reason="Never" />
+    <disable_collisions link1="L_left_outer_finger" link2="L_link_6" reason="Never" />
+    <disable_collisions link1="L_left_outer_finger" link2="L_link_7" reason="Never" />
+    <disable_collisions link1="L_left_outer_finger" link2="L_right_inner_finger" reason="Never" />
+    <disable_collisions link1="L_left_outer_finger" link2="L_right_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="L_left_outer_finger" link2="L_right_inner_knuckle" reason="Never" />
+    <disable_collisions link1="L_left_outer_finger" link2="L_right_outer_finger" reason="Never" />
+    <disable_collisions link1="L_left_outer_finger" link2="L_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_left_outer_finger" link2="L_robotiq_arg2f_base_link" reason="Never" />
+    <disable_collisions link1="L_left_outer_finger" link2="R_left_inner_finger" reason="Never" />
+    <disable_collisions link1="L_left_outer_finger" link2="R_left_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="L_left_outer_finger" link2="R_left_inner_knuckle" reason="Never" />
+    <disable_collisions link1="L_left_outer_finger" link2="R_left_outer_finger" reason="Never" />
+    <disable_collisions link1="L_left_outer_finger" link2="R_left_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_left_outer_finger" link2="R_right_outer_finger" reason="Never" />
+    <disable_collisions link1="L_left_outer_finger" link2="R_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_left_outer_finger" link2="R_robotiq_arg2f_base_link" reason="Never" />
+    <disable_collisions link1="L_left_outer_finger" link2="reference_frame" reason="Never" />
+    <disable_collisions link1="L_left_outer_knuckle" link2="L_link_1" reason="Never" />
+    <disable_collisions link1="L_left_outer_knuckle" link2="L_link_2" reason="Never" />
+    <disable_collisions link1="L_left_outer_knuckle" link2="L_link_3" reason="Never" />
+    <disable_collisions link1="L_left_outer_knuckle" link2="L_link_4" reason="Never" />
+    <disable_collisions link1="L_left_outer_knuckle" link2="L_link_5" reason="Never" />
+    <disable_collisions link1="L_left_outer_knuckle" link2="L_link_6" reason="Never" />
+    <disable_collisions link1="L_left_outer_knuckle" link2="L_link_7" reason="Never" />
+    <disable_collisions link1="L_left_outer_knuckle" link2="L_right_inner_finger" reason="Never" />
+    <disable_collisions link1="L_left_outer_knuckle" link2="L_right_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="L_left_outer_knuckle" link2="L_right_inner_knuckle" reason="Never" />
+    <disable_collisions link1="L_left_outer_knuckle" link2="L_right_outer_finger" reason="Never" />
+    <disable_collisions link1="L_left_outer_knuckle" link2="L_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_left_outer_knuckle" link2="L_robotiq_arg2f_base_link" reason="Adjacent" />
+    <disable_collisions link1="L_left_outer_knuckle" link2="R_left_inner_finger" reason="Never" />
+    <disable_collisions link1="L_left_outer_knuckle" link2="R_left_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="L_left_outer_knuckle" link2="R_left_inner_knuckle" reason="Never" />
+    <disable_collisions link1="L_left_outer_knuckle" link2="R_left_outer_finger" reason="Never" />
+    <disable_collisions link1="L_left_outer_knuckle" link2="R_left_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_left_outer_knuckle" link2="R_right_inner_knuckle" reason="Never" />
+    <disable_collisions link1="L_left_outer_knuckle" link2="R_right_outer_finger" reason="Never" />
+    <disable_collisions link1="L_left_outer_knuckle" link2="R_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_left_outer_knuckle" link2="R_robotiq_arg2f_base_link" reason="Never" />
+    <disable_collisions link1="L_left_outer_knuckle" link2="reference_frame" reason="Never" />
     <disable_collisions link1="L_link_0" link2="L_link_1" reason="Adjacent" />
     <disable_collisions link1="L_link_0" link2="L_link_2" reason="Never" />
     <disable_collisions link1="L_link_0" link2="L_link_3" reason="Never" />
     <disable_collisions link1="L_link_0" link2="L_link_4" reason="Never" />
+    <disable_collisions link1="L_link_0" link2="L_right_inner_knuckle" reason="Never" />
     <disable_collisions link1="L_link_0" link2="R_link_0" reason="Never" />
     <disable_collisions link1="L_link_0" link2="R_link_1" reason="Never" />
     <disable_collisions link1="L_link_0" link2="R_link_2" reason="Never" />
     <disable_collisions link1="L_link_0" link2="R_link_3" reason="Never" />
-    <disable_collisions link1="L_link_0" link2="body" reason="Adjacent" />
-    <disable_collisions link1="L_link_0" link2="desktop" reason="Never" />
+    <disable_collisions link1="L_link_0" link2="camera_holder_link" reason="Never" />
+    <disable_collisions link1="L_link_0" link2="cushion_link" reason="Never" />
+    <disable_collisions link1="L_link_0" link2="lift_link" reason="Never" />
+    <disable_collisions link1="L_link_0" link2="neck_link" reason="Adjacent" />
+    <disable_collisions link1="L_link_0" link2="reference_frame" reason="Never" />
+    <disable_collisions link1="L_link_0" link2="table_link" reason="Never" />
     <disable_collisions link1="L_link_1" link2="L_link_2" reason="Adjacent" />
     <disable_collisions link1="L_link_1" link2="L_link_3" reason="Never" />
     <disable_collisions link1="L_link_1" link2="L_link_4" reason="Never" />
     <disable_collisions link1="L_link_1" link2="L_link_5" reason="Never" />
     <disable_collisions link1="L_link_1" link2="L_link_6" reason="Never" />
     <disable_collisions link1="L_link_1" link2="L_link_7" reason="Never" />
+    <disable_collisions link1="L_link_1" link2="L_right_inner_knuckle" reason="Never" />
+    <disable_collisions link1="L_link_1" link2="L_right_outer_finger" reason="Never" />
+    <disable_collisions link1="L_link_1" link2="L_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_link_1" link2="L_robotiq_arg2f_base_link" reason="Never" />
     <disable_collisions link1="L_link_1" link2="R_link_0" reason="Never" />
     <disable_collisions link1="L_link_1" link2="R_link_1" reason="Never" />
     <disable_collisions link1="L_link_1" link2="R_link_2" reason="Never" />
     <disable_collisions link1="L_link_1" link2="R_link_3" reason="Never" />
-    <disable_collisions link1="L_link_1" link2="body" reason="Never" />
-    <disable_collisions link1="L_link_1" link2="desktop" reason="Never" />
+    <disable_collisions link1="L_link_1" link2="camera_holder_link" reason="Never" />
+    <disable_collisions link1="L_link_1" link2="cushion_link" reason="Never" />
+    <disable_collisions link1="L_link_1" link2="lift_link" reason="Never" />
+    <disable_collisions link1="L_link_1" link2="neck_link" reason="Never" />
+    <disable_collisions link1="L_link_1" link2="reference_frame" reason="Never" />
+    <disable_collisions link1="L_link_1" link2="table_link" reason="Never" />
     <disable_collisions link1="L_link_2" link2="L_link_3" reason="Adjacent" />
     <disable_collisions link1="L_link_2" link2="L_link_4" reason="Never" />
     <disable_collisions link1="L_link_2" link2="L_link_5" reason="Never" />
     <disable_collisions link1="L_link_2" link2="L_link_6" reason="Never" />
     <disable_collisions link1="L_link_2" link2="L_link_7" reason="Never" />
-    <disable_collisions link1="L_link_2" link2="L_link_ee" reason="Never" />
+    <disable_collisions link1="L_link_2" link2="L_right_inner_knuckle" reason="Never" />
+    <disable_collisions link1="L_link_2" link2="L_right_outer_finger" reason="Never" />
+    <disable_collisions link1="L_link_2" link2="L_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_link_2" link2="L_robotiq_arg2f_base_link" reason="Never" />
     <disable_collisions link1="L_link_2" link2="R_link_0" reason="Never" />
     <disable_collisions link1="L_link_2" link2="R_link_1" reason="Never" />
     <disable_collisions link1="L_link_2" link2="R_link_2" reason="Never" />
-    <disable_collisions link1="L_link_2" link2="body" reason="Never" />
-    <disable_collisions link1="L_link_2" link2="desktop" reason="Never" />
+    <disable_collisions link1="L_link_2" link2="camera_holder_link" reason="Never" />
+    <disable_collisions link1="L_link_2" link2="cushion_link" reason="Never" />
+    <disable_collisions link1="L_link_2" link2="lift_link" reason="Never" />
+    <disable_collisions link1="L_link_2" link2="neck_link" reason="Never" />
+    <disable_collisions link1="L_link_2" link2="reference_frame" reason="Never" />
+    <disable_collisions link1="L_link_2" link2="table_link" reason="Never" />
     <disable_collisions link1="L_link_3" link2="L_link_4" reason="Adjacent" />
     <disable_collisions link1="L_link_3" link2="L_link_5" reason="Never" />
     <disable_collisions link1="L_link_3" link2="L_link_6" reason="Never" />
     <disable_collisions link1="L_link_3" link2="L_link_7" reason="Never" />
-    <disable_collisions link1="L_link_3" link2="L_link_ee" reason="Never" />
+    <disable_collisions link1="L_link_3" link2="L_right_inner_finger" reason="Never" />
+    <disable_collisions link1="L_link_3" link2="L_right_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="L_link_3" link2="L_right_inner_knuckle" reason="Never" />
+    <disable_collisions link1="L_link_3" link2="L_right_outer_finger" reason="Never" />
+    <disable_collisions link1="L_link_3" link2="L_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_link_3" link2="L_robotiq_arg2f_base_link" reason="Never" />
     <disable_collisions link1="L_link_3" link2="R_link_0" reason="Never" />
     <disable_collisions link1="L_link_3" link2="R_link_1" reason="Never" />
+    <disable_collisions link1="L_link_3" link2="camera_holder_link" reason="Never" />
+    <disable_collisions link1="L_link_3" link2="cushion_link" reason="Never" />
+    <disable_collisions link1="L_link_3" link2="neck_link" reason="Never" />
+    <disable_collisions link1="L_link_3" link2="reference_frame" reason="Never" />
+    <disable_collisions link1="L_link_3" link2="table_link" reason="Never" />
     <disable_collisions link1="L_link_4" link2="L_link_5" reason="Adjacent" />
     <disable_collisions link1="L_link_4" link2="L_link_6" reason="Never" />
     <disable_collisions link1="L_link_4" link2="L_link_7" reason="Never" />
-    <disable_collisions link1="L_link_4" link2="L_link_ee" reason="Never" />
+    <disable_collisions link1="L_link_4" link2="L_right_inner_finger" reason="Never" />
+    <disable_collisions link1="L_link_4" link2="L_right_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="L_link_4" link2="L_right_inner_knuckle" reason="Never" />
+    <disable_collisions link1="L_link_4" link2="L_right_outer_finger" reason="Never" />
+    <disable_collisions link1="L_link_4" link2="L_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_link_4" link2="L_robotiq_arg2f_base_link" reason="Never" />
+    <disable_collisions link1="L_link_4" link2="neck_link" reason="Never" />
+    <disable_collisions link1="L_link_4" link2="reference_frame" reason="Never" />
     <disable_collisions link1="L_link_5" link2="L_link_6" reason="Adjacent" />
     <disable_collisions link1="L_link_5" link2="L_link_7" reason="Never" />
-    <disable_collisions link1="L_link_5" link2="L_link_ee" reason="Never" />
+    <disable_collisions link1="L_link_5" link2="L_right_inner_finger" reason="Never" />
+    <disable_collisions link1="L_link_5" link2="L_right_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="L_link_5" link2="L_right_inner_knuckle" reason="Never" />
+    <disable_collisions link1="L_link_5" link2="L_right_outer_finger" reason="Never" />
+    <disable_collisions link1="L_link_5" link2="L_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_link_5" link2="L_robotiq_arg2f_base_link" reason="Never" />
     <disable_collisions link1="L_link_6" link2="L_link_7" reason="Adjacent" />
-    <disable_collisions link1="L_link_6" link2="L_link_ee" reason="Never" />
-    <disable_collisions link1="L_link_7" link2="L_link_ee" reason="Adjacent" />
-    <disable_collisions link1="R_hand" link2="R_link_3" reason="Never" />
-    <disable_collisions link1="R_hand" link2="R_link_4" reason="Never" />
-    <disable_collisions link1="R_hand" link2="R_link_5" reason="Never" />
-    <disable_collisions link1="R_hand" link2="R_link_6" reason="Never" />
-    <disable_collisions link1="R_hand" link2="R_link_7" reason="Never" />
-    <disable_collisions link1="R_hand" link2="R_link_ee" reason="Adjacent" />
+    <disable_collisions link1="L_link_6" link2="L_right_inner_finger" reason="Never" />
+    <disable_collisions link1="L_link_6" link2="L_right_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="L_link_6" link2="L_right_inner_knuckle" reason="Never" />
+    <disable_collisions link1="L_link_6" link2="L_right_outer_finger" reason="Never" />
+    <disable_collisions link1="L_link_6" link2="L_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_link_6" link2="L_robotiq_arg2f_base_link" reason="Never" />
+    <disable_collisions link1="L_link_7" link2="L_right_inner_finger" reason="Never" />
+    <disable_collisions link1="L_link_7" link2="L_right_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="L_link_7" link2="L_right_inner_knuckle" reason="Never" />
+    <disable_collisions link1="L_link_7" link2="L_right_outer_finger" reason="Never" />
+    <disable_collisions link1="L_link_7" link2="L_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_link_7" link2="L_robotiq_arg2f_base_link" reason="Adjacent" />
+    <disable_collisions link1="L_link_7" link2="R_left_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_right_inner_finger" link2="L_right_inner_finger_pad" reason="Adjacent" />
+    <disable_collisions link1="L_right_inner_finger" link2="L_right_inner_knuckle" reason="Default" />
+    <disable_collisions link1="L_right_inner_finger" link2="L_right_outer_finger" reason="Adjacent" />
+    <disable_collisions link1="L_right_inner_finger" link2="L_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_right_inner_finger" link2="L_robotiq_arg2f_base_link" reason="Never" />
+    <disable_collisions link1="L_right_inner_finger" link2="R_left_inner_finger" reason="Never" />
+    <disable_collisions link1="L_right_inner_finger" link2="R_left_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="L_right_inner_finger" link2="R_left_inner_knuckle" reason="Never" />
+    <disable_collisions link1="L_right_inner_finger" link2="R_left_outer_finger" reason="Never" />
+    <disable_collisions link1="L_right_inner_finger" link2="R_left_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_right_inner_finger" link2="R_link_7" reason="Never" />
+    <disable_collisions link1="L_right_inner_finger" link2="R_right_inner_finger" reason="Never" />
+    <disable_collisions link1="L_right_inner_finger" link2="R_right_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="L_right_inner_finger" link2="R_right_inner_knuckle" reason="Never" />
+    <disable_collisions link1="L_right_inner_finger" link2="R_right_outer_finger" reason="Never" />
+    <disable_collisions link1="L_right_inner_finger" link2="R_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_right_inner_finger" link2="reference_frame" reason="Never" />
+    <disable_collisions link1="L_right_inner_finger_pad" link2="L_right_inner_knuckle" reason="Never" />
+    <disable_collisions link1="L_right_inner_finger_pad" link2="L_right_outer_finger" reason="Never" />
+    <disable_collisions link1="L_right_inner_finger_pad" link2="L_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_right_inner_finger_pad" link2="L_robotiq_arg2f_base_link" reason="Never" />
+    <disable_collisions link1="L_right_inner_finger_pad" link2="R_left_inner_finger" reason="Never" />
+    <disable_collisions link1="L_right_inner_finger_pad" link2="R_left_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="L_right_inner_finger_pad" link2="R_left_inner_knuckle" reason="Never" />
+    <disable_collisions link1="L_right_inner_finger_pad" link2="R_left_outer_finger" reason="Never" />
+    <disable_collisions link1="L_right_inner_finger_pad" link2="R_left_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_right_inner_finger_pad" link2="R_link_7" reason="Never" />
+    <disable_collisions link1="L_right_inner_finger_pad" link2="R_right_outer_finger" reason="Never" />
+    <disable_collisions link1="L_right_inner_finger_pad" link2="R_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_right_inner_finger_pad" link2="R_robotiq_arg2f_base_link" reason="Never" />
+    <disable_collisions link1="L_right_inner_finger_pad" link2="reference_frame" reason="Never" />
+    <disable_collisions link1="L_right_inner_knuckle" link2="L_right_outer_finger" reason="Never" />
+    <disable_collisions link1="L_right_inner_knuckle" link2="L_right_outer_knuckle" reason="Default" />
+    <disable_collisions link1="L_right_inner_knuckle" link2="L_robotiq_arg2f_base_link" reason="Adjacent" />
+    <disable_collisions link1="L_right_inner_knuckle" link2="R_left_inner_finger" reason="Never" />
+    <disable_collisions link1="L_right_inner_knuckle" link2="R_left_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="L_right_inner_knuckle" link2="R_left_inner_knuckle" reason="Never" />
+    <disable_collisions link1="L_right_inner_knuckle" link2="R_left_outer_finger" reason="Never" />
+    <disable_collisions link1="L_right_inner_knuckle" link2="R_left_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_right_inner_knuckle" link2="R_right_inner_finger" reason="Never" />
+    <disable_collisions link1="L_right_inner_knuckle" link2="R_right_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="L_right_inner_knuckle" link2="R_right_outer_finger" reason="Never" />
+    <disable_collisions link1="L_right_inner_knuckle" link2="reference_frame" reason="Never" />
+    <disable_collisions link1="L_right_outer_finger" link2="L_right_outer_knuckle" reason="Adjacent" />
+    <disable_collisions link1="L_right_outer_finger" link2="L_robotiq_arg2f_base_link" reason="Never" />
+    <disable_collisions link1="L_right_outer_finger" link2="R_left_inner_finger" reason="Never" />
+    <disable_collisions link1="L_right_outer_finger" link2="R_left_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="L_right_outer_finger" link2="R_left_inner_knuckle" reason="Never" />
+    <disable_collisions link1="L_right_outer_finger" link2="R_left_outer_finger" reason="Never" />
+    <disable_collisions link1="L_right_outer_finger" link2="R_left_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_right_outer_finger" link2="R_right_inner_finger" reason="Never" />
+    <disable_collisions link1="L_right_outer_finger" link2="R_right_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="L_right_outer_finger" link2="R_right_inner_knuckle" reason="Never" />
+    <disable_collisions link1="L_right_outer_finger" link2="R_right_outer_finger" reason="Never" />
+    <disable_collisions link1="L_right_outer_finger" link2="R_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_right_outer_finger" link2="reference_frame" reason="Never" />
+    <disable_collisions link1="L_right_outer_knuckle" link2="L_robotiq_arg2f_base_link" reason="Adjacent" />
+    <disable_collisions link1="L_right_outer_knuckle" link2="R_left_inner_finger" reason="Never" />
+    <disable_collisions link1="L_right_outer_knuckle" link2="R_left_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="L_right_outer_knuckle" link2="R_left_inner_knuckle" reason="Never" />
+    <disable_collisions link1="L_right_outer_knuckle" link2="R_left_outer_finger" reason="Never" />
+    <disable_collisions link1="L_right_outer_knuckle" link2="R_left_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_right_outer_knuckle" link2="R_right_inner_finger" reason="Never" />
+    <disable_collisions link1="L_right_outer_knuckle" link2="R_right_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="L_right_outer_knuckle" link2="R_right_inner_knuckle" reason="Never" />
+    <disable_collisions link1="L_right_outer_knuckle" link2="R_right_outer_finger" reason="Never" />
+    <disable_collisions link1="L_right_outer_knuckle" link2="R_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="L_right_outer_knuckle" link2="reference_frame" reason="Never" />
+    <disable_collisions link1="L_robotiq_arg2f_base_link" link2="R_right_inner_finger" reason="Never" />
+    <disable_collisions link1="L_robotiq_arg2f_base_link" link2="R_right_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="L_robotiq_arg2f_base_link" link2="R_right_inner_knuckle" reason="Never" />
+    <disable_collisions link1="L_robotiq_arg2f_base_link" link2="R_right_outer_finger" reason="Never" />
+    <disable_collisions link1="L_robotiq_arg2f_base_link" link2="R_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="R_left_inner_finger" link2="R_left_inner_finger_pad" reason="Adjacent" />
+    <disable_collisions link1="R_left_inner_finger" link2="R_left_inner_knuckle" reason="Default" />
+    <disable_collisions link1="R_left_inner_finger" link2="R_left_outer_finger" reason="Adjacent" />
+    <disable_collisions link1="R_left_inner_finger" link2="R_left_outer_knuckle" reason="Never" />
+    <disable_collisions link1="R_left_inner_finger" link2="R_link_1" reason="Never" />
+    <disable_collisions link1="R_left_inner_finger" link2="R_link_2" reason="Never" />
+    <disable_collisions link1="R_left_inner_finger" link2="R_link_3" reason="Never" />
+    <disable_collisions link1="R_left_inner_finger" link2="R_link_4" reason="Never" />
+    <disable_collisions link1="R_left_inner_finger" link2="R_link_5" reason="Never" />
+    <disable_collisions link1="R_left_inner_finger" link2="R_link_6" reason="Never" />
+    <disable_collisions link1="R_left_inner_finger" link2="R_link_7" reason="Never" />
+    <disable_collisions link1="R_left_inner_finger" link2="R_right_inner_finger" reason="Never" />
+    <disable_collisions link1="R_left_inner_finger" link2="R_right_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="R_left_inner_finger" link2="R_right_inner_knuckle" reason="Never" />
+    <disable_collisions link1="R_left_inner_finger" link2="R_right_outer_finger" reason="Never" />
+    <disable_collisions link1="R_left_inner_finger" link2="R_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="R_left_inner_finger" link2="R_robotiq_arg2f_base_link" reason="Never" />
+    <disable_collisions link1="R_left_inner_finger" link2="reference_frame" reason="Never" />
+    <disable_collisions link1="R_left_inner_finger_pad" link2="R_left_inner_knuckle" reason="Never" />
+    <disable_collisions link1="R_left_inner_finger_pad" link2="R_left_outer_finger" reason="Never" />
+    <disable_collisions link1="R_left_inner_finger_pad" link2="R_left_outer_knuckle" reason="Never" />
+    <disable_collisions link1="R_left_inner_finger_pad" link2="R_link_3" reason="Never" />
+    <disable_collisions link1="R_left_inner_finger_pad" link2="R_link_4" reason="Never" />
+    <disable_collisions link1="R_left_inner_finger_pad" link2="R_link_5" reason="Never" />
+    <disable_collisions link1="R_left_inner_finger_pad" link2="R_link_6" reason="Never" />
+    <disable_collisions link1="R_left_inner_finger_pad" link2="R_link_7" reason="Never" />
+    <disable_collisions link1="R_left_inner_finger_pad" link2="R_right_inner_finger" reason="Never" />
+    <disable_collisions link1="R_left_inner_finger_pad" link2="R_right_inner_knuckle" reason="Never" />
+    <disable_collisions link1="R_left_inner_finger_pad" link2="R_right_outer_finger" reason="Never" />
+    <disable_collisions link1="R_left_inner_finger_pad" link2="R_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="R_left_inner_finger_pad" link2="R_robotiq_arg2f_base_link" reason="Never" />
+    <disable_collisions link1="R_left_inner_finger_pad" link2="reference_frame" reason="Never" />
+    <disable_collisions link1="R_left_inner_knuckle" link2="R_left_outer_finger" reason="Never" />
+    <disable_collisions link1="R_left_inner_knuckle" link2="R_left_outer_knuckle" reason="Default" />
+    <disable_collisions link1="R_left_inner_knuckle" link2="R_link_1" reason="Never" />
+    <disable_collisions link1="R_left_inner_knuckle" link2="R_link_3" reason="Never" />
+    <disable_collisions link1="R_left_inner_knuckle" link2="R_link_4" reason="Never" />
+    <disable_collisions link1="R_left_inner_knuckle" link2="R_link_5" reason="Never" />
+    <disable_collisions link1="R_left_inner_knuckle" link2="R_link_6" reason="Never" />
+    <disable_collisions link1="R_left_inner_knuckle" link2="R_link_7" reason="Never" />
+    <disable_collisions link1="R_left_inner_knuckle" link2="R_right_inner_finger" reason="Never" />
+    <disable_collisions link1="R_left_inner_knuckle" link2="R_right_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="R_left_inner_knuckle" link2="R_right_inner_knuckle" reason="Never" />
+    <disable_collisions link1="R_left_inner_knuckle" link2="R_right_outer_finger" reason="Never" />
+    <disable_collisions link1="R_left_inner_knuckle" link2="R_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="R_left_inner_knuckle" link2="R_robotiq_arg2f_base_link" reason="Adjacent" />
+    <disable_collisions link1="R_left_outer_finger" link2="R_left_outer_knuckle" reason="Adjacent" />
+    <disable_collisions link1="R_left_outer_finger" link2="R_link_1" reason="Never" />
+    <disable_collisions link1="R_left_outer_finger" link2="R_link_3" reason="Never" />
+    <disable_collisions link1="R_left_outer_finger" link2="R_link_4" reason="Never" />
+    <disable_collisions link1="R_left_outer_finger" link2="R_link_5" reason="Never" />
+    <disable_collisions link1="R_left_outer_finger" link2="R_link_6" reason="Never" />
+    <disable_collisions link1="R_left_outer_finger" link2="R_link_7" reason="Never" />
+    <disable_collisions link1="R_left_outer_finger" link2="R_right_inner_finger" reason="Never" />
+    <disable_collisions link1="R_left_outer_finger" link2="R_right_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="R_left_outer_finger" link2="R_right_inner_knuckle" reason="Never" />
+    <disable_collisions link1="R_left_outer_finger" link2="R_right_outer_finger" reason="Never" />
+    <disable_collisions link1="R_left_outer_finger" link2="R_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="R_left_outer_finger" link2="R_robotiq_arg2f_base_link" reason="Never" />
+    <disable_collisions link1="R_left_outer_knuckle" link2="R_link_1" reason="Never" />
+    <disable_collisions link1="R_left_outer_knuckle" link2="R_link_2" reason="Never" />
+    <disable_collisions link1="R_left_outer_knuckle" link2="R_link_3" reason="Never" />
+    <disable_collisions link1="R_left_outer_knuckle" link2="R_link_4" reason="Never" />
+    <disable_collisions link1="R_left_outer_knuckle" link2="R_link_5" reason="Never" />
+    <disable_collisions link1="R_left_outer_knuckle" link2="R_link_6" reason="Never" />
+    <disable_collisions link1="R_left_outer_knuckle" link2="R_link_7" reason="Never" />
+    <disable_collisions link1="R_left_outer_knuckle" link2="R_right_inner_finger" reason="Never" />
+    <disable_collisions link1="R_left_outer_knuckle" link2="R_right_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="R_left_outer_knuckle" link2="R_right_inner_knuckle" reason="Never" />
+    <disable_collisions link1="R_left_outer_knuckle" link2="R_right_outer_finger" reason="Never" />
+    <disable_collisions link1="R_left_outer_knuckle" link2="R_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="R_left_outer_knuckle" link2="R_robotiq_arg2f_base_link" reason="Adjacent" />
+    <disable_collisions link1="R_left_outer_knuckle" link2="reference_frame" reason="Never" />
     <disable_collisions link1="R_link_0" link2="R_link_1" reason="Adjacent" />
     <disable_collisions link1="R_link_0" link2="R_link_2" reason="Never" />
     <disable_collisions link1="R_link_0" link2="R_link_3" reason="Never" />
     <disable_collisions link1="R_link_0" link2="R_link_4" reason="Never" />
-    <disable_collisions link1="R_link_0" link2="body" reason="Adjacent" />
-    <disable_collisions link1="R_link_0" link2="desktop" reason="Never" />
+    <disable_collisions link1="R_link_0" link2="camera_holder_link" reason="Never" />
+    <disable_collisions link1="R_link_0" link2="cushion_link" reason="Never" />
+    <disable_collisions link1="R_link_0" link2="lift_link" reason="Never" />
+    <disable_collisions link1="R_link_0" link2="neck_link" reason="Adjacent" />
+    <disable_collisions link1="R_link_0" link2="reference_frame" reason="Never" />
+    <disable_collisions link1="R_link_0" link2="table_link" reason="Never" />
     <disable_collisions link1="R_link_1" link2="R_link_2" reason="Adjacent" />
     <disable_collisions link1="R_link_1" link2="R_link_3" reason="Never" />
     <disable_collisions link1="R_link_1" link2="R_link_4" reason="Never" />
     <disable_collisions link1="R_link_1" link2="R_link_5" reason="Never" />
     <disable_collisions link1="R_link_1" link2="R_link_6" reason="Never" />
     <disable_collisions link1="R_link_1" link2="R_link_7" reason="Never" />
-    <disable_collisions link1="R_link_1" link2="body" reason="Never" />
-    <disable_collisions link1="R_link_1" link2="desktop" reason="Never" />
+    <disable_collisions link1="R_link_1" link2="R_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="R_link_1" link2="R_robotiq_arg2f_base_link" reason="Never" />
+    <disable_collisions link1="R_link_1" link2="camera_holder_link" reason="Never" />
+    <disable_collisions link1="R_link_1" link2="cushion_link" reason="Never" />
+    <disable_collisions link1="R_link_1" link2="lift_link" reason="Never" />
+    <disable_collisions link1="R_link_1" link2="neck_link" reason="Never" />
+    <disable_collisions link1="R_link_1" link2="reference_frame" reason="Never" />
+    <disable_collisions link1="R_link_1" link2="table_link" reason="Never" />
     <disable_collisions link1="R_link_2" link2="R_link_3" reason="Adjacent" />
     <disable_collisions link1="R_link_2" link2="R_link_4" reason="Never" />
     <disable_collisions link1="R_link_2" link2="R_link_5" reason="Never" />
     <disable_collisions link1="R_link_2" link2="R_link_6" reason="Never" />
     <disable_collisions link1="R_link_2" link2="R_link_7" reason="Never" />
-    <disable_collisions link1="R_link_2" link2="R_link_ee" reason="Never" />
-    <disable_collisions link1="R_link_2" link2="body" reason="Never" />
-    <disable_collisions link1="R_link_2" link2="desktop" reason="Never" />
+    <disable_collisions link1="R_link_2" link2="R_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="R_link_2" link2="R_robotiq_arg2f_base_link" reason="Never" />
+    <disable_collisions link1="R_link_2" link2="camera_holder_link" reason="Never" />
+    <disable_collisions link1="R_link_2" link2="cushion_link" reason="Never" />
+    <disable_collisions link1="R_link_2" link2="lift_link" reason="Never" />
+    <disable_collisions link1="R_link_2" link2="neck_link" reason="Never" />
+    <disable_collisions link1="R_link_2" link2="reference_frame" reason="Never" />
+    <disable_collisions link1="R_link_2" link2="table_link" reason="Never" />
     <disable_collisions link1="R_link_3" link2="R_link_4" reason="Adjacent" />
     <disable_collisions link1="R_link_3" link2="R_link_5" reason="Never" />
     <disable_collisions link1="R_link_3" link2="R_link_6" reason="Never" />
     <disable_collisions link1="R_link_3" link2="R_link_7" reason="Never" />
-    <disable_collisions link1="R_link_3" link2="R_link_ee" reason="Never" />
+    <disable_collisions link1="R_link_3" link2="R_right_inner_finger" reason="Never" />
+    <disable_collisions link1="R_link_3" link2="R_right_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="R_link_3" link2="R_right_inner_knuckle" reason="Never" />
+    <disable_collisions link1="R_link_3" link2="R_right_outer_finger" reason="Never" />
+    <disable_collisions link1="R_link_3" link2="R_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="R_link_3" link2="R_robotiq_arg2f_base_link" reason="Never" />
+    <disable_collisions link1="R_link_3" link2="camera_holder_link" reason="Never" />
+    <disable_collisions link1="R_link_3" link2="cushion_link" reason="Never" />
+    <disable_collisions link1="R_link_3" link2="neck_link" reason="Never" />
+    <disable_collisions link1="R_link_3" link2="reference_frame" reason="Never" />
+    <disable_collisions link1="R_link_3" link2="table_link" reason="Never" />
     <disable_collisions link1="R_link_4" link2="R_link_5" reason="Adjacent" />
     <disable_collisions link1="R_link_4" link2="R_link_6" reason="Never" />
     <disable_collisions link1="R_link_4" link2="R_link_7" reason="Never" />
-    <disable_collisions link1="R_link_4" link2="R_link_ee" reason="Never" />
+    <disable_collisions link1="R_link_4" link2="R_right_inner_finger" reason="Never" />
+    <disable_collisions link1="R_link_4" link2="R_right_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="R_link_4" link2="R_right_inner_knuckle" reason="Never" />
+    <disable_collisions link1="R_link_4" link2="R_right_outer_finger" reason="Never" />
+    <disable_collisions link1="R_link_4" link2="R_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="R_link_4" link2="R_robotiq_arg2f_base_link" reason="Never" />
+    <disable_collisions link1="R_link_4" link2="neck_link" reason="Never" />
+    <disable_collisions link1="R_link_4" link2="reference_frame" reason="Never" />
     <disable_collisions link1="R_link_5" link2="R_link_6" reason="Adjacent" />
     <disable_collisions link1="R_link_5" link2="R_link_7" reason="Never" />
-    <disable_collisions link1="R_link_5" link2="R_link_ee" reason="Never" />
+    <disable_collisions link1="R_link_5" link2="R_right_inner_finger" reason="Never" />
+    <disable_collisions link1="R_link_5" link2="R_right_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="R_link_5" link2="R_right_inner_knuckle" reason="Never" />
+    <disable_collisions link1="R_link_5" link2="R_right_outer_finger" reason="Never" />
+    <disable_collisions link1="R_link_5" link2="R_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="R_link_5" link2="R_robotiq_arg2f_base_link" reason="Never" />
     <disable_collisions link1="R_link_6" link2="R_link_7" reason="Adjacent" />
-    <disable_collisions link1="R_link_6" link2="R_link_ee" reason="Never" />
-    <disable_collisions link1="R_link_7" link2="R_link_ee" reason="Adjacent" />
-    <disable_collisions link1="body" link2="desktop" reason="Adjacent" />
+    <disable_collisions link1="R_link_6" link2="R_right_inner_finger" reason="Never" />
+    <disable_collisions link1="R_link_6" link2="R_right_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="R_link_6" link2="R_right_inner_knuckle" reason="Never" />
+    <disable_collisions link1="R_link_6" link2="R_right_outer_finger" reason="Never" />
+    <disable_collisions link1="R_link_6" link2="R_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="R_link_6" link2="R_robotiq_arg2f_base_link" reason="Never" />
+    <disable_collisions link1="R_link_7" link2="R_right_inner_finger" reason="Never" />
+    <disable_collisions link1="R_link_7" link2="R_right_inner_finger_pad" reason="Never" />
+    <disable_collisions link1="R_link_7" link2="R_right_inner_knuckle" reason="Never" />
+    <disable_collisions link1="R_link_7" link2="R_right_outer_finger" reason="Never" />
+    <disable_collisions link1="R_link_7" link2="R_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="R_link_7" link2="R_robotiq_arg2f_base_link" reason="Adjacent" />
+    <disable_collisions link1="R_right_inner_finger" link2="R_right_inner_finger_pad" reason="Adjacent" />
+    <disable_collisions link1="R_right_inner_finger" link2="R_right_inner_knuckle" reason="Default" />
+    <disable_collisions link1="R_right_inner_finger" link2="R_right_outer_finger" reason="Adjacent" />
+    <disable_collisions link1="R_right_inner_finger" link2="R_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="R_right_inner_finger" link2="R_robotiq_arg2f_base_link" reason="Never" />
+    <disable_collisions link1="R_right_inner_finger" link2="reference_frame" reason="Never" />
+    <disable_collisions link1="R_right_inner_finger_pad" link2="R_right_inner_knuckle" reason="Never" />
+    <disable_collisions link1="R_right_inner_finger_pad" link2="R_right_outer_finger" reason="Never" />
+    <disable_collisions link1="R_right_inner_finger_pad" link2="R_right_outer_knuckle" reason="Never" />
+    <disable_collisions link1="R_right_inner_finger_pad" link2="R_robotiq_arg2f_base_link" reason="Never" />
+    <disable_collisions link1="R_right_inner_finger_pad" link2="reference_frame" reason="Never" />
+    <disable_collisions link1="R_right_inner_knuckle" link2="R_right_outer_finger" reason="Never" />
+    <disable_collisions link1="R_right_inner_knuckle" link2="R_right_outer_knuckle" reason="Default" />
+    <disable_collisions link1="R_right_inner_knuckle" link2="R_robotiq_arg2f_base_link" reason="Adjacent" />
+    <disable_collisions link1="R_right_inner_knuckle" link2="reference_frame" reason="Never" />
+    <disable_collisions link1="R_right_outer_finger" link2="R_right_outer_knuckle" reason="Adjacent" />
+    <disable_collisions link1="R_right_outer_finger" link2="R_robotiq_arg2f_base_link" reason="Never" />
+    <disable_collisions link1="R_right_outer_finger" link2="reference_frame" reason="Never" />
+    <disable_collisions link1="R_right_outer_knuckle" link2="R_robotiq_arg2f_base_link" reason="Adjacent" />
+    <disable_collisions link1="R_right_outer_knuckle" link2="reference_frame" reason="Never" />
+    <disable_collisions link1="camera_holder_link" link2="cushion_link" reason="Never" />
+    <disable_collisions link1="camera_holder_link" link2="lift_link" reason="Never" />
+    <disable_collisions link1="camera_holder_link" link2="neck_link" reason="Adjacent" />
+    <disable_collisions link1="camera_holder_link" link2="reference_frame" reason="Never" />
+    <disable_collisions link1="camera_holder_link" link2="table_link" reason="Default" />
+    <disable_collisions link1="cushion_link" link2="lift_link" reason="Never" />
+    <disable_collisions link1="cushion_link" link2="neck_link" reason="Never" />
+    <disable_collisions link1="cushion_link" link2="reference_frame" reason="Adjacent" />
+    <disable_collisions link1="cushion_link" link2="table_link" reason="Adjacent" />
+    <disable_collisions link1="lift_link" link2="neck_link" reason="Adjacent" />
+    <disable_collisions link1="lift_link" link2="reference_frame" reason="Never" />
+    <disable_collisions link1="lift_link" link2="table_link" reason="Adjacent" />
+    <disable_collisions link1="neck_link" link2="reference_frame" reason="Never" />
+    <disable_collisions link1="neck_link" link2="table_link" reason="Never" />
+    <disable_collisions link1="reference_frame" link2="table_link" reason="Never" />
 </robot>

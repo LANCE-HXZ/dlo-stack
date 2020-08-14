@@ -1,0 +1,8 @@
+.vscode
+*.pth
+*.ckpt
+*.pt
+*.weights
+*.png
+*.jpg
+*.bmp

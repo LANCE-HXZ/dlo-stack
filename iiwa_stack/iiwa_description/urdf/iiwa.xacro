@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<robot name="iiwa" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="iiwa" xmlns:xacro="http://ros.org/wiki/xacro">
   
   <!-- Import all Gazebo-customization elements, including Gazebo colors -->
   <xacro:include filename="$(find iiwa_description)/urdf/iiwa.gazebo.xacro" />
@@ -14,7 +14,7 @@
   <xacro:property name="joint_damping" value="0.5" />
   <xacro:property name="max_effort" value="300"/>
   <xacro:property name="max_velocity" value="10"/>
-  <xacro:macro name="iiwa" params="parent hardware_interface side *origin">
+  <xacro:macro name="iiwa" params="parent hardware_interface side *origin ee_z=0.07">
     
     <!--joint between {parent} and link_0-->
     <joint name="${parent}_${side}_joint" type="fixed">
@@ -323,57 +323,9 @@
     <joint name="${side}_joint_ee" type="fixed">
       <parent link="${side}_link_7"/>
       <child link="${side}_link_ee"/>
-      <origin xyz="0 0 0.070" rpy="0 0 0"/>
+      <origin xyz="0 0 ${ee_z}" rpy="0 0 0"/>
     </joint>
-    
-    <link name="${side}_link_ee">
-      <inertial>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-        <mass value="5"/>
-        <inertia ixx="0.05"  ixy="0"  ixz="0" iyy="0.06" iyz="0" izz="0.03" />
-      </inertial>
-      <visual>
-        <origin xyz=" 0 0 0.06" rpy="0 0 0" />
-        <geometry>
-          <box size="0.085 0.095 0.17"/>
-        </geometry>
-        <material name="White"/>
-      </visual>
-      <collision>
-        <origin xyz="0 0 0.06" rpy="0 0 0"/>
-        <geometry>
-          <box size="0.085 0.095 0.17"/>
-        </geometry>
-        <material name="White"/>
-      </collision>
-    </link>
-    
-    <joint name="${side}_hand_joint" type="fixed">
-      <origin xyz="0.03 0 0.345" rpy="0 0 0"/>
-      <parent link="${side}_link_ee"/>
-      <child link="${side}_hand"/>
-    </joint>
-    <link name="${side}_hand">
-      <inertial>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-        <mass value="5"/>
-        <inertia ixx="0.05"  ixy="0"  ixz="0" iyy="0.06" iyz="0" izz="0.03" />
-      </inertial>
-      <visual>
-        <origin xyz=" 0 0 -0.095" rpy="0 0 0" />
-        <geometry>
-          <box size="0.015 0.10 0.19"/>
-        </geometry>
-        <material name="White"/>
-      </visual>
-      <collision>
-        <origin xyz="0 0 -0.095" rpy="0 0 0"/>
-        <geometry>
-          <box size="0.015 0.10 0.19"/>
-        </geometry>
-        <material name="White"/>
-      </collision>
-    </link>
+    <link name="${side}_link_ee"> </link>
 
     <!--Extensions -->
     <xacro:iiwa_gazebo side="${side}" />

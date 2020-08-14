@@ -5,10 +5,8 @@ import torch.nn as nn
 from torch.utils.data import DataLoader, Dataset, random_split
 from torchvision import transforms
 import numpy as np
-import sys
-sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')
 import cv2
-
+os.environ["CUDA_VISIBLE_DEVICES"] = ""
 # from onehot import onehot
 
 transform = transforms.Compose([
@@ -29,14 +27,14 @@ class BagDataset(Dataset):
         self.transform = transform
 
     def __len__(self):
-        return len(os.listdir('data'))
+        return len(os.listdir('/home/lance/Data/RGBimg'))
 
     def __getitem__(self, idx):
-        img_name = os.listdir('data')[idx]
-        imgA = cv2.imread('data/' + img_name)
+        img_name = os.listdir('/home/lance/Data/RGBimg')[idx]
+        imgA = cv2.imread('/home/lance/Data/RGBimg/' + img_name)
         # imgA = cv2.resize(imgA, (160, 160))
         # print(imgA.shape)
-        imgB = cv2.imread('label/' + img_name, 0)
+        imgB = cv2.imread('/home/lance/Data/WhiteLine/' + img_name, 0)  # dir of label
         # imgB = cv2.resize(imgB, (160, 160))
         # print(imgB.shape)
         imgB = imgB / 255

@@ -8,12 +8,15 @@ from torch.utils.data import DataLoader
 from torchnet import meter
 from utils.visualize import Visualizer
 from tqdm import tqdm
+import numpy as np
 
-
+# cpu运行修改了此处
+# pytorch-best-practice-master/models/BasicModule.py", line 19, in load
+#     self.load_state_dict(t.load(path))
 def test(**kwargs):
-    opt.parse(kwargs)
-    import ipdb
-    ipdb.set_trace()
+    # opt.parse(kwargs)
+    # import ipdb
+    # ipdb.set_trace()
     # configure model
     model = getattr(models, opt.model)().eval()
     if opt.load_model_path:
@@ -29,9 +32,9 @@ def test(**kwargs):
         if opt.use_gpu: input = input.cuda()
         score = model(input)
         probability = t.nn.functional.softmax(score)[:, 0].data.tolist()
-        # label = score.max(dim = 1)[1].data.tolist()
+        label = score.max(dim = 1)[1].data.tolist()
 
-        batch_results = [(path_, probability_) for path_, probability_ in zip(path, probability)]
+        batch_results = [(label_, path_, probability_) for label_, path_, probability_ in zip(label, path, probability)]
 
         results += batch_results
     write_csv(results, opt.result_file)
@@ -48,7 +51,7 @@ def write_csv(results, file_name):
 
 
 def train(**kwargs):
-    opt.parse(kwargs)
+    # opt.parse(kwargs)
     vis = Visualizer(opt.env)
 
     # step1: configure model
@@ -77,11 +80,10 @@ def train(**kwargs):
 
     # train
     for epoch in range(opt.max_epoch):
-
         loss_meter.reset()
         confusion_matrix.reset()
 
-        for ii, (data, label) in tqdm(enumerate(train_dataloader), total=len(train_data)):
+        for ii, (data, label) in tqdm(enumerate(train_dataloader), total=len(train_data)/opt.batch_size):
 
             # train model 
             input = data
@@ -97,7 +99,7 @@ def train(**kwargs):
             optimizer.step()
 
             # meters update and visualize
-            loss_meter.add(loss.data[0])
+            loss_meter.add(loss.item())
             confusion_matrix.add(score.data, target.data)
 
             if ii % opt.print_freq == opt.print_freq - 1:
@@ -107,8 +109,10 @@ def train(**kwargs):
                 if os.path.exists(opt.debug_file):
                     import ipdb;
                     ipdb.set_trace()
-
-        model.save()
+        if epoch == 0:
+            model.save()
+        if np.mod(epoch+1, 200) == 0:
+            model.save()
 
         # validate and visualize
         val_cm, val_accuracy = val(model, val_dataloader)
@@ -117,7 +121,7 @@ def train(**kwargs):
         vis.log("epoch:{epoch},lr:{lr},loss:{loss},train_cm:{train_cm},val_cm:{val_cm}".format(
             epoch=epoch, loss=loss_meter.value()[0], val_cm=str(val_cm.value()), train_cm=str(confusion_matrix.value()),
             lr=lr))
-
+        print("epoch = ", epoch+1, "   loss = ", loss_meter.value()[0], "   lr = ", lr)
         # update learning rate
         if loss_meter.value()[0] > previous_loss:
             lr = lr * opt.lr_decay
@@ -136,7 +140,7 @@ def val(model, dataloader):
     confusion_matrix = meter.ConfusionMeter(2)
     for ii, data in enumerate(dataloader):
         input, label = data
-        val_input = input, volatile=True
+        val_input = input  #, volatile=True
         val_label = label.type(t.LongTensor)
         if opt.use_gpu:
             val_input = val_input.cuda()
