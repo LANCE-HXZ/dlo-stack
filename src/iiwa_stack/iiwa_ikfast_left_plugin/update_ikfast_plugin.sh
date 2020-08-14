@@ -1,1 +1,0 @@
-rosrun moveit_kinematics create_ikfast_moveit_plugin.py iiwa L iiwa_ikfast_left_plugin /home/lance/Workspaces/hxz_ws/src/iiwa_stack/iiwa_ikfast_left_plugin/src/iiwa_L_ikfast_solver.cpp
