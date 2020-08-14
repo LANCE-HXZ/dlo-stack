@@ -2,6 +2,11 @@
 # Specific joint properties can be changed with the keys [max_position, min_position, max_velocity, max_acceleration]
 # Joint limits can be turned off with [has_velocity_limits, has_acceleration_limits]
 joint_limits:
+  L_finger_joint:
+    has_velocity_limits: true
+    max_velocity: 2
+    has_acceleration_limits: false
+    max_acceleration: 0
   L_joint_1:
     has_velocity_limits: true
     max_velocity: 10
@@ -12,7 +17,7 @@ joint_limits:
     max_velocity: 10
     has_acceleration_limits: false
     max_acceleration: 0
-  L_joint_3:
+  L_joint_30:
     has_velocity_limits: true
     max_velocity: 10
     has_acceleration_limits: false
@@ -37,6 +42,11 @@ joint_limits:
     max_velocity: 10
     has_acceleration_limits: false
     max_acceleration: 0
+  R_finger_joint:
+    has_velocity_limits: true
+    max_velocity: 2
+    has_acceleration_limits: false
+    max_acceleration: 0
   R_joint_1:
     has_velocity_limits: true
     max_velocity: 10
@@ -47,7 +57,7 @@ joint_limits:
     max_velocity: 10
     has_acceleration_limits: false
     max_acceleration: 0
-  R_joint_3:
+  R_joint_30:
     has_velocity_limits: true
     max_velocity: 10
     has_acceleration_limits: false

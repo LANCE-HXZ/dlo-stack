@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<robot name="iiwa" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="iiwa" xmlns:xacro="http://ros.org/wiki/xacro">
   <!-- Import Rviz colors -->
   <xacro:include filename="$(find iiwa_description)/urdf/materials.xacro" />
   <!--Import the lbr iiwa macro -->
@@ -11,90 +11,56 @@
   
   <xacro:arg name="hardware_interface" default="PositionJointInterface"/>
   <xacro:arg name="robot_name" default="iiwa"/>
-  <!--z = 0.458-->
-  <xacro:arg name="L_origin_xyz" default="0.153055 0.0595 0.458"/>
-  <xacro:arg name="L_origin_rpy" default="-1.0471975512 -1.5707963268 3.1415926536"/>
-  <xacro:arg name="R_origin_xyz" default="-0.153055 0.0595 0.458"/>
-  <xacro:arg name="R_origin_rpy" default="-1.0471975512 1.5707963268 3.1415926536"/>
+<xacro:arg name="L_origin_xyz" default="0.010 0.158604 0.105"/>
+<xacro:arg name="L_origin_rpy" default="0 ${PI/2} ${25*PI/180}"/>
+<xacro:arg name="R_origin_xyz" default="0.010 -0.158604 0.105"/>
+<xacro:arg name="R_origin_rpy" default="0 ${PI/2} ${-25*PI/180}"/>
 
   <!-- Fix to world just for testing -->
   <link name="world" />
 
-  <!--body-=======================================================================-->
-  <joint name="world_body_joint" type="fixed">
-    <origin xyz="0 0.297 0.92" rpy="0 0 0"/>
-      <parent link="world"/>
-      <child link="body"/>
-  </joint>
-  <link name="body">
-      <inertial>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-        <mass value="5"/>
-        <inertia ixx="0.05"  ixy="0"  ixz="0" iyy="0.06" iyz="0" izz="0.03" />
-      </inertial>
-      <visual>
-        <!--<origin xyz="-0.6264 -1.0574 -0.92" rpy="0 0 0"/>-->
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-        <geometry>
-          <mesh filename="package://iiwa_description/meshes/iiwa7/visual/body.stl"/>
-        </geometry>
-        <material name="White"/>
-      </visual>
-      <collision>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-        <geometry>
-          <mesh filename="package://iiwa_description/meshes/iiwa7/collision/body.stl"/>
-        </geometry>
-        <material name="White"/>
-      </collision>
-      </link>
-  <!--===========================================================================-->
+  <xacro:include filename="$(find iiwa_description)/urdf/platform.xacro"/>
+  <xacro:platform/>
 
+  <joint name="world_table_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="world"/>
+    <child link="table_link"/>
+  </joint>
+<!-- neck_link -->
 
   <!--iiwa-======================================================================-->
   <!--L_arm-->
-  <xacro:iiwa side="L" hardware_interface="$(arg hardware_interface)" parent="body">
+  <xacro:iiwa side="L" hardware_interface="$(arg hardware_interface)"  parent="neck_link" ee_z="${0.070 +0.225}">
     <origin xyz="$(arg L_origin_xyz)" rpy="$(arg L_origin_rpy)" />
   </xacro:iiwa>
   <!--R_arm-->
-  <xacro:iiwa side="R" hardware_interface="$(arg hardware_interface)" parent="body">
+  <xacro:iiwa side="R" hardware_interface="$(arg hardware_interface)"  parent="neck_link" ee_z="${0.070 +0.225}">
     <origin xyz="$(arg R_origin_xyz)" rpy="$(arg R_origin_rpy)" />
   </xacro:iiwa>
   <!--===========================================================================-->
 
-  
+   <!--Import Robotiq gripper -->
+  <xacro:include filename="$(find robotiq_2f_140_gripper_visualization)/urdf/robotiq_arg2f_140_model_macro.xacro" />  
 
-  <!--desktop-===================================================================-->
-  <joint name="body_desktop_joint" type="fixed">
-      <origin xyz="0 -0.6 0.034" rpy="0 0 0"/>
-      <parent link="body"/>
-      <child link="desktop"/>
+  <!--Left Robotiq gripper==-0.160-======================================================-->
+  <xacro:robotiq_arg2f_140 prefix="L_"/>
+  <joint name="L_gripper_joint" type="fixed">
+      <origin xyz="0 0 ${0.011-0.225}" rpy="0 0 ${PI/2}"/>
+      <parent link="L_link_ee"/>
+      <child link="L_robotiq_arg2f_base_link"/>
   </joint>
-  <link name="desktop">
-      <inertial>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-        <mass value="5"/>
-        <inertia ixx="0.05"  ixy="0"  ixz="0" iyy="0.06" iyz="0" izz="0.03" />
-      </inertial>
-      <visual>
-        <origin xyz=" 0 0 0" rpy="0 0 0" />
-        <geometry>
-          <box size="1.6 1.1 0.068"/>
-        </geometry>
-        <material name="White"/>
-      </visual>
-      <collision>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-        <geometry>
-          <box size="1.6 1.1 0.068"/>
-        </geometry>
-        <material name="White"/>
-      </collision>
-  </link>
-  <!--===========================================================================-->
 
+  <!--Right Robotiq gripper-====================================================-->
+  <xacro:robotiq_arg2f_140 prefix="R_"/>
+  <joint name="R_gripper_joint" type="fixed">
+      <origin xyz="0 0 ${0.011-0.225}" rpy="0 0 ${PI/2}"/>
+      <parent link="R_link_ee"/>
+      <child link="R_robotiq_arg2f_base_link"/>
+  </joint>
 
-
+  <!--=========================================================================-->
+  
   <!-- Load Gazebo lib and set the robot namespace -->
     <gazebo>
       <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
