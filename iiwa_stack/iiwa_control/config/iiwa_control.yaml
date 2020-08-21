@@ -1,0 +1,353 @@
+#iiwa:  
+  # Publish all joint states -----------------------------------
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50  
+  
+  # Controllers for singular joint ------------------------------------
+  # 
+  # Effort Position Controllers ---------------------------------------
+  
+  # VALUES ARE NOT CORRECT !
+  EffortJointInterface_L_J1_controller:
+    type: effort_controllers/JointPositionController
+    joint: L_joint_1
+    pid: {p: 800.0, i: 100, d: 80.0, i_clamp_min: -10000, i_clamp_max: 10000}
+
+  EffortJointInterface_L_J2_controller:
+    type: effort_controllers/JointPositionController
+    joint: L_joint_2
+    pid: {p: 800.0, i: 1000, d: 100.0, i_clamp_min: -10000, i_clamp_max: 10000}
+
+  EffortJointInterface_L_J3_controller:
+    type: effort_controllers/JointPositionController
+    joint: L_joint_3
+    pid: {p: 800.0, i: 10, d: 5.0, i_clamp_min: -10000, i_clamp_max: 10000}
+
+  EffortJointInterface_L_J4_controller:
+    type: effort_controllers/JointPositionController
+    joint: L_joint_4
+    pid: {p: 800.0, i: 10, d: 80.0, i_clamp_min: -10000, i_clamp_max: 10000}
+
+  EffortJointInterface_L_J5_controller:
+    type: effort_controllers/JointPositionController
+    joint: L_joint_5
+    pid: {p: 300.0, i: 5, d: 10.0, i_clamp_min: -10000, i_clamp_max: 10000}
+
+  EffortJointInterface_L_J6_controller:
+    type: effort_controllers/JointPositionController
+    joint: L_joint_6
+    pid: {p: 50.0, i: 1, d: 1.0, i_clamp_min: -10000, i_clamp_max: 10000}
+
+  EffortJointInterface_L_J7_controller:
+    type: effort_controllers/JointPositionController
+    joint: L_joint_7
+    pid: {p: 10.0, i: 0.1, d: 1.0, i_clamp_min: -10000, i_clamp_max: 10000}
+    
+  EffortJointInterface_R_J1_controller:
+    type: effort_controllers/JointPositionController
+    joint: R_joint_1
+    pid: {p: 800.0, i: 100, d: 80.0, i_clamp_min: -10000, i_clamp_max: 10000}
+
+  EffortJointInterface_R_J2_controller:
+    type: effort_controllers/JointPositionController
+    joint: R_joint_2
+    pid: {p: 800.0, i: 1000, d: 100.0, i_clamp_min: -10000, i_clamp_max: 10000}
+
+  EffortJointInterface_R_J3_controller:
+    type: effort_controllers/JointPositionController
+    joint: R_joint_3
+    pid: {p: 800.0, i: 10, d: 5.0, i_clamp_min: -10000, i_clamp_max: 10000}
+
+  EffortJointInterface_R_J4_controller:
+    type: effort_controllers/JointPositionController
+    joint: R_joint_4
+    pid: {p: 800.0, i: 10, d: 80.0, i_clamp_min: -10000, i_clamp_max: 10000}
+
+  EffortJointInterface_R_J5_controller:
+    type: effort_controllers/JointPositionController
+    joint: R_joint_5
+    pid: {p: 300.0, i: 5, d: 10.0, i_clamp_min: -10000, i_clamp_max: 10000}
+
+  EffortJointInterface_R_J6_controller:
+    type: effort_controllers/JointPositionController
+    joint: R_joint_6
+    pid: {p: 50.0, i: 1, d: 1.0, i_clamp_min: -10000, i_clamp_max: 10000}
+
+  EffortJointInterface_R_J7_controller:
+    type: effort_controllers/JointPositionController
+    joint: R_joint_7
+    pid: {p: 10.0, i: 0.1, d: 1.0, i_clamp_min: -10000, i_clamp_max: 10000}
+
+
+  # Forward Position Controllers ---------------------------------------
+  PositionJointInterface_L_J1_controller:
+    type: position_controllers/JointPositionController
+    joint: L_joint_1
+
+  PositionJointInterface_L_J2_controller:
+    type: position_controllers/JointPositionController
+    joint: L_joint_2
+    
+  PositionJointInterface_L_J3_controller:
+    type: position_controllers/JointPositionController
+    joint: L_joint_3
+    
+  PositionJointInterface_L_J4_controller:
+    type: position_controllers/JointPositionController
+    joint: L_joint_4
+    
+  PositionJointInterface_L_J5_controller:
+    type: position_controllers/JointPositionController
+    joint: L_joint_5
+    
+  PositionJointInterface_L_J6_controller:
+    type: position_controllers/JointPositionController
+    joint: L_joint_6
+    
+  PositionJointInterface_L_J7_controller:
+    type: position_controllers/JointPositionController
+    joint: L_joint_7
+
+  PositionJointInterface_R_J1_controller:
+    type: position_controllers/JointPositionController
+    joint: R_joint_1
+
+  PositionJointInterface_R_J2_controller:
+    type: position_controllers/JointPositionController
+    joint: R_joint_2
+    
+  PositionJointInterface_R_J3_controller:
+    type: position_controllers/JointPositionController
+    joint: R_joint_3
+    
+  PositionJointInterface_R_J4_controller:
+    type: position_controllers/JointPositionController
+    joint: R_joint_4
+    
+  PositionJointInterface_R_J5_controller:
+    type: position_controllers/JointPositionController
+    joint: R_joint_5
+    
+  PositionJointInterface_R_J6_controller:
+    type: position_controllers/JointPositionController
+    joint: R_joint_6
+    
+  PositionJointInterface_R_J7_controller:
+    type: position_controllers/JointPositionController
+    joint: R_joint_7
+
+    
+  # Forward Velocity Controllers ---------------------------------------
+  VelocityJointInterface_L_J1_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: L_joint_1
+    
+  VelocityJointInterface_L_J2_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: L_joint_2
+    
+  VelocityJointInterface_L_J3_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: L_joint_3
+    
+  VelocityJointInterface_L_J4_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: L_joint_4
+    
+  VelocityJointInterface_L_J5_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: L_joint_5
+    
+  VelocityJointInterface_L_J6_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: L_joint_6
+    
+  VelocityJointInterface_L_J7_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: L_joint_7
+
+  VelocityJointInterface_R_J1_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: R_joint_1
+    
+  VelocityJointInterface_R_J2_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: R_joint_2
+    
+  VelocityJointInterface_R_J3_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: R_joint_3
+    
+  VelocityJointInterface_R_J4_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: R_joint_4
+    
+  VelocityJointInterface_R_J5_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: R_joint_5
+    
+  VelocityJointInterface_R_J6_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: R_joint_6
+    
+  VelocityJointInterface_R_J7_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: R_joint_7
+    
+    
+  # Trajectory Controllers ---------------------------------------
+  #   
+  # Effort Position Controllers ---------------------------------------
+  EffortJointInterface_L_trajectory_controller:
+    type: effort_controllers/JointTrajectoryController
+    joints: 
+      - L_joint_1
+      - L_joint_2
+      - L_joint_3
+      - L_joint_4
+      - L_joint_5
+      - L_joint_6
+      - L_joint_7
+      
+      # VALUES ARE NOT CORRECT !
+    gains:
+      L_joint_1: {p: 500,  d: 30, i: 15, i_clamp: 30}
+      L_joint_2: {p: 200,  d: 10, i: 10, i_clamp: 30}
+      L_joint_3: {p: 65,  d: 10, i: 15, i_clamp: 30}
+      L_joint_4: {p: 31,  d: 7, i: 12, i_clamp: 30}
+      L_joint_5: {p: 23,  d: 3, i: 5, i_clamp: 30}
+      L_joint_6: {p: 13,  d: 3, i: 3, i_clamp: 30}
+      L_joint_7: {p: 17,  d: 2, i: 2.5, i_clamp: 10}
+
+    constraints:
+      goal_time: 0.5                   # Override default
+
+    state_publish_rate:  25            # Override default
+    action_monitor_rate: 30            # Override default
+    stop_trajectory_duration: 0        # Override default
+
+  EffortJointInterface_R_trajectory_controller:
+    type: effort_controllers/JointTrajectoryController
+    joints: 
+      - R_joint_1
+      - R_joint_2
+      - R_joint_3
+      - R_joint_4
+      - R_joint_5
+      - R_joint_6
+      - R_joint_7
+      
+      # VALUES ARE NOT CORRECT !
+    gains:
+      R_joint_1: {p: 500,  d: 30, i: 15, i_clamp: 30}
+      R_joint_2: {p: 200,  d: 10, i: 10, i_clamp: 30}
+      R_joint_3: {p: 65,  d: 10, i: 15, i_clamp: 30}
+      R_joint_4: {p: 31,  d: 7, i: 12, i_clamp: 30}
+      R_joint_5: {p: 23,  d: 3, i: 5, i_clamp: 30}
+      R_joint_6: {p: 13,  d: 3, i: 3, i_clamp: 30}
+      R_joint_7: {p: 17,  d: 2, i: 2.5, i_clamp: 10}
+
+    constraints:
+      goal_time: 0.5                   # Override default
+
+    state_publish_rate:  25            # Override default
+    action_monitor_rate: 30            # Override default
+    stop_trajectory_duration: 0        # Override default
+
+
+  
+  # Forward Position Controllers ---------------------------------------
+  PositionJointInterface_L_trajectory_controller:
+    type: position_controllers/JointTrajectoryController
+    joints: 
+      - L_joint_1
+      - L_joint_2
+      - L_joint_3
+      - L_joint_4
+      - L_joint_5
+      - L_joint_6
+      - L_joint_7
+      
+    constraints:
+      goal_time: 0.5                   # Override default
+
+    state_publish_rate:  25            # Override default
+    action_monitor_rate: 30            # Override default
+    stop_trajectory_duration: 0        # Override default
+
+  PositionJointInterface_R_trajectory_controller:
+    type: position_controllers/JointTrajectoryController
+    joints: 
+      - R_joint_1
+      - R_joint_2
+      - R_joint_3
+      - R_joint_4
+      - R_joint_5
+      - R_joint_6
+      - R_joint_7
+      
+    constraints:
+      goal_time: 0.5                   # Override default
+
+    state_publish_rate:  25            # Override default
+    action_monitor_rate: 30            # Override default
+    stop_trajectory_duration: 0        # Override default
+
+    
+  # Forward Velocity Controllers ---------------------------------------
+  VelocityJointInterface_L_trajectory_controller:
+    type: velocity_controllers/JointTrajectoryController
+    joints: 
+      - L_joint_1
+      - L_joint_2
+      - L_joint_3
+      - L_joint_4
+      - L_joint_5
+      - L_joint_6
+      - L_joint_7
+      
+      # VALUES ARE NOT CORRECT !
+    gains:
+      L_joint_1: {p: 500,  d: 30, i: 15, i_clamp: 30}
+      L_joint_2: {p: 200,  d: 10, i: 10, i_clamp: 30}
+      L_joint_3: {p: 65,  d: 10, i: 15, i_clamp: 30}
+      L_joint_4: {p: 31,  d: 7, i: 12, i_clamp: 30}
+      L_joint_5: {p: 23,  d: 3, i: 5, i_clamp: 30}
+      L_joint_6: {p: 13,  d: 3, i: 3, i_clamp: 30}
+      L_joint_7: {p: 17,  d: 2, i: 2.5, i_clamp: 10}
+      
+    constraints:
+      goal_time: 0.5                   # Override default
+
+    state_publish_rate:  25            # Override default
+    action_monitor_rate: 30            # Override default
+    stop_trajectory_duration: 0        # Override default
+
+  VelocityJointInterface_R_trajectory_controller:
+    type: velocity_controllers/JointTrajectoryController
+    joints: 
+      - R_joint_1
+      - R_joint_2
+      - R_joint_3
+      - R_joint_4
+      - R_joint_5
+      - R_joint_6
+      - R_joint_7
+      
+      # VALUES ARE NOT CORRECT !
+    gains:
+      R_joint_1: {p: 500,  d: 30, i: 15, i_clamp: 30}
+      R_joint_2: {p: 200,  d: 10, i: 10, i_clamp: 30}
+      R_joint_3: {p: 65,  d: 10, i: 15, i_clamp: 30}
+      R_joint_4: {p: 31,  d: 7, i: 12, i_clamp: 30}
+      R_joint_5: {p: 23,  d: 3, i: 5, i_clamp: 30}
+      R_joint_6: {p: 13,  d: 3, i: 3, i_clamp: 30}
+      R_joint_7: {p: 17,  d: 2, i: 2.5, i_clamp: 10}
+      
+    constraints:
+      goal_time: 0.5                   # Override default
+
+    state_publish_rate:  25            # Override default
+    action_monitor_rate: 30            # Override default
+    stop_trajectory_duration: 0        # Override default

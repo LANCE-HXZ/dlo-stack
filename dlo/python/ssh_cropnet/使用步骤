@@ -1,0 +1,16 @@
+## 参数,路径等变量在config.py中设置
+## checkpoints/中保存训练好的模型
+## data/中存放数据集, /train为训练集, /test0为分类结果应为0测试集, /test1为分类结果应为1的测试集
+## models/是不同的网络模型
+
+
+## 训练
+# bash终端
+python -m visdom.server
+
+# 新终端
+python main.py train
+
+
+## 测试
+python main.py test

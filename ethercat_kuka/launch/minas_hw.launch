@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+
+    <node name="minas_hw" pkg="minas_hw" type="minas_hw"  output="log" respawn="false" respawn_delay="0"
+            launch-prefix="ethercat_grant">
+        <rosparam command="load" file="$(find minas_hw)/launch/config.yaml"/>
+    </node>    
+
+</launch>

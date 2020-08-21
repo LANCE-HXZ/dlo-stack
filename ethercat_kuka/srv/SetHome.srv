@@ -1,0 +1,8 @@
+# 0 is upper
+# 1 is rota
+
+int8 client_num
+
+---
+
+bool success

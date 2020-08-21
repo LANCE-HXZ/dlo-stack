@@ -1,0 +1,2 @@
+
+-DCATKIN_DEVEL_PREFIX=/home/lance/Workspaces/yolo_ws/src/darknet_ros/darknet/devel -DCMAKE_INSTALL_PREFIX=/home/lance/Workspaces/yolo_ws/src/darknet_ros/darknet/install -G Unix Makefiles

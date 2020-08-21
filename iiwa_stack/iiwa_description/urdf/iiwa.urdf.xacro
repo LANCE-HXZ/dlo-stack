@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<robot name="iiwa" xmlns:xacro="http://ros.org/wiki/xacro">
+  <!-- Import Rviz colors -->
+  <xacro:include filename="$(find iiwa_description)/urdf/materials.xacro" />
+  <!--Import the lbr iiwa macro -->
+  <xacro:include filename="$(find iiwa_description)/urdf/iiwa.xacro"/>
+  <!-- Import all Gazebo-customization elements, including Gazebo colors -->
+  <xacro:include filename="$(find iiwa_description)/urdf/iiwa.gazebo.xacro" />
+  <!-- Import Transmissions -->
+  <xacro:include filename="$(find iiwa_description)/urdf/iiwa.transmission.xacro" />
+  
+  <xacro:arg name="hardware_interface" default="PositionJointInterface"/>
+  <xacro:arg name="robot_name" default="iiwa"/>
+<xacro:arg name="L_origin_xyz" default="0.010 0.158604 0.105"/>
+<xacro:arg name="L_origin_rpy" default="0 ${PI/2} ${25*PI/180}"/>
+<xacro:arg name="R_origin_xyz" default="0.010 -0.158604 0.105"/>
+<xacro:arg name="R_origin_rpy" default="0 ${PI/2} ${-25*PI/180}"/>
+
+  <!-- Fix to world just for testing -->
+  <link name="world" />
+
+  <xacro:include filename="$(find iiwa_description)/urdf/platform.xacro"/>
+  <xacro:platform/>
+
+  <joint name="world_table_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="world"/>
+    <child link="table_link"/>
+  </joint>
+<!-- neck_link -->
+
+  <!--iiwa-======================================================================-->
+  <!--L_arm-->
+  <xacro:iiwa side="L" hardware_interface="$(arg hardware_interface)"  parent="neck_link" ee_z="${0.070 +0.225}">
+    <origin xyz="$(arg L_origin_xyz)" rpy="$(arg L_origin_rpy)" />
+  </xacro:iiwa>
+  <!--R_arm-->
+  <xacro:iiwa side="R" hardware_interface="$(arg hardware_interface)"  parent="neck_link" ee_z="${0.070 +0.225}">
+    <origin xyz="$(arg R_origin_xyz)" rpy="$(arg R_origin_rpy)" />
+  </xacro:iiwa>
+  <!--===========================================================================-->
+
+   <!--Import Robotiq gripper -->
+  <xacro:include filename="$(find robotiq_2f_140_gripper_visualization)/urdf/robotiq_arg2f_140_model_macro.xacro" />  
+
+  <!--Left Robotiq gripper==-0.160-======================================================-->
+  <xacro:robotiq_arg2f_140 prefix="L_"/>
+  <joint name="L_gripper_joint" type="fixed">
+      <origin xyz="0 0 ${0.011-0.225}" rpy="0 0 ${PI/2}"/>
+      <parent link="L_link_ee"/>
+      <child link="L_robotiq_arg2f_base_link"/>
+  </joint>
+
+  <!--Right Robotiq gripper-====================================================-->
+  <xacro:robotiq_arg2f_140 prefix="R_"/>
+  <joint name="R_gripper_joint" type="fixed">
+      <origin xyz="0 0 ${0.011-0.225}" rpy="0 0 ${PI/2}"/>
+      <parent link="R_link_ee"/>
+      <child link="R_robotiq_arg2f_base_link"/>
+  </joint>
+
+  <!--=========================================================================-->
+  
+  <!-- Load Gazebo lib and set the robot namespace -->
+    <gazebo>
+      <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+        <robotNamespace>/iiwa</robotNamespace>
+        <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+        <legacyModeNS>true</legacyModeNS>
+      </plugin>
+    </gazebo>
+
+</robot>

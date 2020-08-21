@@ -1,0 +1,6 @@
+classes= 2
+train  = /home/song/darknet/scripts/2002_train.txt 
+valid  = /home/song/darknet/scripts/2002_test.txt 
+names = /home/lance/Workspaces/hxz_ws/src/darknet_ros/darknet/data/voc.names
+backup = backup
+ 

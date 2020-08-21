@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:macro name="platform_gazebo">
+        
+    <!-- Table Link -->
+    <gazebo reference="table_link">
+      <material>Gazebo/Grey</material>
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>
+    </gazebo>
+
+    <!-- Lift Link -->
+    <gazebo reference="lift_link">
+      <material>Gazebo/White</material>
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>
+    </gazebo>
+
+    <!-- Neck Link -->
+    <gazebo reference="neck_link">
+      <material>Gazebo/Red</material>
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>
+    </gazebo>
+
+     <!-- Cushion Link -->
+    <gazebo reference="cushion_link">
+      <material>Gazebo/Gold</material>
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>      
+    </gazebo>    
+
+  </xacro:macro>
+
+</robot>
+
