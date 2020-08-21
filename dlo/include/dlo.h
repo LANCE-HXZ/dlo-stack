@@ -75,10 +75,17 @@ cv::Mat change_background(cv::Mat rgb_img, cv::Mat bg_img, cv::Mat bw_img, int y
 cv::Mat change_background(cv::Mat rgb_img, cv::Mat bg_img, cv::Mat bw_img);
 
 cv::Mat traversal_visualization(cv::Mat src);
+<<<<<<< HEAD
 void visualization();
 cv::Scalar getcolor(int n, int ept_index, int line_index);
 
 int strategy();
+=======
+void visualization(vector<int64> classlist, vector<int64> crosslist);
+cv::Scalar getcolor(int n, int ept_index, int line_index);
+
+int strategy(vector<int64> classlist, vector<int64> crosslist);
+>>>>>>> temp2
 double draw_grip_direction(int opt_index);
 double draw_grip_direction(cv::Point ptTarget, cv::Point ptTargetDir);
 void draw_point(cv::Point pt, string pt_text, cv::Scalar color, float text_size = 0.5, int text_thick = 1);

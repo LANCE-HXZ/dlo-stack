@@ -60,7 +60,10 @@ add_message_files(
    BoundingBox.msg
    BoundingBoxes.msg
    ClassList.msg
+<<<<<<< HEAD
    Robotiq2FGripper_robot_output.msg
+=======
+>>>>>>> temp2
 )
 
 ## Generate services in the 'srv' folder
