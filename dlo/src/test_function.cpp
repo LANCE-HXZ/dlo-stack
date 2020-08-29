@@ -8,6 +8,15 @@ vector<Point> whiteptset;
 //   node_handle.getParam("qiangqiang", a);
 //   cout << a << endl;
 
+void rgb2binary(cv::Mat &src, cv::Mat &dst){
+	int c = src.cols, r = src.rows;
+	for(int ic = 0; ic < c; ++ic){
+		for(int ir = 0; ir < r; ++ir){
+			if(src.at<uchar>(ir, ic));
+		}
+	}
+}
+
 void new_ske(cv::Mat &src, cv::Mat &dst, cv::Mat &bw, vector<cv::Point> &endpoint){
 	int c = src.cols;
 	int r = src.rows;

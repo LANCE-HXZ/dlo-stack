@@ -1,6 +1,7 @@
 #include "dlo.h"
 #include "ros_image_converter.h"
 #include "kuka_moveit.h"
+// #include "gripper_control.h"
 
 
 vector<int64> g_vnClassList, g_vnCrossList;
@@ -13,6 +14,10 @@ int main(int argc, char *argv[])
   ros::AsyncSpinner spinner(1);
   spinner.start();
   kmMain.GoHome(D_GROUP);
+  // CGripperControl gcMain;
+  // gcMain.Gripper_Close('R');
+  // gcMain.Gripper_Close('L');
+  // gcMain.Gripper_Open('D');
 
   CImageConverter ic;
   ros::Subscriber camera_sub = nh.subscribe("/camera/color/image_raw", 1, &CImageConverter::CallbackCameraImgGet, &ic);  // 持续订阅相机rgb图像
