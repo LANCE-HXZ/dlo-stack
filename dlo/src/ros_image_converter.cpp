@@ -45,11 +45,14 @@ void CImageConverter::ProcessSkeleton(){
     if(!m_bBinaryImgGet)
     {
       m_bBinaryImgGet = 1;
-      m_imgBinary = imread(IMG_FLODER + "G.png");
+      m_imgBinary = imread(IMG_FLODER + "O.png");
       imshow("src", m_imgBinary);
       rgb2binary(m_imgBinary, m_imgBinary);
-      imwrite(IMG_FLODER+"test.png", m_imgBinary);
-      imshow("test", m_imgBinary);
+      imwrite(IMG_FLODER+"binary.png", m_imgBinary);
+      imshow("binary", m_imgBinary);
+      removeSinglePoint(m_imgBinary, m_imgBinary);
+      imwrite(IMG_FLODER+"outlier.png", m_imgBinary);
+      imshow("outlier", m_imgBinary);
       waitKey();
       m_imgSkeleton = skeleton(m_imgBinary, IMG_FLODER + "S.png", 3);
     }
