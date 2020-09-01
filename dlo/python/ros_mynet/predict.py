@@ -72,6 +72,7 @@ def predict(img):
     # imgY = cv2.copyMakeBorder(imgY, 100, 100, 100, 100, cv2.BORDER_CONSTANT, value=0)
     img_name = path + 'O.png'
     # imgo.save(img_name)
+    imgo = cv2.copyMakeBorder(imgo, 80, 80, 80, 80, cv2.BORDER_CONSTANT, value=[0, 0, 255])
     cv2.imwrite(img_name, imgo)
     print('out overlap save done')
     img_name = path + 'G.png'
@@ -125,6 +126,7 @@ class image_converter:
     #   print(e)
     # print('\n', 'Predicting') 
     cv_image = cv2.imread(path + "R.png")
+    cv_image = cv_image[80:80+480, 80:80+640]
     # (rows,cols,channels) = cv_image.shape
     pil_img = PIL.Image.fromarray(cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB))
 
