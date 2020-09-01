@@ -36,7 +36,7 @@ void removeOutlier(vector<Point> inData, int radius, int k, vector<Point> &outDa
 			if (sqrt(pow(inData[m].x - inData[n].x,2) + pow(inData[m].y - inData[n].y,2)) <= radius)
 			{
 				cnt++;
-				if (cnt < k)
+				if (cnt >= k)
 				{
 					outData.push_back(inData[m]);
 					break;
@@ -47,18 +47,22 @@ void removeOutlier(vector<Point> inData, int radius, int k, vector<Point> &outDa
 }
 
 //去除离群点
-void removeSinglePoint(cv::Mat &src, cv::Mat &dst){
+Mat removeSinglePoint(cv::Mat &src, int nRadius, int nMin){
+	Mat dst = cv::Mat::zeros(640, 800, CV_8UC3);
 	vector<Point> ptWhite, ptOutlier;
 	for(int ir = 0; ir < src.rows; ++ir){
 		for(int ic = 0; ic < src.cols; ++ic){
 			if(src.at<Vec3b>(ir, ic)[0] == 255)
-				ptWhite.push_back(Point(ir, ic));
+				ptWhite.push_back(Point(ic, ir));
 		}
 	}
-	removeOutlier(ptWhite, 10, 10, ptOutlier);
+	removeOutlier(ptWhite, nRadius, nMin, ptOutlier);
 	for(Point ptOpt:ptOutlier){
-		dst.at<Vec3b>(ptOpt.x, ptOpt.y)[0] = dst.at<Vec3b>(ptOpt.x, ptOpt.y)[1] = dst.at<Vec3b>(ptOpt.x, ptOpt.y)[2] = 0;
+		dst.at<Vec3b>(ptOpt.y, ptOpt.x)[0] = dst.at<Vec3b>(ptOpt.y, ptOpt.x)[1] = dst.at<Vec3b>(ptOpt.y, ptOpt.x)[2] = 255;
 	}
+	ptOutlier.clear();
+	ptWhite.clear();
+	return dst;
 }
 
 

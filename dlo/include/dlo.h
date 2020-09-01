@@ -30,7 +30,7 @@ int test();
 int* test(int input);
 void rgb2binary(cv::Mat &src, cv::Mat &dst);
 void removeOutlier(vector<cv::Point> inData, int radius, int k, vector<cv::Point> &outData);
-void removeSinglePoint(cv::Mat &src, cv::Mat &dst);
+cv::Mat removeSinglePoint(cv::Mat &src, int nRadius, int nMin);
 void new_ske(cv::Mat &src, cv::Mat &dst, cv::Mat &bw, vector<cv::Point> &endpoint);
 void DrawArc(cv::Mat &src, cv::Mat &bw, cv::Point ArcCenter, cv::Point StartPoint, cv::Point EndPoint, int Fill);
 
