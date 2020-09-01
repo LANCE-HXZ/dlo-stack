@@ -12,7 +12,10 @@ void rgb2binary(cv::Mat &src, cv::Mat &dst){
 	int c = src.cols, r = src.rows;
 	for(int ic = 0; ic < c; ++ic){
 		for(int ir = 0; ir < r; ++ir){
-			if(src.at<uchar>(ir, ic));
+			if(src.at<Vec3b>(ir, ic)[2] > 200 && src.at<Vec3b>(ir, ic)[0] < 55)
+				dst.at<Vec3b>(ir, ic)[0] = dst.at<Vec3b>(ir, ic)[1] = dst.at<Vec3b>(ir, ic)[2] = 0;
+			else
+				dst.at<Vec3b>(ir, ic)[0] = dst.at<Vec3b>(ir, ic)[1] = dst.at<Vec3b>(ir, ic)[2] = 255;
 		}
 	}
 }
