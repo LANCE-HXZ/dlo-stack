@@ -7,3 +7,5 @@
 *.jpg
 *.bmp
 model_weights/
+pic_buffer/
+
