@@ -14,7 +14,8 @@ import sys
 import time
 # sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')
 
-net = dn.load_net("/home/lance/Workspaces/hxz_ws/src/darknet_ros/darknet_ros/yolo_network_config/cfg/yolov3-voc.cfg".encode('utf-8'), "/home/lance/Workspaces/hxz_ws/src/darknet_ros/darknet_ros/yolo_network_config/weights/yolov3-voc_final.weights".encode('utf-8'), 0)
+net = dn.load_net("/home/lance/Workspaces/hxz_ws/src/darknet_ros/darknet_ros/yolo_network_config/cfg/yolov3-voc.cfg".encode('utf-8'), 
+    "/home/lance/Workspaces/hxz_ws/src/model_weights/darknet_weights/yolov3-voc_final.weights".encode('utf-8'), 0)
 meta = dn.load_meta("/home/lance/Workspaces/hxz_ws/src/darknet_ros/darknet_ros/yolo_network_config/cfg/voc.data".encode('utf-8'))  
 print('\n', 'Darknet model loaded')
 # def array_to_image(arr):

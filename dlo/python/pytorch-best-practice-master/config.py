@@ -10,7 +10,7 @@ class DefaultConfig(object):
     # test_data_root = '/home/lance/Workspaces/hxz_ws/src/dlo/python/pytorch-best-practice-master/data/Test0'  # 测试集存放路径
     test_data_root = '/home/lance/Data/7-CrossSquare/class/test0'
     # load_model_path = 'checkpoints/resnet34_0122_13:00:37.pth'
-    load_model_path = '/home/lance/Workspaces/hxz_ws/src/dlo/python/pytorch-best-practice-master/checkpoints/0417_800.pth'
+    load_model_path = '/home/lance/Workspaces/hxz_ws/src/model_weights/crossnet_weights/0417_800.pth'
     # load_model_path = None   # 加载预训练的模型的路径，为None代表不加载
 
     # batch_size = 128  # batch size

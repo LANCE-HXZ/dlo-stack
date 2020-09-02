@@ -40,7 +40,7 @@ model = torch.nn.DataParallel(UNet16(num_filters=32, pretrained='vgg')).cuda()
 #     path = './data2m1100/vali/Image/'
 
 path = '/home/lance/Workspaces/hxz_ws/pic_buffer/'
-state_path = '/home/lance/Workspaces/hxz_ws/src/dlo/python/ros_mynet/model/' + modelname + '.ckpt'
+state_path = '/home/lance/Workspaces/hxz_ws/src/model_weights/mynet_weights/' + modelname + '.ckpt'
 # state = torch.load(state_path, map_location=torch.device('cpu'))
 state = torch.load(state_path)
 # print(len(state))
