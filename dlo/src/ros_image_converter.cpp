@@ -1,4 +1,5 @@
 #include "ros_image_converter.h"
+#include "img_processing.h"
 #include "dlo.h"
 
 /*  构造函数    */

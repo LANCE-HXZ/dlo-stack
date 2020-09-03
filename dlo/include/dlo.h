@@ -26,32 +26,30 @@ extern int point_num, cpt_num, ept_num, line_num;
 
 extern cv::Scalar red, green, blue, yellow,purple, cyan;
 
+// test_function
 int test();
 int* test(int input);
-void rgb2binary(cv::Mat &src, cv::Mat &dst);
-void removeOutlier(vector<cv::Point> inData, int radius, int k, vector<cv::Point> &outData);
-cv::Mat removeSinglePoint(cv::Mat &src, int nRadius, int nMin);
-void new_ske(cv::Mat &src, cv::Mat &dst, cv::Mat &bw, vector<cv::Point> &endpoint);
-void DrawArc(cv::Mat &src, cv::Mat &bw, cv::Point ArcCenter, cv::Point StartPoint, cv::Point EndPoint, int Fill);
-
-cv::Mat skeleton(cv::Mat input, string save_address, int channels);
-void pre_dilate(cv::Mat & srcImg, int size, int times);
-void pre_erode(cv::Mat & srcImg, int size, int times);
-void thinImage(cv::Mat & srcImg);
 void thinImage(cv::Mat & src, cv::Mat & dst);
 void endPointAndintersectionPointDetection(cv::Mat & src, vector<cv::Point> &endpoint);
 void fix_cross_error(cv::Mat & src);
 // int glo_xy(int x, int y);
 int d(cv::Point opt, cv::Point dir);
 void move(cv::Point opt_p, cv::Point opt, int step, uchar *pointer, cv::Point dirflag, int xdir, int ydir);
+void new_ske(cv::Mat &src, cv::Mat &dst, cv::Mat &bw, vector<cv::Point> &endpoint);
+void DrawArc(cv::Mat &src, cv::Mat &bw, cv::Point ArcCenter, cv::Point StartPoint, cv::Point EndPoint, int Fill);
+
+// skeleton
+cv::Mat skeleton(cv::Mat input, string save_address, int channels);
+void pre_dilate(cv::Mat & srcImg, int size, int times);
+void pre_erode(cv::Mat & srcImg, int size, int times);
+void thinImage(cv::Mat & srcImg);
 void thinningIteration(cv::Mat& img, int iter);
 void thinning(const cv::Mat& src, cv::Mat& dst);
-
 cv::Mat ImgSkeletonization(cv::Mat &input_src,cv::Mat & output_dst, int number);
 cv::Mat ImgSkeletonization_H(cv::Mat &input_src, int *search_arr);
 cv::Mat ImgSkeletonization_V(cv::Mat &input_src, int *search_arr);
-void bw_change(cv::Mat &src);
 
+// traversal
 // void traversal(cv::Mat thin_img, cv::Mat RGBimg);
 void traversal(string thin_img_address, cv::Mat rgb_img);
 vector<string> traversal(string s_img_address, cv::Mat rgb_img, dlo::BoundingBoxes::ConstPtr boxes);
@@ -67,19 +65,23 @@ void get_point(int event, int x, int y, int flags, void* ustc);
 cv::Mat convertTo3Channels(const cv::Mat& binImg);
 cv::Point per_dir(cv::Point pre_pt, cv::Point curr_pt, int per_step);
 
+// crop
 void crop(cv::Mat src);
 void crop_callback(int event, int x, int y, int flags, void* ustc);
 cv::Mat RotateImage(cv::Mat src, double angle, cv::Point center);
 double angle(cv::Point pt1, cv::Point pt2, cv::Point pt0);
 
+// remove_background
 cv::Mat remove_background(cv::Mat rgb_img, cv::Mat bw_img);
 cv::Mat change_background(cv::Mat rgb_img, cv::Mat bg_img, cv::Mat bw_img, int y);
 cv::Mat change_background(cv::Mat rgb_img, cv::Mat bg_img, cv::Mat bw_img);
 
+// visualization
 cv::Mat traversal_visualization(cv::Mat src);
 void visualization();
 cv::Scalar getcolor(int n, int ept_index, int line_index);
 
+// strategy
 int strategy();
 double draw_grip_direction(int opt_index);
 double draw_grip_direction(cv::Point ptTarget, cv::Point ptTargetDir);
@@ -87,4 +89,4 @@ void draw_point(cv::Point pt, string pt_text, cv::Scalar color, float text_size 
 void cout_cross(int i);
 int checklist();
 
-void MoveitKuka();
+// void MoveitKuka();
