@@ -1,5 +1,6 @@
 #include "dlo.h"
 #include "ros_image_converter.h"
+#include "kuka_moveit.h"
 
 vector<int64> g_vnClassList, g_vnCrossList;
 
@@ -12,6 +13,7 @@ int main(int argc, char *argv[])
 
   ros::AsyncSpinner spinner(4);
   spinner.start();
+  km_main.GoHome(D_GROUP);
   
   ros::Subscriber camera_sub = nh.subscribe("/camera/color/image_raw", 1, &CImageConverter::CallbackCameraImgGet, &ic);  // 持续订阅相机rgb图像
   ros::Subscriber bw_sub = nh.subscribe("bw_topic", 1, &CImageConverter::CallbackBinaryImgGet, &ic);  // 订阅vgg16网络返回的轮廓图
@@ -25,7 +27,6 @@ int main(int argc, char *argv[])
     // imshow("m_imgCamera", ic.m_imgCamera);
     // startWindowThread();
     // waitKey();
-    km_main.GoHome(D_GROUP);
     if(ic.flagCameraImgReady){
       ic.ProcessShowCameraView();
       ic.flagCameraImgReady = 0;

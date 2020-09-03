@@ -1,8 +1,8 @@
 #include <iostream>
 #include <string>
 #include <opencv2/opencv.hpp>
+#include <vector>
 
-#include "kuka_moveit.h"
 #include "img_processing.h"
 
 // darknet_ros_msgs

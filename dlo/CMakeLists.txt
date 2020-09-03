@@ -239,6 +239,7 @@ add_library(dlo
   include/kuka_moveit.h
   include/gripper_control.h
   include/img_processing.h
+  include/strategy.h
   src/ros_image_converter.cpp
   src/test_function.cpp
   src/crop.cpp
@@ -250,6 +251,7 @@ add_library(dlo
   src/kuka_moveit.cpp
   src/gripper_control.cpp
   src/img_processing.cpp
+  src/manipulation.cpp
 )
 add_dependencies(dlo ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(dlo

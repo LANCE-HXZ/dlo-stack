@@ -8,7 +8,7 @@ using namespace cv;
 cv::Mat readImg(string addr){
   Mat img = cv::imread(addr);
   if(!img.cols){
-    cout << "\n\n===== ERROR ADDRESS: " << addr << " =====\n\n\n";
+    cout << "\n\n===== 【ERROR ADDRESS】 " << addr << " =====\n\n\n";
     return  cv::Mat::zeros(10, 10, CV_8UC3);	//	若打开图像失败则返回一张黑色图像
   }
   return img;

@@ -1,8 +1,5 @@
-#include "dlo.h"
-// #include "kuka_moveit.h"
-#include "gripper_control.h"
+#include "strategy.h"
 
-using namespace cv;
 using namespace std;
 
 Mat result_img;
@@ -76,7 +73,7 @@ int strategy()
 	vector<bool> is_end;
 	string opttype = "N";		//	标记操作类型, 初始为 N 表示 None
 
-	// === 检测最上层的独立线缆 ===
+	// === 检测最上层的独立线缆 I型 ===
     for(int i = 0; i < start.size(); i+=2){
         int mul = 1;
         for(int j = start[i]; j <= start[i+1]; ++j){	//	/*
@@ -449,15 +446,14 @@ int checklist(){
 	}
 	for(int i = 0; i < cross.size(); ++i){
 		if(crosspasstimes[i]){
-			cout << "ERROR TRAVERSAL PATH" << endl;
+			cout << "\n\n===== 【ERROR TRAVERSAL PATH】 " << " =====\n\n\n";
 			return 1;
 		}
 	}
 
 	int sumcross = 0;
 	if(g_vnCrossList.size()%2){
-		cout << "ERROR CROSSLIST LENGTH" << endl;
-		cout << '\t' << "LIST LENGTH: " << g_vnCrossList.size() << endl;
+		cout << "\n\n===== 【ERROR CROSSLIST LENGTH】 LIST LENGTH: " << g_vnCrossList.size() << " =====\n\n\n";
 		wrong = 2;
 	}
 
@@ -465,16 +461,15 @@ int checklist(){
 		sumcross += g_vnClassList[i];
 	}
 	if(cross.size() != sumcross){
-		cout << "ERROR CROSSCLASS PREDICTED IMBALANCED" << endl;
+		cout << "\n\n===== 【ERROR CROSSCLASS PREDICTED IMBALANCED】 " << " =====\n";
 		cout << '\t' << "CLASS 0: " << 2*cross.size() - sumcross << endl;
-		cout << '\t' << "CLASS 1: " << sumcross << endl;
+		cout << '\t' << "CLASS 1: " << sumcross << "\n\n\n";
 		wrong = 2;
 	}
 
 	for(int i = 0; i < cross.size(); ++i){
-		// cout << i << " " << c0[i] << " " << c1[i] << endl;
 		if(c0[i] < 0 || c1[i] < 0){
-			cout << "ERROR CLASS WHILE PREDICTING CROSS " << i << endl;
+			cout << "\n\n===== 【ERROR CLASS WHILE PREDICTING CROSS】 " << " =====\n\n\n";
 			wrong = 2;
 		}
 	}
