@@ -1,5 +1,5 @@
 #include "dlo.h"
-#include "kuka_moveit.h"
+// #include "kuka_moveit.h"
 #include "gripper_control.h"
 
 using namespace cv;
@@ -17,7 +17,7 @@ int strategy()
 	CKukaMoveit km;
 	CGripperControl gc;
 	c0.clear(); c1.clear();
-    result_img = imread("pic_buffer/1_R.png");
+    result_img = readImg("pic_buffer/1_R.png");
 	int line_index = 1;
 	int ept_index = 2*line_index-1;
 	int cpt_index = 0;
@@ -74,13 +74,13 @@ int strategy()
 	Point front_dir, back_dir, target;
 	int opt_index, ref_index;
 	vector<bool> is_end;
-	string opttype = "N";
+	string opttype = "N";		//	标记操作类型, 初始为 N 表示 None
 
-	// === 检测独立线缆 ===
+	// === 检测最上层的独立线缆 ===
     for(int i = 0; i < start.size(); i+=2){
         int mul = 1;
         for(int j = start[i]; j <= start[i+1]; ++j){	//	/*
-		mul *= g_vnClassList[j];							//		检查start[i]开始的线缆上的交叉点类型是否都为1
+		mul *= g_vnClassList[j];						//		检查start[i]开始的线缆上的交叉点类型是否都为1
 		if(!mul) 	break;								//		全为1表示该线缆在视野最上层
         }												//												*/
         if(mul){
@@ -96,9 +96,9 @@ int strategy()
 			draw_point(pt[leftindex], "OPT_L", red);
 			double dLeftGripDir = draw_grip_direction(leftindex);
 
-			int target_y = PIC_WIDTH + 1.0/2 * EDGE; 		//	目标位置为图像下边缘
-			Point target_dir = Point(10, 0.000001);		//	移动到目标位置的抓取方向
-			int nStepLength = abs(rightindex - leftindex);		// 两个抓取点中间的遍历步数
+			int target_y = PIC_WIDTH + 1.0/2 * EDGE; 			//	目标位置为图像下边缘
+			Point target_dir = Point(10, 0.000001);				//	移动到目标位置的抓取方向
+			int nStepLength = abs(rightindex - leftindex);		// 	两个抓取点中间的遍历步数
 			Point target_left = Point(pt[leftindex].x-nStepLength*1, target_y);
 			Point target_right = Point(pt[rightindex].x+nStepLength*1, target_y);
 			draw_point(target_left, "target_left", yellow);

@@ -50,7 +50,7 @@ Mat skeleton(cv::Mat input, string save_address, int channels)
 	// ==========    LAB     ==========
 	// clock_t start, end; // time
 	// start = clock(); // time
-	// //cv::Mat src = cv::imread("C:/Users/Lance/Desktop/thinning_Zhan-Suen-master/test/test0.png", 0);
+	// //cv::Mat src = cv::readImg("C:/Users/Lance/Desktop/thinning_Zhan-Suen-master/test/test0.png", 0);
 	// cv::Mat dst;
 	// thinning(src, dst);
 	// end = clock(); // time

@@ -20,8 +20,6 @@ Mat traversal_visualization(Mat src){
 
 void visualization()
 {
-    // Mat visual_img = imread("pic_buffer/init/black.png");  // 可视化背景
-	// resize(visual_img, visual_img, Size(800, 640));
 	Mat visual_img = cv::Mat::zeros(640, 800, CV_8UC3);
 	int line_index = 1; int line_num = ept_num/2; int cpt_index = 0;
 	int color_size = 7; int end_count = 0, cross_count = 0;

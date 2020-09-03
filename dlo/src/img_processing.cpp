@@ -2,7 +2,20 @@
 using namespace cv;
 
 
-// ==========    黑白反置    ==========
+/*  打开图片并检查是否打开成功
+    输入: 图片路径
+	输出: 图像	*/
+cv::Mat readImg(string addr){
+  Mat img = cv::imread(addr);
+  if(!img.cols){
+    cout << "\n\n===== ERROR ADDRESS: " << addr << " =====\n\n\n";
+    return  cv::Mat::zeros(10, 10, CV_8UC3);	//	若打开图像失败则返回一张黑色图像
+  }
+  return img;
+}
+
+/*  黑白反置
+    输入: 一张二值图像	*/
 void bw_change(Mat &src){
 	int r = src.rows;
 	int c = src.cols;
@@ -13,6 +26,9 @@ void bw_change(Mat &src){
 	}
 }
 
+
+/*	根据函数规则将 rgb 图像转换为二值黑白图像
+	输入: 原图src, 输出图dst	*/
 void rgb2binary(cv::Mat &src, cv::Mat &dst){
 	int c = src.cols, r = src.rows;
 	for(int ic = 0; ic < c; ++ic){
@@ -25,7 +41,8 @@ void rgb2binary(cv::Mat &src, cv::Mat &dst){
 	}
 }
 
-//设置在当前点的搜索半径为radius的范围内，如果相邻点个数少于k个，则该点为离群点
+/*	检索离群点, 设置在当前点的搜索半径为radius的范围内，如果相邻点个数少于k个，则该点为离群点
+	输入: 传入的需要检查的点inData, 搜索半径radius, 阈值k, 输出点outData	*/
 void removeOutlier(vector<Point> inData, int radius, int k, vector<Point> &outData)
 {
 	outData.clear();
@@ -51,7 +68,9 @@ void removeOutlier(vector<Point> inData, int radius, int k, vector<Point> &outDa
 	}
 }
 
-//去除离群点
+/*	基于半径距离去除离群点
+	输入: 原图src, 搜索半径nRadius, 阈值nMin
+	输出: 去除离群点后的图	*/
 Mat removeSinglePoint(cv::Mat &src, int nRadius, int nMin){
 	Mat dst = cv::Mat::zeros(640, 800, CV_8UC3);
 	vector<Point> ptWhite, ptOutlier;

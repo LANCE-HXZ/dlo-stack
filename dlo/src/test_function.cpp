@@ -602,7 +602,7 @@ void DrawArc(Mat &src, Mat &bw, Point ArcCenter, Point StartPoint, Point EndPoin
 }
 
 
-cv::Mat new_bw = cv::imread("/home/lance/Data/3-WhiteLine/1.png");
+cv::Mat new_bw = readImg("/home/lance/Data/3-WhiteLine/1.png");
 // class Ve {
 // public:
 // 	vector<Mat> ReadImage(cv::String pattern);
@@ -612,33 +612,33 @@ cv::Mat new_bw = cv::imread("/home/lance/Data/3-WhiteLine/1.png");
 	// Ve ve;
 	// vector<Mat> img = ve.ReadImage(pattern);
 	// string read_address = "/home/lance/Data/0-RGBimg/1.png";
-	// Mat rgb_img = imread(read_address);
+	// Mat rgb_img = readImg(read_address);
 
 // // 图像细化
 	// string read_address = "/home/lance/Workspaces/vs_ws/pic/test.png";
 	// string save_address = "/home/lance/Workspaces/vs_ws/pic/test_s.png";
-	// Mat src = imread(read_address, 0);
+	// Mat src = readImg(read_address, 0);
 	// skeleton(src, save_address);
 
 	// // 遍历曲线
 	// //vector<cv::String> fn;
 	// string read_address = "/home/lance/Workspaces/vs_ws/pic/test_s.png";
-	// Mat src = imread(read_address);
+	// Mat src = readImg(read_address);
 	// traversal(src);
 	
 	// // 旋转裁剪
 	// string read_address = "/home/lance/Workspaces/vs_ws/pic/test.png";
-	// Mat src = imread(read_address);
+	// Mat src = readImg(read_address);
 	// crop(src);
 
 
 	// 删除背景
 	// string read_address = "/home/lance/Data/test/2-替换背景/0-rgb.png";
-	// Mat rgb = imread(read_address);
+	// Mat rgb = readImg(read_address);
 	// read_address = "/home/lance/Data/test/2-替换背景/bg2.png";
-	// Mat background = imread(read_address);
+	// Mat background = readImg(read_address);
 	// read_address = "/home/lance/Data/test/2-替换背景/1-whiteline.png";
-	// Mat whiteline = imread(read_address);
+	// Mat whiteline = readImg(read_address);
 	// // Mat cableonly_img = remove_background(rgb_img, bw_img);
 	// // imwrite("src/dlo/data/cableonly_img.bmp", cableonly_img);
 	// pre_erode(whiteline, 3, 2); // 腐蚀图像
@@ -668,9 +668,9 @@ cv::Mat new_bw = cv::imread("/home/lance/Data/3-WhiteLine/1.png");
 //	size_t count = fn.size(); //number of png files in images folder
 //	for (size_t i = 0; i < count; i++)
 //	{
-//		images.emplace_back(cv::imread(fn[i]));
+//		images.emplace_back(readImg(fn[i]));
 //		string save_address = "G:/Desktop/Project/test/Skeleton/" + fn[i].substr(34, fn[i].length() - 38) + ".png";
-//		skeleton(imread(fn[i], 0), save_address);
+//		skeleton(readImg(fn[i], 0), save_address);
 //		cout << save_address << endl;
 //	}
 //	return images;
@@ -705,7 +705,7 @@ cv::Mat new_bw = cv::imread("/home/lance/Data/3-WhiteLine/1.png");
 // 	vector<Mat> images;
 // 	size_t count = fn.size(); //number of png files in images folder
 // 	for (size_t i = 0; i < count; i++) {
-// 		Mat src = imread(fn[i]);
+// 		Mat src = readImg(fn[i]);
 // 		copyMakeBorder(src, src, 100, 100, 100, 100, BORDER_CONSTANT, 0);
 // 		string img_num = fn[i].substr(53, fn[i].length() - 57);
 // 		cout << img_num << endl;
@@ -752,19 +752,19 @@ cv::Mat new_bw = cv::imread("/home/lance/Data/3-WhiteLine/1.png");
 // 		for(int j = 0; j < 3; j++){
 // 			for (size_t i = 0; i < count; i++) {
 // 				cv::Mat rebackground;
-// 				Mat src = imread(fn[i]);
+// 				Mat src = readImg(fn[i]);
 // 				//copyMakeBorder(src, src, 100, 100, 100, 100, BORDER_CONSTANT, 0);
 // 				string img_num = fn[i].substr(43, fn[i].length() - 47);
 // 				// cout << img_num << endl;
 // 				// 删除背景
 // 				string read_address = "/home/lance/Data/test/2-替换背景/0-rgb/" + img_num + ".png";
-// 				Mat rgb = imread(read_address);
+// 				Mat rgb = readImg(read_address);
 				
 // 				read_address = "/home/lance/Data/test/2-替换背景/1-bw/" + img_num + ".png";
-// 				Mat whiteline = imread(read_address);
+// 				Mat whiteline = readImg(read_address);
 
 // 				read_address = "/home/lance/Data/test/2-替换背景/2-bg/bg" + to_string(j) + ".png";
-// 				Mat background = imread(read_address);
+// 				Mat background = readImg(read_address);
 
 // 				// Mat cableonly_img = remove_background(rgb_img, bw_img);
 // 				// imwrite("src/dlo/data/cableonly_img.bmp", cableonly_img);

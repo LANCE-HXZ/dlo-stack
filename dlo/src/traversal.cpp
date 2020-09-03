@@ -40,7 +40,7 @@ vector<string> traversal(string thin_img_address, Mat rgb_img, dlo::BoundingBoxe
 
 	if(0 == end_num)	{cout << "ERROR: NO ENDPOINT DETECTED" << endl; return crop_file_name;}
 	else if(0 != end_num%2)	{cout << "ERROR: ENDPOINTS TOTAL NUMBER ERROR: " << end_num << endl;}
-	Mat thin_img = imread(thin_img_address);
+	Mat thin_img = readImg(thin_img_address);
 	convertTo3Channels(thin_img);
 	copyMakeBorder(thin_img, dst, expand, expand, expand, expand, BORDER_CONSTANT, 0);
 	copyMakeBorder(rgb_img, rgb_img, expand, expand, expand, expand, BORDER_CONSTANT, 0);
@@ -180,7 +180,7 @@ vector<string> traversal(string thin_img_address, Mat rgb_img, dlo::BoundingBoxe
 
 void traversal(string thin_img_address, Mat rgb_img)
 {
-	Mat thin_img = imread(thin_img_address);
+	Mat thin_img = readImg(thin_img_address);
 	copyMakeBorder(thin_img, dst, 100, 100, 100, 100, BORDER_CONSTANT, 0);
 	copyMakeBorder(rgb_img, rgb_img, 100, 100, 100, 100, BORDER_CONSTANT, 0);
 	RGBimg = rgb_img;
@@ -205,7 +205,7 @@ void traversal(Mat src, string imgnum)
 {
 	img_num = "1";
 	string rgb_address = "/home/lance/Data/0-RGBimg/" + img_num + ".png";
-	RGBimg = imread(rgb_address);
+	RGBimg = readImg(rgb_address);
 	copyMakeBorder(RGBimg, RGBimg, 100, 100, 100, 100, BORDER_CONSTANT, 0);
 	/*for (int sqr_num = 0; sqr_num < sizeof(cross_area) / 16; sqr_num++)
 	{

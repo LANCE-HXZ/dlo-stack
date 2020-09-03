@@ -4,6 +4,8 @@
 
 using namespace std;
 
+cv::Mat readImg(string addr);
+
 void bw_change(cv::Mat &src);
 
 void rgb2binary(cv::Mat &src, cv::Mat &dst);

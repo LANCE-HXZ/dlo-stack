@@ -1,7 +1,5 @@
 #include "dlo.h"
 #include "ros_image_converter.h"
-#include "kuka_moveit.h"
-
 
 vector<int64> g_vnClassList, g_vnCrossList;
 
@@ -9,26 +7,25 @@ int main(int argc, char *argv[])
 {
   ros::init(argc, argv, "Main_Node");
   ros::NodeHandle nh;
-  CKukaMoveit kmMain;
-  ros::AsyncSpinner spinner(1);
-  spinner.start();
-  kmMain.GoHome(D_GROUP);
-
+  CKukaMoveit km_main;
   CImageConverter ic;
+
+  ros::AsyncSpinner spinner(4);
+  spinner.start();
+  
   ros::Subscriber camera_sub = nh.subscribe("/camera/color/image_raw", 1, &CImageConverter::CallbackCameraImgGet, &ic);  // 持续订阅相机rgb图像
   ros::Subscriber bw_sub = nh.subscribe("bw_topic", 1, &CImageConverter::CallbackBinaryImgGet, &ic);  // 订阅vgg16网络返回的轮廓图
   ros::Subscriber boxes_sub = nh.subscribe("boxes_topic", 1000, &CImageConverter::CallbackBoxesGet, &ic);  // 订阅yolo v3网络返回的端点交叉点识别结果boxes信息
   ros::Subscriber crop_class_sub = nh.subscribe("crop_class_topic", 1000, &CImageConverter::CallbackCropClassGet, &ic);  // 订阅二分类网络返回的交叉点分类结果
+  
   ros::Rate loop_rate(10);
-  ros::AsyncSpinner s(4);
-  s.start();
-
   while(ros::ok()){
     // ROS_INFO_STREAM("Main thread [" << boost::this_thread::get_id() << "]");
     // namedWindow("m_imgCamera");
     // imshow("m_imgCamera", ic.m_imgCamera);
     // startWindowThread();
     // waitKey();
+    km_main.GoHome(D_GROUP);
     if(ic.flagCameraImgReady){
       ic.ProcessShowCameraView();
       ic.flagCameraImgReady = 0;
@@ -88,7 +85,7 @@ void CImageConverter::CallbackCropClassGet(const std_msgs::Int64::ConstPtr& crop
       //   crosslist = {};
       //   m_vstrCropDir = {};
       //   m_nCropNum = 0;
-      //   // Mat imgo = imread("pic_buffer/O.png");
+      //   // Mat imgo = readImg("pic_buffer/O.png");
       //   // imgo*=256;
       //   // m_imgSkeleton = skeleton(imgo, s_img_address, 1);
       //   m_imgSkeleton = skeleton(m_imgBinaryO, s_img_address, 3);
@@ -97,7 +94,7 @@ void CImageConverter::CallbackCropClassGet(const std_msgs::Int64::ConstPtr& crop
       //   {
       //     string crossnum = m_vstrCropDir[c].substr(m_vstrCropDir[c].length()-5, 1); // 文件名中的交叉点序号 -- yolo网络决定
       //     crosslist.push_back(stoi(crossnum));  // 交叉点序号, stoi()string转int
-      //     Mat crop_img = imread(m_vstrCropDir[c]);
+      //     Mat crop_img = readImg(m_vstrCropDir[c]);
       //     if(crop_img.empty()){cout << "open crop_img error in function CallbackBoxesGet" << endl;}
       //     sensor_msgs::ImagePtr crop_msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", crop_img).toImageMsg();
       //     m_pubCrop.publish(crop_msg);
@@ -110,7 +107,7 @@ void CImageConverter::CallbackCropClassGet(const std_msgs::Int64::ConstPtr& crop
     //     ++m_nCropNum;
     //     string crossnum = m_vstrCropDir[m_nCropNum].substr(m_vstrCropDir[m_nCropNum].length()-5, 1); // 文件名中的交叉点序号 -- yolo网络决定
     //     crosslist.push_back(stoi(crossnum));  // 交叉点序号, stoi()string转int
-    //     Mat crop_img = imread(m_vstrCropDir[m_nCropNum]);
+    //     Mat crop_img = readImg(m_vstrCropDir[m_nCropNum]);
     //     sensor_msgs::ImagePtr crop_msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", crop_img).toImageMsg();
     //     m_pubCrop.publish(crop_msg);
     // }

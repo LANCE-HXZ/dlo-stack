@@ -1,5 +1,4 @@
 #include "ros_image_converter.h"
-#include "img_processing.h"
 #include "dlo.h"
 
 /*  构造函数    */
@@ -9,7 +8,7 @@ CImageConverter::CImageConverter()
     m_nCropNum = 0;
     m_pubCrop = m_nh.advertise<std_msgs::String>("crop_topic", 1000);  // 发布旋转裁剪图信号
     m_pubSrc = m_nh.advertise<std_msgs::String>("rgb_topic", 1000);  // 发布已经获取到的rgb图像信号
-    m_imgBinary = m_imgSkeleton = m_imgYolo = m_imgTraversal = m_imgCamera = imread(IMG_FLODER + "init/black.png");      //  图片变量初始化
+    m_imgBinary = m_imgSkeleton = m_imgYolo = m_imgTraversal = m_imgCamera;      //  图片变量初始化
     flagCameraImgReady = flagBinaryImgReady = flagBoxesReady = flagCropClassReady = flagSkeletonReady = 0;
     m_bBinaryImgGet = 0;
     flagReady4Next = 1;       //  是否准备好处理下一张图片
@@ -29,8 +28,8 @@ void CImageConverter::Init()
     m_imgSrc = m_imgCamera;
     MakeConstantBorder(m_imgSrc, m_imgSrc, EDGE);
     imwrite(IMG_FLODER + "1_R.png", m_imgSrc);
-    imshow("R", m_imgSrc);
-    waitKey();
+    // imshow("R", m_imgSrc);
+    // waitKey();
     std_msgs::String signal;
     signal.data = "1";
     m_pubSrc.publish(signal);
@@ -48,7 +47,7 @@ void CImageConverter::ProcessSkeleton(){
     if(!m_bBinaryImgGet)
     {
       m_bBinaryImgGet = 1;
-      m_imgBinary = imread(IMG_FLODER + "3_O.png");
+      m_imgBinary = readImg(IMG_FLODER + "3_O.png");
       rgb2binary(m_imgBinary, m_imgBinary);
       imwrite(IMG_FLODER+"4_B.png", m_imgBinary);
       m_imgBinary = removeSinglePoint(m_imgBinary, 3, 15);
@@ -57,7 +56,7 @@ void CImageConverter::ProcessSkeleton(){
     }
     else
     {
-      m_imgBinaryO = imread(IMG_FLODER + "3_O");
+      m_imgBinaryO = readImg(IMG_FLODER + "3_O.png");
       m_imgBinaryO *= 256;
     }
 }
@@ -65,10 +64,10 @@ void CImageConverter::ProcessSkeleton(){
 /*  在细化图和目标识别boxes准备好后进入遍历流程  */
 void CImageConverter::ProcessTraversal(){
     m_boxesCopy = m_boxes;
-    m_imgYolo = imread(IMG_FLODER + "2_D.png");
+    m_imgYolo = readImg(IMG_FLODER + "2_D.png");
     
     m_vstrCropDir = traversal(IMG_FLODER + "5_S.png", m_imgSrc, m_boxes); // 裁剪图路径列表 -- 按遍历顺序
-    m_imgTraversal = imread(IMG_FLODER + "6_T.png");
+    m_imgTraversal = readImg(IMG_FLODER + "6_T.png");
     
     for(int c=0; c<m_vstrCropDir.size(); ++c)
     {
@@ -120,7 +119,7 @@ void CImageConverter::SensorMsgs2CvMat(const sensor_msgs::ImageConstPtr& msg, Ma
 void CImageConverter::MakeConstantBorder(Mat& imgSrc, Mat& imgDst, int nEdge, Scalar color){
     copyMakeBorder(imgSrc, imgDst, nEdge, nEdge, nEdge, nEdge, BORDER_CONSTANT, color);
 }
-  
+
 /*  imshow打印图片
     输入: 窗口命名, 需要展示的图片, x255(为true时表示输入图片的像素值最大为1, 需要进行*=255操作)    */
 void CImageConverter::ShowImg(String strWindowName, Mat &imgShow, bool x255){

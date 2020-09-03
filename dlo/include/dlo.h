@@ -2,6 +2,8 @@
 #include <string>
 #include <opencv2/opencv.hpp>
 
+#include "kuka_moveit.h"
+#include "img_processing.h"
 
 // darknet_ros_msgs
 #include "dlo/BoundingBoxes.h"
@@ -18,12 +20,12 @@ using namespace std;
 // #include <string>
 
 // #include <math.h>
+// extern ros::NodeHandle nh;
 extern cv::Mat new_bw;
 extern vector<cv::Point> pt, endpoint, cross, dir;
 extern vector<int64> g_vnClassList, g_vnCrossList;
 extern vector<int> cpt, ept, start;
 extern int point_num, cpt_num, ept_num, line_num;
-
 extern cv::Scalar red, green, blue, yellow,purple, cyan;
 
 // test_function
@@ -37,6 +39,7 @@ int d(cv::Point opt, cv::Point dir);
 void move(cv::Point opt_p, cv::Point opt, int step, uchar *pointer, cv::Point dirflag, int xdir, int ydir);
 void new_ske(cv::Mat &src, cv::Mat &dst, cv::Mat &bw, vector<cv::Point> &endpoint);
 void DrawArc(cv::Mat &src, cv::Mat &bw, cv::Point ArcCenter, cv::Point StartPoint, cv::Point EndPoint, int Fill);
+
 
 // skeleton
 cv::Mat skeleton(cv::Mat input, string save_address, int channels);
