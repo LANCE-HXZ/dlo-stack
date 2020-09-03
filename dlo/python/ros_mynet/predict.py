@@ -39,8 +39,8 @@ model = torch.nn.DataParallel(UNet16(num_filters=32, pretrained='vgg')).cuda()
 # else:
 #     path = './data2m1100/vali/Image/'
 
-path = '/home/lance/Workspaces/hxz_ws/pic_buffer/'
-state_path = '/home/lance/Workspaces/hxz_ws/src/model_weights/mynet_weights/' + modelname + '.ckpt'
+path = 'pic_buffer/'
+state_path = 'model_weights/mynet_weights/' + modelname + '.ckpt'
 # state = torch.load(state_path, map_location=torch.device('cpu'))
 state = torch.load(state_path)
 # print(len(state))
@@ -70,16 +70,16 @@ def predict(img):
     # imgo = cv2.copyMakeBorder(imgo, 100, 100, 100, 100, cv2.BORDER_CONSTANT, value=0)
     # imgg = cv2.copyMakeBorder(imgg, 100, 100, 100, 100, cv2.BORDER_CONSTANT, value=0)
     # imgY = cv2.copyMakeBorder(imgY, 100, 100, 100, 100, cv2.BORDER_CONSTANT, value=0)
-    img_name = path + 'O.png'
+    img_name = path + '3_O.png'
     # imgo.save(img_name)
     imgo = cv2.copyMakeBorder(imgo, 80, 80, 80, 80, cv2.BORDER_CONSTANT, value=[0, 0, 255])
     cv2.imwrite(img_name, imgo)
     print('out overlap save done')
-    img_name = path + 'G.png'
+    img_name = path + '3_G.png'
     # imgg.save(img_name)
     cv2.imwrite(img_name, imgg)
     print('out gradient save done')
-    img_name = path + 'Y.png'
+    img_name = path + '3_Y.png'
     # imgY.save(img_name)
     cv2.imwrite(img_name, imgY)
     print('out Y save done')
@@ -125,7 +125,7 @@ class image_converter:
     # except CvBridgeError as e:
     #   print(e)
     # print('\n', 'Predicting') 
-    cv_image = cv2.imread(path + "R.png")
+    cv_image = cv2.imread(path + "1_R.png")
     cv_image = cv_image[80:80+480, 80:80+640]
     # (rows,cols,channels) = cv_image.shape
     pil_img = PIL.Image.fromarray(cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB))

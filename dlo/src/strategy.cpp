@@ -17,7 +17,7 @@ int strategy()
 	CKukaMoveit km;
 	CGripperControl gc;
 	c0.clear(); c1.clear();
-    result_img = imread("/home/lance/Workspaces/hxz_ws/pic_buffer/R.png");
+    result_img = imread("pic_buffer/1_R.png");
 	int line_index = 1;
 	int ept_index = 2*line_index-1;
 	int cpt_index = 0;
@@ -402,8 +402,8 @@ int strategy()
 		}
 	}
 	cout << "--" << opttype << "--" << endl;
-	cv::imwrite("/home/lance/Workspaces/hxz_ws/pic_buffer/Result.png", result_img);
-	cv::imwrite("/home/lance/Workspaces/hxz_ws/pic_buffer/save/0.png", result_img);
+	cv::imwrite("pic_buffer/8_Result.png", result_img);
+	cv::imwrite("pic_buffer/save/0.png", result_img);
 	// namedWindow("Result", WINDOW_AUTOSIZE); // === 显示图片 ===
 	// imshow("Result", result_img);
 	// cv::destroyWindow("Result"); // === 显示图片 ===

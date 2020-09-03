@@ -16,8 +16,8 @@ import random
 import os
 
 
-net = dn.load_net(b"/home/lance/Workspaces/hxz_ws/src/darknet_ros/darknet_ros/yolo_network_config/cfg/yolov3-voc.cfg", b"/home/lance/Workspaces/hxz_ws/src/darknet_ros/darknet_ros/yolo_network_config/weights/yolov3-voc_final.weights", 0)
-meta = dn.load_meta(b"/home/lance/Workspaces/hxz_ws/src/darknet_ros/darknet_ros/yolo_network_config/cfg/voc.data")
+net = dn.load_net(b"darknet_ros/darknet_ros/yolo_network_config/cfg/yolov3-voc.cfg", b"darknet_ros/darknet_ros/yolo_network_config/weights/yolov3-voc_final.weights", 0)
+meta = dn.load_meta(b"darknet_ros/darknet_ros/yolo_network_config/cfg/voc.data")
 
 font = cv2.FONT_HERSHEY_SIMPLEX
 fps = 0
@@ -30,9 +30,9 @@ while True:
 
          f.write(str(fps)+"\n")
          
-         img = cv2.imread('/home/lance/Workspaces/hxz_ws/src/darknet_ros/darknet/data/dog.jpg')
+         img = cv2.imread('darknet_ros/darknet/data/dog.jpg')
          
-         r = dn.detect(net, meta, "/home/lance/Workspaces/hxz_ws/src/darknet_ros/darknet/data/dog.jpg".encode('utf-8'))
+         r = dn.detect(net, meta, "darknet_ros/darknet/data/dog.jpg".encode('utf-8'))
          for item in r:   #画方框和文字
             ileft = int(item[2][0]-item[2][2]*0.5)##矩形点坐标##item[2][0]交点x轴坐标
             iup = int(item[2][1]-item[2][3]*0.5)

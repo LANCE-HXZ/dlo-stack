@@ -14,9 +14,9 @@ import sys
 import time
 # sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')
 
-net = dn.load_net("/home/lance/Workspaces/hxz_ws/src/darknet_ros/darknet_ros/yolo_network_config/cfg/yolov3-voc.cfg".encode('utf-8'), 
-    "/home/lance/Workspaces/hxz_ws/src/model_weights/darknet_weights/yolov3-voc_final.weights".encode('utf-8'), 0)
-meta = dn.load_meta("/home/lance/Workspaces/hxz_ws/src/darknet_ros/darknet_ros/yolo_network_config/cfg/voc.data".encode('utf-8'))  
+net = dn.load_net("darknet_ros/darknet_ros/yolo_network_config/cfg/yolov3-voc.cfg".encode('utf-8'), 
+    "model_weights/darknet_weights/yolov3-voc_final.weights".encode('utf-8'), 0)
+meta = dn.load_meta("darknet_ros/darknet_ros/yolo_network_config/cfg/voc.data".encode('utf-8'))  
 print('\n', 'Darknet model loaded')
 # def array_to_image(arr):
 #     arr = arr.transpose(2,0,1)
@@ -42,15 +42,15 @@ class image_converter:
     # except CvBridgeError as e:
     #   print(e)
     # cv_image = cv2.copyMakeBorder(cv_image, 100, 100, 100, 100, cv2.BORDER_CONSTANT, value=[85, 120, 68])
-    # cv_image = cv2.imread("/home/lance/Workspaces/hxz_ws/pic_buffer/R.png")
-    # cv2.imwrite("/home/lance/Workspaces/hxz_ws/pic_buffer/R.png", cv_image)
+    # cv_image = cv2.imread("pic_buffer/R.png")
+    # cv2.imwrite("pic_buffer/R.png", cv_image)
     
     # im = array_to_image(cv_image)
     # dn.rgbgr_image(im)
     # # print(dn.detect(net, meta, im))
-    r = dn.detect(net, meta, b"/home/lance/Workspaces/hxz_ws/pic_buffer/R.png")
+    r = dn.detect(net, meta, b"pic_buffer/1_R.png")
     # print("===")
-    img = cv2.imread("/home/lance/Workspaces/hxz_ws/pic_buffer/R.png")
+    img = cv2.imread("pic_buffer/1_R.png")
     c_index = 0
     # e_index = 65  # 'A'
     for item in r:   #画方框和文字
@@ -78,7 +78,7 @@ class image_converter:
             cv2.putText(img, text, (ileft, iup-8), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
             # print (item)
     
-    cv2.imwrite("/home/lance/Workspaces/hxz_ws/pic_buffer/D.png", img)
+    cv2.imwrite("pic_buffer/2_D.png", img)
     
     boxes = BoundingBoxes()
     print('\n', 'Predict result:')
@@ -122,7 +122,7 @@ if __name__ == "__main__":
         print("Shutting down")
     
     
-    # r = detect(net, meta, "/home/lance/Workspaces/hxz_ws/src/darknet_ros/darknet/data/1.bmp".encode('utf-8'))
+    # r = detect(net, meta, "darknet_ros/darknet/data/1.bmp".encode('utf-8'))
     # print('\n', 'Predict result:')
     # for i in range(len(r)):
     #     if b'endpoint' == r[i][0]:

@@ -20,8 +20,9 @@ Mat traversal_visualization(Mat src){
 
 void visualization()
 {
-    Mat visual_img = imread("/home/lance/Workspaces/hxz_ws/pic_buffer/init/black.png");  // 可视化背景
-	resize(visual_img, visual_img, Size(800, 640));
+    // Mat visual_img = imread("pic_buffer/init/black.png");  // 可视化背景
+	// resize(visual_img, visual_img, Size(800, 640));
+	Mat visual_img = cv::Mat::zeros(640, 800, CV_8UC3);
 	int line_index = 1; int line_num = ept_num/2; int cpt_index = 0;
 	int color_size = 7; int end_count = 0, cross_count = 0;
 	cout << '\t' << "LINE" << '\t' << "INDEX" << '\t' << "CROSS" << '\t' << "CLASS" << endl;
@@ -76,7 +77,7 @@ void visualization()
 	// imshow("visual_img", visual_img);
 	// waitKey();
 	// cv::destroyWindow("visual_img");// === 显示图片 ===
-	cv::imwrite("/home/lance/Workspaces/hxz_ws/pic_buffer/V.png", visual_img);
+	cv::imwrite("pic_buffer/7_V.png", visual_img);
 }
 
 Scalar getcolor(int n, int ept_index, int line_index)

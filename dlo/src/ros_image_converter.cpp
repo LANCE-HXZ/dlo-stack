@@ -4,7 +4,7 @@
 /*  构造函数    */
 CImageConverter::CImageConverter()
 {
-    IMG_FLODER = "/home/lance/Workspaces/hxz_ws/pic_buffer/";
+    IMG_FLODER = "pic_buffer/";
     m_nCropNum = 0;
     m_pubCrop = m_nh.advertise<std_msgs::String>("crop_topic", 1000);  // 发布旋转裁剪图信号
     m_pubSrc = m_nh.advertise<std_msgs::String>("rgb_topic", 1000);  // 发布已经获取到的rgb图像信号
@@ -27,7 +27,9 @@ void CImageConverter::Init()
     m_nCropNum = 0; flagBinaryImgReady = flagReady4Next = 0;
     m_imgSrc = m_imgCamera;
     MakeConstantBorder(m_imgSrc, m_imgSrc, EDGE);
-    imwrite(IMG_FLODER + "R.png", m_imgSrc);
+    imwrite(IMG_FLODER + "1_R.png", m_imgSrc);
+    imshow("R", m_imgSrc);
+    waitKey();
     std_msgs::String signal;
     signal.data = "1";
     m_pubSrc.publish(signal);
@@ -45,17 +47,16 @@ void CImageConverter::ProcessSkeleton(){
     if(!m_bBinaryImgGet)
     {
       m_bBinaryImgGet = 1;
-      m_imgBinary = imread(IMG_FLODER + "O.png");
-      // imshow("src", m_imgBinary);
+      m_imgBinary = imread(IMG_FLODER + "3_O.png");
       rgb2binary(m_imgBinary, m_imgBinary);
-      imwrite(IMG_FLODER+"B.png", m_imgBinary);
+      imwrite(IMG_FLODER+"4_B.png", m_imgBinary);
       m_imgBinary = removeSinglePoint(m_imgBinary, 3, 15);
-      imwrite(IMG_FLODER+"outlier.png", m_imgBinary);
-      m_imgSkeleton = skeleton(m_imgBinary, IMG_FLODER + "S.png", 3);
+      imwrite(IMG_FLODER+"4_B1_RemoveOutlier.png", m_imgBinary);
+      m_imgSkeleton = skeleton(m_imgBinary, IMG_FLODER + "5_S.png", 3);
     }
     else
     {
-      m_imgBinaryO = imread(IMG_FLODER + "O");
+      m_imgBinaryO = imread(IMG_FLODER + "3_O");
       m_imgBinaryO *= 256;
     }
 }
@@ -63,10 +64,10 @@ void CImageConverter::ProcessSkeleton(){
 /*  在细化图和目标识别boxes准备好后进入遍历流程  */
 void CImageConverter::ProcessTraversal(){
     m_boxesCopy = m_boxes;
-    m_imgYolo = imread(IMG_FLODER + "D.png");
+    m_imgYolo = imread(IMG_FLODER + "2_D.png");
     
-    m_vstrCropDir = traversal(IMG_FLODER + "S.png", m_imgSrc, m_boxes); // 裁剪图路径列表 -- 按遍历顺序
-    m_imgTraversal = imread(IMG_FLODER + "T.png");
+    m_vstrCropDir = traversal(IMG_FLODER + "5_S.png", m_imgSrc, m_boxes); // 裁剪图路径列表 -- 按遍历顺序
+    m_imgTraversal = imread(IMG_FLODER + "6_T.png");
     
     for(int c=0; c<m_vstrCropDir.size(); ++c)
     {

@@ -88,7 +88,7 @@ void CImageConverter::CallbackCropClassGet(const std_msgs::Int64::ConstPtr& crop
       //   crosslist = {};
       //   m_vstrCropDir = {};
       //   m_nCropNum = 0;
-      //   // Mat imgo = imread("/home/lance/Workspaces/hxz_ws/pic_buffer/O.png");
+      //   // Mat imgo = imread("pic_buffer/O.png");
       //   // imgo*=256;
       //   // m_imgSkeleton = skeleton(imgo, s_img_address, 1);
       //   m_imgSkeleton = skeleton(m_imgBinaryO, s_img_address, 3);

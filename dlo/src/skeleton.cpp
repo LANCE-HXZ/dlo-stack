@@ -24,14 +24,14 @@ Mat skeleton(cv::Mat input, string save_address, int channels)
 	src/=255;
 	src*=255;
 	// pre_erode(src, 3, 1); // 腐蚀去除白离群点
-	pre_dilate(src, 3, 1); // 膨胀去除黑离群点
+	pre_dilate(src, 3, 2); // 膨胀去除黑离群点
 	// cv::imshow("pre_dilate", src);  // === 显示图片 ===
-	cv::imwrite("/home/lance/Workspaces/hxz_ws/pic_buffer/S_dilate.png", src);
+	cv::imwrite("pic_buffer/4_B2_dilate.png", src);
 	// cv::waitKey();
 	// cv::destroyWindow("pre_dilate");  // === 显示图片 ===
 	// pre_erode(src, 3, 5); // 腐蚀去除白离群点
 	// cv::imshow("pre_erode", src);  // === 显示图片 ===
-	// cv::imwrite("/home/lance/Workspaces/hxz_ws/pic_buffer/S_erode.png", src);
+	// cv::imwrite("pic_buffer/4_B3_erode.png", src);
 	// cv::waitKey();
 	// cv::destroyWindow("pre_erode");  // === 显示图片 ===
 	// ========== Zhang-Suen ========== 

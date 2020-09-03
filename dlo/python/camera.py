@@ -44,7 +44,7 @@ class image_converter:
     # cv_image = cv2.imread("/home/lance/Data/0-RGBimg/T0859.png") # 提取轮廓出现断点
 
     # cv_image = cv2.copyMakeBorder(cv_image, 80, 80, 80, 80, cv2.BORDER_CONSTANT, value=[85, 120, 68])
-    # cv2.imwrite("/home/lance/Workspaces/hxz_ws/pic_buffer/R.png", cv_image)
+    # cv2.imwrite("pic_buffer/R.png", cv_image)
     rospy.loginfo("rgb_img has been published")
     self.image_pub.publish(self.bridge.cv2_to_imgmsg(cv_image, "bgr8"))
     # pub_msg = "1"

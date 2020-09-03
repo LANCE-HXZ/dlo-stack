@@ -206,7 +206,7 @@ cv::Mat new_bw = cv::imread("/home/lance/Data/3-WhiteLine/1.png");
 	// read_address = "/home/lance/Data/test/2-替换背景/1-whiteline.png";
 	// Mat whiteline = imread(read_address);
 	// // Mat cableonly_img = remove_background(rgb_img, bw_img);
-	// // imwrite("/home/lance/Workspaces/hxz_ws/src/dlo/data/cableonly_img.bmp", cableonly_img);
+	// // imwrite("src/dlo/data/cableonly_img.bmp", cableonly_img);
 	// pre_erode(whiteline, 3, 2); // 腐蚀图像
 	// Mat rebackground = change_background(rgb, background, whiteline);
 	// imwrite("/home/lance/Data/test/2-替换背景/4-rebackground.png", rebackground);
@@ -258,7 +258,7 @@ cv::Mat new_bw = cv::imread("/home/lance/Data/3-WhiteLine/1.png");
 // };
 // int test()
 // {
-// 	cv::String pattern = "/home/lance/Workspaces/hxz_ws/src/dlo/python/mynet/checkpoint/S*";
+// 	cv::String pattern = "src/dlo/python/mynet/checkpoint/S*";
 // 	Ve ve;
 // 	vector<Mat> img = ve.ReadImage(pattern);
 // 	return 0;
@@ -333,7 +333,7 @@ cv::Mat new_bw = cv::imread("/home/lance/Data/3-WhiteLine/1.png");
 // 				Mat background = imread(read_address);
 
 // 				// Mat cableonly_img = remove_background(rgb_img, bw_img);
-// 				// imwrite("/home/lance/Workspaces/hxz_ws/src/dlo/data/cableonly_img.bmp", cableonly_img);
+// 				// imwrite("src/dlo/data/cableonly_img.bmp", cableonly_img);
 // 				pre_erode(whiteline, 3, 2); // 腐蚀图像
 // 				rebackground= change_background(rgb, background, whiteline, y);
 // 				imwrite("/home/lance/Data/test/2-替换背景/3-newrgb/" + to_string(y) + "_" + img_num + "_" + to_string(j) + ".png", rebackground);

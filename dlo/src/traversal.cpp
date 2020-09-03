@@ -99,7 +99,7 @@ vector<string> traversal(string thin_img_address, Mat rgb_img, dlo::BoundingBoxe
 						cv::Rect select = cv::Rect(curr_pt.x - crop_size/2, curr_pt.y - crop_size, crop_size, crop_size);
 						Mat croped = rotation(select);
 						string str_j = to_string(j); string str_save_index = to_string(save_index++); 
-						string dir_savecroped = "/home/lance/Workspaces/hxz_ws/pic_buffer/C/" + str_save_index + "_" + str_j + ".png";
+						string dir_savecroped = "pic_buffer/C/" + str_save_index + "_" + str_j + ".png";
 						crop_file_name.push_back(dir_savecroped);
 						imwrite(dir_savecroped, croped);
 						incross[j] = 1;
@@ -174,7 +174,7 @@ vector<string> traversal(string thin_img_address, Mat rgb_img, dlo::BoundingBoxe
 	// imshow("Traversal", tvs);
 	// waitKey();
 	// cv::destroyWindow("Traversal");  // === 显示图片 ===
-	cv::imwrite("/home/lance/Workspaces/hxz_ws/pic_buffer/T.png", src);	
+	cv::imwrite("pic_buffer/6_T.png", src);	
 	return crop_file_name;
 }
 
@@ -287,7 +287,7 @@ void traversal_callback(int event, int x, int y, int flags, void* ustc)
 						Mat croped = rotation(select);
 						string nj = to_string(j); string ni = to_string(i); 
 						now = clock(); string nt = to_string(now);
-						string dir_savecroped = "/home/lance/Workspaces/hxz_ws/pic_buffer/C/" + ni + "_" + nj + ".png";
+						string dir_savecroped = "pic_buffer/C/" + ni + "_" + nj + ".png";
 						//cout << dir_savecroped << endl;
 						imwrite(dir_savecroped, croped);
 						incross[j] = 1;
