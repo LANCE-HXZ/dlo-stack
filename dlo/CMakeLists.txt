@@ -241,6 +241,7 @@ add_library(dlo
   include/img_processing.h
   include/strategy.h
   include/dlo_global.h
+  include/traversal.h
   src/ros_image_converter.cpp
   src/test_function.cpp
   src/crop.cpp

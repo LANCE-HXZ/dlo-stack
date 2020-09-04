@@ -1,7 +1,6 @@
 #include "ros_image_converter.h"
 #include "dlo.h"
 #include "dlo_global.h"
-#include "strategy.h"
 
 
 /*  构造函数    */

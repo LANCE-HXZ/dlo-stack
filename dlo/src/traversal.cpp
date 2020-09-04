@@ -1,18 +1,15 @@
-#include "dlo.h"
-#include "dlo_global.h"
-using namespace cv;
-using namespace std;
+#include "traversal.h"
 
 Mat src, dst, RGBimg;
 int col;
 string img_num;
-vector<Point> pt, endpoint, cross, dir;
+vector<Point> pt, cross, dir;
 vector<int> cpt, ept, start;
 int point_num = 0, cpt_num = 0, ept_num = 0, line_num = 0;
 //  ==========    Main    ==========
 vector<string> traversal(string thin_img_address, Mat rgb_img, dlo::BoundingBoxes::ConstPtr boxes)
 {
-	pt.clear(); endpoint.clear(); cross.clear(); dir.clear(); cpt.clear(); ept.clear(); start.clear();
+	pt.clear(); vptEnd.clear(); cross.clear(); dir.clear(); cpt.clear(); ept.clear(); start.clear();
 	vector<string> crop_file_name;
 	int expand = 0, save_index = 0; // 图像边缘扩大尺寸/保存时的序号按遍历顺序
 	int end_num = 0, cross_num = 0; // 端点和交叉点计数
@@ -22,8 +19,8 @@ vector<string> traversal(string thin_img_address, Mat rgb_img, dlo::BoundingBoxe
 	{
 		if("endpoint" == boxes->bounding_boxes[i].Class)
 		{
-			endpoint.push_back(Point(boxes->bounding_boxes[i].xmin+expand, boxes->bounding_boxes[i].ymin+expand));
-			std::cout << '\t' << "Endpoint" << end_num << '\t' << "[" << endpoint[end_num].x-expand << ", " << endpoint[end_num].y-expand << "]" << endl;
+			vptEnd.push_back(Point(boxes->bounding_boxes[i].xmin+expand, boxes->bounding_boxes[i].ymin+expand));
+			std::cout << '\t' << "Endpoint" << end_num << '\t' << "[" << vptEnd[end_num].x-expand << ", " << vptEnd[end_num].y-expand << "]" << endl;
 			end_num++;
 		}
 		else if("cross" == boxes->bounding_boxes[i].Class)
@@ -66,7 +63,7 @@ vector<string> traversal(string thin_img_address, Mat rgb_img, dlo::BoundingBoxe
 		// start = clock(); // time
 		Point pre_pt, curr_pt, next_pt;
 		dst.copyTo(src);
-		pre_pt = endpoint[end_index];
+		pre_pt = vptEnd[end_index];
 		ept.push_back(point_num);
 		ept_num++;
 		start.push_back(cpt_num);
@@ -140,23 +137,23 @@ vector<string> traversal(string thin_img_address, Mat rgb_img, dlo::BoundingBoxe
 				dir.push_back(Point(0, 0));
 				point_num++;
 				for (int j = 0; j < end_num; j++) {
-					if (in_square(endpoint[j], curr_pt.x, curr_pt.y, dir_size)){
+					if (in_square(vptEnd[j], curr_pt.x, curr_pt.y, dir_size)){
 						end_used[j] = 1;
 						break;
 					}
-					else if(in_square(endpoint[j], curr_pt.x+5*dx, curr_pt.y+5*dy, dir_size)){
+					else if(in_square(vptEnd[j], curr_pt.x+5*dx, curr_pt.y+5*dy, dir_size)){
 						end_used[j] = 1;
 						break;
 					}
-					else if(in_square(endpoint[j], curr_pt.x+9*dx, curr_pt.y+9*dy, dir_size)){
+					else if(in_square(vptEnd[j], curr_pt.x+9*dx, curr_pt.y+9*dy, dir_size)){
 						end_used[j] = 1;
 						break;
 					}
-					else if(in_square(endpoint[j], curr_pt.x+13*dx, curr_pt.y+13*dy, dir_size)){
+					else if(in_square(vptEnd[j], curr_pt.x+13*dx, curr_pt.y+13*dy, dir_size)){
 						end_used[j] = 1;
 						break;
 					}
-					else if(in_square(endpoint[j], curr_pt.x+17*dx, curr_pt.y+17*dy, dir_size)){
+					else if(in_square(vptEnd[j], curr_pt.x+17*dx, curr_pt.y+17*dy, dir_size)){
 						end_used[j] = 1;
 						break;
 					}

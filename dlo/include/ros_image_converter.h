@@ -5,6 +5,7 @@
 // darknet_ros_msgs
 #include "dlo/BoundingBoxes.h"
 #include "dlo/BoundingBox.h"
+#include "strategy.h"
 
 #include "ros/ros.h"
 #include <boost/thread.hpp>
