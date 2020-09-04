@@ -25,6 +25,7 @@ class CImageConverter
     ros::Publisher m_pubCrop;
     ros::Publisher m_pubSrc;
     string IMG_FLODER;
+    CStrategy sttg;  // === 拆解策略 ===
   
   public:
     bool m_bBinaryImgGet, flagReady4Next;

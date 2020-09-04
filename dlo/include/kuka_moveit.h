@@ -1,3 +1,6 @@
+#ifndef KUKA_MOVEIT
+#define KUKA_MOVEIT
+
 #include <ros/ros.h>
 #include <tf/transform_listener.h>
 #include <opencv2/opencv.hpp>
@@ -102,3 +105,5 @@ class CKukaMoveit{
         vector<double> RPY2XYZW(double oz = 0.0, double oy = 0.0, double ox = 0.0);
 
 };
+
+#endif

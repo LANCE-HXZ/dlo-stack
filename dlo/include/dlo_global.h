@@ -2,6 +2,8 @@
 #include <string>
 #include <opencv2/opencv.hpp>
 
+// #include "kuka_moveit.h"
+
 using namespace std;
 
 #define EDGE 80     // 图像四边增加边框的宽度

@@ -21,10 +21,6 @@ Mat skeleton(cv::Mat input, string save_address, int channels)
 	
 	src/=255;
 	src*=255;
-	// pre_dilate(src, 3, 1); // 膨胀去除黑离群点
-	// cv::imwrite("pic_buffer/4_B2_dilate.png", src);
-	// pre_erode(src, 3, 6); // 腐蚀去除白离群点
-	// cv::imwrite("pic_buffer/4_B3_erode.png", src);
 	// cv::imshow("pre_dilate", src);  // === 显示图片 ===
 	// cv::waitKey();
 	// cv::destroyWindow("pre_dilate");  // === 显示图片 ===

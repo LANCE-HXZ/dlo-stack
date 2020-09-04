@@ -3,9 +3,16 @@
 using namespace std;
 
 Scalar red = Scalar(0, 0, 255), green = Scalar(0, 255, 0), 
-			blue = Scalar(255, 0, 0), yellow = Scalar(0, 255, 255),
-			purple = Scalar(255, 0, 255), cyan = Scalar(255, 255, 0);
+		blue = Scalar(255, 0, 0), yellow = Scalar(0, 255, 255),
+		purple = Scalar(255, 0, 255), cyan = Scalar(255, 255, 0);
+		
 CStrategy::CStrategy(){
+}
+CStrategy::~CStrategy(){
+}
+
+SOperation CStrategy::strategy(){
+	SOperation oper_return;
 	Mat result_img;
 	Point add_text = Point(5,5);
 	vector<int> c0, c1;
@@ -400,6 +407,7 @@ CStrategy::CStrategy(){
 	// namedWindow("Result", WINDOW_AUTOSIZE); // === 显示图片 ===
 	// imshow("Result", result_img);
 	// cv::destroyWindow("Result"); // === 显示图片 ===
+	return oper_return;
 }
 
 double CStrategy::draw_grip_direction(int opt_index)

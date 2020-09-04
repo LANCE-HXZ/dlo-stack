@@ -14,8 +14,8 @@ cv::Mat readImg(string addr){
   return img;
 }
 
- // 腐蚀
- // ==========   dilate   ==========
+/*  图像腐蚀, 扩大黑色区域, 减小白色区域
+    输入: 图像, 图像处理核的尺寸size(越大腐蚀越多), 重复操作次数times	*/
 void pre_dilate(Mat & srcImg, int size, int times){
 	Mat element = getStructuringElement(MORPH_CROSS, Size(size, size));
 	for (size_t i = 0; i < times; i++)
@@ -23,16 +23,16 @@ void pre_dilate(Mat & srcImg, int size, int times){
 		dilate(srcImg, srcImg, element);
 	}
 }
- // ==========   dilate   ==========
- // 膨胀
- // ==========   Erode    ==========
+
+/*  图像膨胀, 扩大白色区域, 减小黑色区域
+    输入: 图像, 图像处理核的尺寸size(越大膨胀越多), 重复操作次数times	*/
 void pre_erode(Mat & srcImg, int size, int times){
 	Mat element = getStructuringElement(MORPH_CROSS, Size(size, size));
 	for (size_t i = 0; i < times; i++)
 	{
 		erode(srcImg, srcImg, element);
 	}
-}// ==========   Erode    ==========
+}
 
 /*  黑白反置
     输入: 一张二值图像	*/

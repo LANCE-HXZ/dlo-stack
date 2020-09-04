@@ -41,4 +41,5 @@ class CGripperControl{
         void NewOpen(char which='R');
         void NewClose(char which='R');
 };
+
 #endif

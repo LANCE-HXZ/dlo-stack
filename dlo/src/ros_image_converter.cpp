@@ -7,6 +7,7 @@
 /*  构造函数    */
 CImageConverter::CImageConverter()
 {
+    CStrategy sttg;  // === 拆解策略 ===
     IMG_FLODER = "pic_buffer/";
     m_nCropNum = 0;
     m_pubCrop = m_nh.advertise<std_msgs::String>("crop_topic", 1000);  // 发布旋转裁剪图信号
@@ -97,8 +98,7 @@ void CImageConverter::ProcessTraversal(){
 /*  在交叉点类型识别完整后进入拆解策略和执行流程  */
 void CImageConverter::ProcessStrategy(){
     visualization();  // === 可视化 ===
-    CStrategy sttg;  // === 拆解策略 ===
-    // sttg.strategy();
+    SOperation oprt = sttg.strategy();
     // ShowImg("m_imgBinary", m_imgBinary);
     // ShowImg("m_imgSkeleton", m_imgSkeleton);
     // ShowImg("m_imgYolo", m_imgYolo);
