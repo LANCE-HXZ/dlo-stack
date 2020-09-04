@@ -2,15 +2,13 @@
 
 using namespace std;
 
-Mat result_img;
-Point add_text = Point(5,5);
-vector<int> c0, c1;
 Scalar red = Scalar(0, 0, 255), green = Scalar(0, 255, 0), 
-        blue = Scalar(255, 0, 0), yellow = Scalar(0, 255, 255),
-        purple = Scalar(255, 0, 255), cyan = Scalar(255, 255, 0);
-
-int strategy()
-{
+			blue = Scalar(255, 0, 0), yellow = Scalar(0, 255, 255),
+			purple = Scalar(255, 0, 255), cyan = Scalar(255, 255, 0);
+CStrategy::CStrategy(){
+	Mat result_img;
+	Point add_text = Point(5,5);
+	vector<int> c0, c1;
 	CKukaMoveit km;
 	CGripperControl gc;
 	c0.clear(); c1.clear();
@@ -65,7 +63,7 @@ int strategy()
 		else 				c0[g_vnCrossList[i]] = i;
 	}
 
-	int checkwrong = checklist();
+	// int checkwrong = checklist();
 
 	bool end_strategy = 0;
 	Point front_dir, back_dir, target;
@@ -75,10 +73,10 @@ int strategy()
 
 	// === 检测最上层的独立线缆 I型 ===
     for(int i = 0; i < start.size(); i+=2){
-        int mul = 1;
+        bool mul = 1;
         for(int j = start[i]; j <= start[i+1]; ++j){	//	/*
-		mul *= g_vnClassList[j];						//		检查start[i]开始的线缆上的交叉点类型是否都为1
-		if(!mul) 	break;								//		全为1表示该线缆在视野最上层
+			mul *= g_vnClassList[j];					//		检查start[i]开始的线缆上的交叉点类型是否都为1
+			if(!mul) 	break;							//		全为1表示该线缆在视野最上层
         }												//												*/
         if(mul){
             end_strategy = 1;		opttype = "I";
@@ -129,9 +127,7 @@ int strategy()
 			km.MoveLdxdydz(0.1, 0, 0);
 			km.MoveLdxdydz(0.1, 0, 0);
 			// gc.Gripper_Open('L');
-			km.GoHome(L_GROUP);
-
-
+			km.GoHome(D_GROUP);
 
             break;
         }
@@ -231,18 +227,18 @@ int strategy()
 
 					string strGroup = "R";
 					if(pt[opt_index].x >= 400)	strGroup = "L";
-					km.SetLeftPose(pt[opt_index]-Point(EDGE, EDGE), 0.94, {1.57+dGripDir, 0, 0});
-					km.SetRightPose(pt[opt_index]-Point(EDGE, EDGE), 0.94, {1.57-0.523-dGripDir, 0, 0});
-                    km.ExecuteGroup(strGroup);
-					km.MoveDdxdydz(0, 0, 0.1);
-					gc.Dual_Gripper_anypose("220", "220");
-					km.MoveDdxdydz(0, 0, -0.1);
-					km.SetLeftPose(target-Point(EDGE, EDGE), 0.94, {1.57+dGripDir, 0, 0});
-					km.SetRightPose(target-Point(EDGE, EDGE), 0.94, {1.57-0.523-dGripDir, 0, 0});
-                    km.ExecuteGroup(strGroup);
-					km.MoveDdxdydz(0, 0, 0.1);
-					gc.Dual_Gripper_anypose("0", "0");
-					km.GoHome(D_GROUP);
+					// km.SetLeftPose(pt[opt_index]-Point(EDGE, EDGE), 0.94, {1.57+dGripDir, 0, 0});
+					// km.SetRightPose(pt[opt_index]-Point(EDGE, EDGE), 0.94, {1.57-0.523-dGripDir, 0, 0});
+                    // km.ExecuteGroup(strGroup);
+					// km.MoveDdxdydz(0, 0, 0.1);
+					// gc.Dual_Gripper_anypose("220", "220");
+					// km.MoveDdxdydz(0, 0, -0.1);
+					// km.SetLeftPose(target-Point(EDGE, EDGE), 0.94, {1.57+dGripDir, 0, 0});
+					// km.SetRightPose(target-Point(EDGE, EDGE), 0.94, {1.57-0.523-dGripDir, 0, 0});
+                    // km.ExecuteGroup(strGroup);
+					// km.MoveDdxdydz(0, 0, 0.1);
+					// gc.Dual_Gripper_anypose("0", "0");
+					// km.GoHome(D_GROUP);
 
 					break;
                 }
@@ -290,23 +286,23 @@ int strategy()
 
 				string strGroup = "R";
 				if(pt[opt_index].x >= 400)	strGroup = "L";
-				// km.SetLeftPose(pt[opt_index]-Point(EDGE, EDGE), 0.945, {1.57+dGripDir, 0, 0});
-				km.SetRightPose(pt[opt_index]-Point(EDGE, EDGE), 0.945, {3.14-0.523-dGripDir, 0, 0});
-				km.ExecuteGroup(strGroup);
-				km.MoveRdxdydz(0, 0, 0.1);
-				gc.Gripper_anypose('R', "220");
-				km.MoveRdxdydz(0, 0, -0.2);
-				// km.SetLeftPose(pt[ref_index]-Point(EDGE, EDGE), 0.745, {1.57+dGripDir, 0, 0});
-				// km.SetRightPose(pt[ref_index]-Point(EDGE, EDGE), 0.745, {3.14-0.523-dGripDir, 0, 0});
+				// // km.SetLeftPose(pt[opt_index]-Point(EDGE, EDGE), 0.945, {1.57+dGripDir, 0, 0});
+				// km.SetRightPose(pt[opt_index]-Point(EDGE, EDGE), 0.945, {3.14-0.523-dGripDir, 0, 0});
 				// km.ExecuteGroup(strGroup);
-				km.MoveOneRightJointIncrease(6, -5);
-				// km.MoveOneLeftJointIncrease(6, -3.14);
-				// km.SetLeftPose(pt[opt_index]-Point(EDGE, EDGE), 0.945, {-1.57+dGripDir, 0, 0});
-				// km.SetRightPose(pt[opt_index]-Point(EDGE, EDGE), 0.945, {-3.14-0.523-dGripDir, 0, 0});
-				// km.ExecuteGroup(strGroup);
-				km.MoveRdxdydz(0, 0, 0.1);
-				gc.Gripper_anypose('R', "0");
-				km.GoHome(D_GROUP);
+				// km.MoveRdxdydz(0, 0, 0.1);
+				// gc.Gripper_anypose('R', "220");
+				// km.MoveRdxdydz(0, 0, -0.2);
+				// // km.SetLeftPose(pt[ref_index]-Point(EDGE, EDGE), 0.745, {1.57+dGripDir, 0, 0});
+				// // km.SetRightPose(pt[ref_index]-Point(EDGE, EDGE), 0.745, {3.14-0.523-dGripDir, 0, 0});
+				// // km.ExecuteGroup(strGroup);
+				// km.MoveOneRightJointIncrease(6, -5);
+				// // km.MoveOneLeftJointIncrease(6, -3.14);
+				// // km.SetLeftPose(pt[opt_index]-Point(EDGE, EDGE), 0.945, {-1.57+dGripDir, 0, 0});
+				// // km.SetRightPose(pt[opt_index]-Point(EDGE, EDGE), 0.945, {-3.14-0.523-dGripDir, 0, 0});
+				// // km.ExecuteGroup(strGroup);
+				// km.MoveRdxdydz(0, 0, 0.1);
+				// gc.Gripper_anypose('R', "0");
+				// km.GoHome(D_GROUP);
 
 				break;
 			}
@@ -404,10 +400,9 @@ int strategy()
 	// namedWindow("Result", WINDOW_AUTOSIZE); // === 显示图片 ===
 	// imshow("Result", result_img);
 	// cv::destroyWindow("Result"); // === 显示图片 ===
-	return checkwrong;
 }
 
-double draw_grip_direction(int opt_index)
+double CStrategy::draw_grip_direction(int opt_index)
 {
     Point front_dir = pt[opt_index]+5*(dir[opt_index+1]+dir[opt_index+2]); // 画近似切线 -- 方向矢量
     Point back_dir = pt[opt_index]-5*(dir[opt_index+1]+dir[opt_index+2]);
@@ -417,7 +412,7 @@ double draw_grip_direction(int opt_index)
     putText(result_img, "grip_dir", front_dir+add_text, FONT_HERSHEY_SIMPLEX, 0.5, red, 1);
 	return atan(dy/dx);
 }
-double draw_grip_direction(Point ptTarget, Point ptTargetDir)
+double CStrategy::draw_grip_direction(Point ptTarget, Point ptTargetDir)
 {
 	line(result_img, ptTarget-ptTargetDir, ptTarget+ptTargetDir, yellow, 2);
 	double dy = ptTargetDir.y;
@@ -425,17 +420,17 @@ double draw_grip_direction(Point ptTarget, Point ptTargetDir)
 	return atan(dy/dx);
 }
 
-void draw_point(Point pt, string pt_text, Scalar color, float text_size, int text_thick)
+void CStrategy::draw_point(Point pt, string pt_text, Scalar color, float text_size, int text_thick)
 {
     circle(result_img, pt, 5, color, -1);
 	putText(result_img, pt_text, pt+add_text, FONT_HERSHEY_SIMPLEX, text_size, color, text_thick);
 }
 
-void cout_cross(int i){
+void CStrategy::cout_cross(int i){
 	cout << '\t' << '\t' << i << '\t' << g_vnCrossList[i] << '\t' << g_vnClassList[i] << endl;
 }
 
-int checklist(){
+int CStrategy::checklist(){
 	int wrong = 0;
 	vector<int> crosspasstimes;
 	int n = cross.size();

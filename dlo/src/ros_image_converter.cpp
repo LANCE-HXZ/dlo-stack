@@ -1,5 +1,8 @@
 #include "ros_image_converter.h"
 #include "dlo.h"
+#include "dlo_global.h"
+#include "strategy.h"
+
 
 /*  构造函数    */
 CImageConverter::CImageConverter()
@@ -48,11 +51,23 @@ void CImageConverter::ProcessSkeleton(){
     {
       m_bBinaryImgGet = 1;
       m_imgBinary = readImg(IMG_FLODER + "3_O.png");
+
       rgb2binary(m_imgBinary, m_imgBinary);
       imwrite(IMG_FLODER+"4_B.png", m_imgBinary);
-      m_imgBinary = removeSinglePoint(m_imgBinary, 3, 15);
-      imwrite(IMG_FLODER+"4_B1_RemoveOutlier.png", m_imgBinary);
-      m_imgSkeleton = skeleton(m_imgBinary, IMG_FLODER + "5_S.png", 3);
+
+      pre_dilate(m_imgBinary, 3, 2); // 膨胀去除黑离群点
+      cv::imwrite("pic_buffer/4_B2_dilate.png", m_imgBinary);
+
+      pre_erode(m_imgBinary, 3, 6); // 腐蚀去除白离群点
+      cv::imwrite("pic_buffer/4_B3_erode.png", m_imgBinary);
+
+      skeleton(m_imgBinary, IMG_FLODER + "5_S.png", 3);
+
+      m_imgSkeleton = readImg(IMG_FLODER + "5_S.png");
+      m_imgSkeleton = removeSinglePoint(m_imgSkeleton, 30, 30);
+      m_imgSkeleton = removeSinglePoint(m_imgSkeleton, 60, 60);
+      m_imgSkeleton = removeSinglePoint(m_imgSkeleton, 10, 10);
+      imwrite(IMG_FLODER+"4_B1_RemoveOutlier.png", m_imgSkeleton);
     }
     else
     {
@@ -82,20 +97,13 @@ void CImageConverter::ProcessTraversal(){
 /*  在交叉点类型识别完整后进入拆解策略和执行流程  */
 void CImageConverter::ProcessStrategy(){
     visualization();  // === 可视化 ===
-      int checkstate = strategy();  // === 拆解策略 ===
-      // ShowImg("m_imgBinary", m_imgBinary);
-      // ShowImg("m_imgSkeleton", m_imgSkeleton);
-      // ShowImg("m_imgYolo", m_imgYolo);
-      // ShowImg("Traversal", m_imgTraversal);
-      // MoveWindows();
-      if(!checkstate){
-        flagReady4Next = 1;
-        cout << "get ready for next\n";
-      }
-      else{
-        flagReady4Next = 1;
-        cout << "get ready for next\n";
-      }
+    CStrategy sttg;  // === 拆解策略 ===
+    // sttg.strategy();
+    // ShowImg("m_imgBinary", m_imgBinary);
+    // ShowImg("m_imgSkeleton", m_imgSkeleton);
+    // ShowImg("m_imgYolo", m_imgYolo);
+    // ShowImg("Traversal", m_imgTraversal);
+    // MoveWindows();
 }
 
 /*  ros订阅者通过cv_bridge接收的图片话题消息需要转换为cv格式

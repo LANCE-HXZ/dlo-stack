@@ -1,4 +1,6 @@
 #include "dlo.h"
+#include "dlo_global.h"
+
 
 cv::Mat remove_background(cv::Mat rgb_img, cv::Mat bw_img)
 {

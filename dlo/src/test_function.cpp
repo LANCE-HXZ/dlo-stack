@@ -1,4 +1,5 @@
 #include "dlo.h"
+#include "dlo_global.h"
 using namespace cv;
 vector<Point> whiteptset;
 

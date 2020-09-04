@@ -14,6 +14,26 @@ cv::Mat readImg(string addr){
   return img;
 }
 
+ // 腐蚀
+ // ==========   dilate   ==========
+void pre_dilate(Mat & srcImg, int size, int times){
+	Mat element = getStructuringElement(MORPH_CROSS, Size(size, size));
+	for (size_t i = 0; i < times; i++)
+	{
+		dilate(srcImg, srcImg, element);
+	}
+}
+ // ==========   dilate   ==========
+ // 膨胀
+ // ==========   Erode    ==========
+void pre_erode(Mat & srcImg, int size, int times){
+	Mat element = getStructuringElement(MORPH_CROSS, Size(size, size));
+	for (size_t i = 0; i < times; i++)
+	{
+		erode(srcImg, srcImg, element);
+	}
+}// ==========   Erode    ==========
+
 /*  黑白反置
     输入: 一张二值图像	*/
 void bw_change(Mat &src){
@@ -83,6 +103,7 @@ Mat removeSinglePoint(cv::Mat &src, int nRadius, int nMin){
 	removeOutlier(ptWhite, nRadius, nMin, ptOutlier);
 	for(Point ptOpt:ptOutlier){
 		dst.at<Vec3b>(ptOpt.y, ptOpt.x)[0] = dst.at<Vec3b>(ptOpt.y, ptOpt.x)[1] = dst.at<Vec3b>(ptOpt.y, ptOpt.x)[2] = 255;
+		// dst.at<uchar>(ptOpt.y, ptOpt.x) = 255;
 	}
 	ptOutlier.clear();
 	ptWhite.clear();

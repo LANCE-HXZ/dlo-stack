@@ -1,4 +1,5 @@
 #include "dlo.h"
+#include "dlo_global.h"
 #include<math.h>
 
 cv::Mat init, rot, cut;

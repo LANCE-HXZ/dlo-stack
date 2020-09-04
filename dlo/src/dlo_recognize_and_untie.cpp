@@ -1,4 +1,5 @@
 #include "dlo.h"
+#include "dlo_global.h"
 #include "ros_image_converter.h"
 #include "kuka_moveit.h"
 
@@ -46,6 +47,7 @@ int main(int argc, char *argv[])
     if(ic.flagCropClassReady){
       ic.ProcessStrategy();
       ic.flagCropClassReady = 0;
+      ic.flagReady4Next = 1;
     }
     ros::spinOnce();
     loop_rate.sleep();

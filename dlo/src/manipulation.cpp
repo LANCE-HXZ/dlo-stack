@@ -1,4 +1,5 @@
 #include "dlo.h"
+#include "dlo_global.h"
 #include "kuka_moveit.h"
 #include "gripper_control.h"
 using namespace cv;

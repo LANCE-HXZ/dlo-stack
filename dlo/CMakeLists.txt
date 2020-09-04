@@ -240,6 +240,7 @@ add_library(dlo
   include/gripper_control.h
   include/img_processing.h
   include/strategy.h
+  include/dlo_global.h
   src/ros_image_converter.cpp
   src/test_function.cpp
   src/crop.cpp
