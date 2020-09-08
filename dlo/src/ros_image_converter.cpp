@@ -13,7 +13,6 @@ CImageConverter::CImageConverter()
     m_pubSrc = m_nh.advertise<std_msgs::String>("rgb_topic", 1000);  // 发布已经获取到的rgb图像信号
     m_imgBinary = m_imgSkeleton = m_imgYolo = m_imgTraversal = m_imgCamera;      //  图片变量初始化
     flagCameraImgReady = flagBinaryImgReady = flagBoxesReady = flagCropClassReady = flagSkeletonReady = 0;
-    m_bBinaryImgGet = 0;
     flagReady4Next = 1;       //  是否准备好处理下一张图片
 }
 
@@ -47,33 +46,24 @@ void CImageConverter::ProcessShowCameraView(){
 
 /*  在二值轮廓图准备好后进入细化流程  */
 void CImageConverter::ProcessSkeleton(){
-    if(!m_bBinaryImgGet)
-    {
-      m_bBinaryImgGet = 1;
-      m_imgBinary = readImg(IMG_FLODER + "3_O.png");
+    m_imgBinary = readImg(IMG_FLODER + "3_O.png");
 
-      rgb2binary(m_imgBinary, m_imgBinary);
-      imwrite(IMG_FLODER+"4_B.png", m_imgBinary);
+    rgb2binary(m_imgBinary, m_imgBinary);
+    imwrite(IMG_FLODER+"4_B.png", m_imgBinary);
 
-      pre_dilate(m_imgBinary, 3, 2); // 膨胀去除黑离群点
-      cv::imwrite("pic_buffer/4_B2_dilate.png", m_imgBinary);
+    pre_dilate(m_imgBinary, 3, 2); // 膨胀去除黑离群点
+    cv::imwrite("pic_buffer/4_B2_dilate.png", m_imgBinary);
 
-      pre_erode(m_imgBinary, 3, 6); // 腐蚀去除白离群点
-      cv::imwrite("pic_buffer/4_B3_erode.png", m_imgBinary);
+    pre_erode(m_imgBinary, 3, 6); // 腐蚀去除白离群点
+    cv::imwrite("pic_buffer/4_B3_erode.png", m_imgBinary);
 
-      skeleton(m_imgBinary, IMG_FLODER + "5_S.png", 3);
+    skeleton(m_imgBinary, IMG_FLODER + "5_S.png", 3);
 
-      m_imgSkeleton = readImg(IMG_FLODER + "5_S.png");
-      m_imgSkeleton = removeSinglePoint(m_imgSkeleton, 30, 30);
-      m_imgSkeleton = removeSinglePoint(m_imgSkeleton, 60, 60);
-      m_imgSkeleton = removeSinglePoint(m_imgSkeleton, 10, 10);
-      imwrite(IMG_FLODER+"4_B1_RemoveOutlier.png", m_imgSkeleton);
-    }
-    else
-    {
-      m_imgBinaryO = readImg(IMG_FLODER + "3_O.png");
-      m_imgBinaryO *= 256;
-    }
+    m_imgSkeleton = readImg(IMG_FLODER + "5_S.png");
+    m_imgSkeleton = removeSinglePoint(m_imgSkeleton, 30, 30);
+    m_imgSkeleton = removeSinglePoint(m_imgSkeleton, 60, 60);
+    m_imgSkeleton = removeSinglePoint(m_imgSkeleton, 10, 10);
+    imwrite(IMG_FLODER+"4_B1_RemoveOutlier.png", m_imgSkeleton);
 }
 
 /*  在细化图和目标识别boxes准备好后进入遍历流程  */

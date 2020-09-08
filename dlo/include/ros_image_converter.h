@@ -29,7 +29,7 @@ class CImageConverter
     CStrategy sttg;  // === 拆解策略 ===
   
   public:
-    bool m_bBinaryImgGet, flagReady4Next;
+    bool flagReady4Next;
     int m_nCropNum;
     bool flagCameraImgReady, flagBinaryImgReady, flagBoxesReady, flagCropClassReady, flagSkeletonReady;
     

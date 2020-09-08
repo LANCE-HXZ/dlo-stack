@@ -79,39 +79,6 @@ void CImageConverter::CallbackCropClassGet(const std_msgs::Int64::ConstPtr& crop
   {
     // ROS_INFO_STREAM("CallbackCropClassGet thread [" << boost::this_thread::get_id() << "]");
     g_vnClassList.push_back(cropclass->data); // 二分类返回的分类结果
-    if(m_vstrCropDir.size() == g_vnClassList.size()){
+    if(m_vstrCropDir.size() == g_vnClassList.size())
       flagCropClassReady = 1;
-      
-      // else if(checkstate == 1){
-      //   cout << endl << "checkstate == 1, trying m_imgBinaryO" << endl;
-      //   classlist = {};
-      //   crosslist = {};
-      //   m_vstrCropDir = {};
-      //   m_nCropNum = 0;
-      //   // Mat imgo = readImg("pic_buffer/O.png");
-      //   // imgo*=256;
-      //   // m_imgSkeleton = skeleton(imgo, s_img_address, 1);
-      //   m_imgSkeleton = skeleton(m_imgBinaryO, s_img_address, 3);
-      //   m_vstrCropDir = traversal(s_img_address, m_imgSrc, m_boxesCopy);
-      //   for(int c=0; c<m_vstrCropDir.size(); ++c)
-      //   {
-      //     string crossnum = m_vstrCropDir[c].substr(m_vstrCropDir[c].length()-5, 1); // 文件名中的交叉点序号 -- yolo网络决定
-      //     crosslist.push_back(stoi(crossnum));  // 交叉点序号, stoi()string转int
-      //     Mat crop_img = readImg(m_vstrCropDir[c]);
-      //     if(crop_img.empty()){cout << "open crop_img error in function CallbackBoxesGet" << endl;}
-      //     sensor_msgs::ImagePtr crop_msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", crop_img).toImageMsg();
-      //     m_pubCrop.publish(crop_msg);
-      //   }
-      // }
-
-    }
-    // else if(m_nCropNum<m_vstrCropDir.size())
-    //   {
-    //     ++m_nCropNum;
-    //     string crossnum = m_vstrCropDir[m_nCropNum].substr(m_vstrCropDir[m_nCropNum].length()-5, 1); // 文件名中的交叉点序号 -- yolo网络决定
-    //     crosslist.push_back(stoi(crossnum));  // 交叉点序号, stoi()string转int
-    //     Mat crop_img = readImg(m_vstrCropDir[m_nCropNum]);
-    //     sensor_msgs::ImagePtr crop_msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", crop_img).toImageMsg();
-    //     m_pubCrop.publish(crop_msg);
-    // }
   }
