@@ -5,19 +5,17 @@ using namespace std;
 Scalar red = Scalar(0, 0, 255), green = Scalar(0, 255, 0), 
 		blue = Scalar(255, 0, 0), yellow = Scalar(0, 255, 255),
 		purple = Scalar(255, 0, 255), cyan = Scalar(255, 255, 0);
-		
+Mat result_img;
 CStrategy::CStrategy(){
 }
 CStrategy::~CStrategy(){
 }
 
 SOperation CStrategy::strategy(){
-	SOperation oper_return;
-	Mat result_img;
+	SOperation oprt_rt;
+	
 	Point add_text = Point(5,5);
 	vector<int> c0, c1;
-	CKukaMoveit km;
-	CGripperControl gc;
 	c0.clear(); c1.clear();
     result_img = readImg("pic_buffer/1_R.png");
 	int line_index = 1;
@@ -76,7 +74,7 @@ SOperation CStrategy::strategy(){
 	Point front_dir, back_dir, target;
 	int opt_index, ref_index;
 	vector<bool> is_end;
-	string opttype = "N";		//	标记操作类型, 初始为 N 表示 None
+	oprt_rt.strOperationType = "N";		//	标记操作类型, 初始为 N 表示 None
 
 	// === 检测最上层的独立线缆 I型 ===
     for(int i = 0; i < start.size(); i+=2){
@@ -86,57 +84,34 @@ SOperation CStrategy::strategy(){
 			if(!mul) 	break;							//		全为1表示该线缆在视野最上层
         }												//												*/
         if(mul){
-            end_strategy = 1;		opttype = "I";
+            end_strategy = 1;		oprt_rt.strOperationType = "I";
 
 			int opt1_index = (2*ept[i] + ept[i+1])/3;
 			int opt2_index = (ept[i] + 2*ept[i+1])/3;
 			int rightindex = pt[opt1_index].x < pt[opt2_index].x ? opt1_index : opt2_index;
 			int leftindex = pt[opt1_index].x < pt[opt2_index].x ? opt2_index : opt1_index;
+			oprt_rt.vptPoint.push_back(pt[leftindex]);
+			oprt_rt.vptPoint.push_back(pt[rightindex]);
 
 			draw_point(pt[rightindex], "OPT_R", red);
-            double dRightGripDir = draw_grip_direction(rightindex);
 			draw_point(pt[leftindex], "OPT_L", red);
-			double dLeftGripDir = draw_grip_direction(leftindex);
+            oprt_rt.vdGripperDir.push_back(draw_grip_direction(leftindex));
+			oprt_rt.vdGripperDir.push_back(draw_grip_direction(rightindex));
 
 			int target_y = PIC_WIDTH + 1.0/2 * EDGE; 			//	目标位置为图像下边缘
 			Point target_dir = Point(10, 0.000001);				//	移动到目标位置的抓取方向
 			int nStepLength = abs(rightindex - leftindex);		// 	两个抓取点中间的遍历步数
 			Point target_left = Point(pt[leftindex].x-nStepLength*1, target_y);
 			Point target_right = Point(pt[rightindex].x+nStepLength*1, target_y);
+			oprt_rt.vptPoint.push_back(target_right);
+			oprt_rt.vptPoint.push_back(target_left);
+
 			draw_point(target_left, "target_left", yellow);
-			double dLeftTargetDir = draw_grip_direction(target_left, target_dir);
 			draw_point(target_right, "target_right", yellow);
-			double dRightTargetDir = draw_grip_direction(target_right, target_dir);
+			oprt_rt.vdGripperDir.push_back(draw_grip_direction(target_left, target_dir));
+			oprt_rt.vdGripperDir.push_back(draw_grip_direction(target_right, target_dir));
 
-			//	执行机械臂和夹爪
-			km.SetLeftPose(pt[leftindex]-Point(EDGE, EDGE), 0.94, {1.57+dLeftGripDir, 0, 0});
-			km.SetRightPose(pt[rightindex]-Point(EDGE, EDGE), 0.94, {1.57-0.523-dRightGripDir, 0, 0});
-			km.ExecuteGroup();			
-
-			// km.MoveToRightPose(pt[rightindex]-Point(EDGE, EDGE), 0.94, {3.14-0.523-dRightGripDir, 0, 0});
-			km.MoveDdxdydz(0, 0, 0.1);
-			gc.Dual_Gripper_anypose("220", "160");
-			km.MoveRdxdydz(0, 0, -0.1);
-			km.MoveToRightPose(target_right-Point(EDGE, EDGE), 0.94, {1.57-0.523-dRightGripDir, 0, 0});
-			km.MoveRdxdydz(0, 0, 0.1);
-			gc.Gripper_anypose('R', "160");
-			km.MoveRdxdydz(-0.1, 0, 0);
-			km.MoveRdxdydz(-0.1, 0, 0);
-			// km.GoHome(R_GROUP);
-			// km.MoveLdxdydz(0, 0, -0.1);
-			gc.Gripper_anypose('L', "220");
-			km.SetLeftPose(target_left-Point(EDGE, EDGE), 0.94, {1.57-dLeftGripDir, 0, 0});
-			km.SetRightPose(-0.561, 0.225, 0.769, {1.57, 0, 0});
-			// km.MoveToLeftPose(target_left-Point(EDGE, EDGE), 0.94, {1.57-dLeftGripDir, 0, 0});
-			km.ExecuteGroup();
-			km.MoveLdxdydz(0, 0, 0.1);
-			gc.Gripper_anypose('L', "160");
-			km.MoveLdxdydz(0.1, 0, 0);
-			km.MoveLdxdydz(0.1, 0, 0);
-			// gc.Gripper_Open('L');
-			km.GoHome(D_GROUP);
-
-            break;
+            return oprt_rt;
         }
     }
     // // === 检测I类交叉 ===
@@ -211,7 +186,7 @@ SOperation CStrategy::strategy(){
 				// if (!is_end && abs(c0[g_vnCrossList[i]] - c0[g_vnCrossList[i + 1]]) == 1) {
 				if (abs(c0[g_vnCrossList[i]] - c0[g_vnCrossList[i + 1]]) == 1) {
 					end_strategy = 1;
-					opttype = "D";
+					oprt_rt.strOperationType = "D";
 					cout << endl << "OPT-D:" << endl;
 					cout << '\t' << '\t' << "INDEX" << '\t' << "CROSS" << '\t' << "CLASS" << endl;
 					cout << '\t' << '\t' << i << '\t' << g_vnCrossList[i] << '\t' << g_vnClassList[i] << endl;
@@ -267,7 +242,7 @@ SOperation CStrategy::strategy(){
 				}
 			if (!twolines_ends && g_vnCrossList[i] == g_vnCrossList[i+1]) {
 				end_strategy = 1;
-				opttype = "Q";
+				oprt_rt.strOperationType = "Q";
 				cout << endl << "OPT-Q:" << endl;
 				cout << '\t' << '\t' << "INDEX" << '\t' << "CROSS" << '\t' << "CLASS" << endl;
 				cout << '\t' << '\t' << i << '\t' << g_vnCrossList[i] << '\t' << g_vnClassList[i] << endl;
@@ -364,7 +339,7 @@ SOperation CStrategy::strategy(){
 				}
 				if(found){
 					end_strategy = 1;
-					opttype = "IX";
+					oprt_rt.strOperationType = "IX";
 					opt_index = (cpt[i]+cpt[i+1])/2;
 					// ref_index = cpt[ref_i];
 					draw_grip_direction(opt_index);
@@ -382,7 +357,7 @@ SOperation CStrategy::strategy(){
 	if(!end_strategy){
 		for(int i = 0; i < start.size(); ++i){
 			end_strategy = 1;
-			opttype = "T";
+			oprt_rt.strOperationType = "T";
 			cout << endl << "CLASS-T:" << endl;
 			cout << '\t' << "INDEX" << '\t' << "CROSS" << '\t' << "CLASS" << endl;
 			cout << '\t' << start[i] << '\t' << g_vnCrossList[start[i]] << '\t' << g_vnClassList[start[i]] << endl;
@@ -401,13 +376,13 @@ SOperation CStrategy::strategy(){
 			break;
 		}
 	}
-	cout << "--" << opttype << "--" << endl;
+	cout << "--" << oprt_rt.strOperationType << "--" << endl;
 	cv::imwrite("pic_buffer/8_Result.png", result_img);
 	cv::imwrite("pic_buffer/save/0.png", result_img);
 	// namedWindow("Result", WINDOW_AUTOSIZE); // === 显示图片 ===
 	// imshow("Result", result_img);
 	// cv::destroyWindow("Result"); // === 显示图片 ===
-	return oper_return;
+	return oprt_rt;
 }
 
 double CStrategy::draw_grip_direction(int opt_index)

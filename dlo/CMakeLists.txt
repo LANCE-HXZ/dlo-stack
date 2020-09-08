@@ -242,6 +242,7 @@ add_library(dlo
   include/strategy.h
   include/dlo_global.h
   include/traversal.h
+  include/manipulation.h
   src/ros_image_converter.cpp
   src/test_function.cpp
   src/crop.cpp

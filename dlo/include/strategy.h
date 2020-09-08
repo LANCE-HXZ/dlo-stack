@@ -7,13 +7,6 @@
 #include "dlo_global.h"
 using namespace cv;
 
-struct SOperation{
-    string strOperationType;        //  操作类型
-    vector<Point> vptTarget;        //  移动目标点
-    vector<double> vdGripperDir;    //  夹爪抓取方向
-    vector<string> vstrGroup;     //  移动方式, 双臂D_GROUP, 左臂L_GROUP, 右臂R_GROUP
-};
-
 class CStrategy{
     private:
         Mat result_img;
@@ -23,7 +16,8 @@ class CStrategy{
     public:
         CStrategy();
         ~CStrategy();
-
+        // CKukaMoveit km;
+	    // CGripperControl gc;
         SOperation strategy();
         double draw_grip_direction(int opt_index);
         double draw_grip_direction(cv::Point ptTarget, cv::Point ptTargetDir);

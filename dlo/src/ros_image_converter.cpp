@@ -1,6 +1,7 @@
 #include "ros_image_converter.h"
 #include "dlo.h"
 #include "dlo_global.h"
+#include "manipulation.h"
 
 
 /*  构造函数    */
@@ -88,6 +89,7 @@ void CImageConverter::ProcessTraversal(){
 void CImageConverter::ProcessStrategy(){
     visualization();  // === 可视化 ===
     SOperation oprt = sttg.strategy();
+    manipulation(oprt);
     // ShowImg("m_imgBinary", m_imgBinary);
     // ShowImg("m_imgSkeleton", m_imgSkeleton);
     // ShowImg("m_imgYolo", m_imgYolo);
