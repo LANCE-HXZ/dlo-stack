@@ -26,16 +26,16 @@ class CGripperControl{
         ros::Publisher pub_;
         ros::NodeHandle nh_;
         string strClose = "255", strOpen = "0";
-        void Gripper_Reset();
-        void genCommand(string pose);
     public:
         CGripperControl();//ros::NodeHandle &nh);
         ~CGripperControl();
 
+        void genCommand(string pose);
         void Gripper_Open(char which='R');
         void Gripper_Close(char which='R');
         void Gripper_anypose(char which='R', string pose="0");
         void Dual_Gripper_anypose(string pose1="0", string pose2="0");
+        void Gripper_Reset();
         void SetClose(string input);
         void SetOpen(string input);
         void NewOpen(char which='R');

@@ -114,63 +114,7 @@ SOperation CStrategy::strategy(){
             return oprt_rt;
         }
     }
-    // // === 检测I类交叉 ===
-	// if(!end_strategy){
-	// 	for(int i = 0; i < start.size(); i+=2){
-	// 		int sum = 0;
-	// 		for(int j = start[i]; j <= start[i+1]; ++j){
-	// 			sum += classlist[j];
-	// 			if(sum) break;
-	// 		}
-	// 		if(!sum){
-	// 			end_strategy = 1;
-	// 			int length1 = abs(ept[i] - cpt[start[i]]);
-	// 			int length2 = abs(ept[i+1] - cpt[start[i+1]]);
-	// 			int index = length1 > length2 ? i : i+1;
-	// 			opt_index = cpt[start[index]]>ept[index]? cpt[start[index]]-1:cpt[start[index]]+1;
-	// 			draw_point(pt[opt_index], "OPT1", blue);
-	// 			draw_grip_direction(opt_index);
-	// 			ref_index = length1 > length2 ? ept[i]: ept[i+1];
-	// 			draw_point(pt[ref_index], "OPT2", green);
-	// 			break;
-	// 		}
-	// 	}
-	// }
-
-	// // === 检测X类交叉 ===
-    // if(!end_strategy){
-    //     for(int i = 0; i < start.size(); ++i){
-    //         for(int j = i+1; j < start.size(); ++j){
-    //             if(crosslist[start[i]] == crosslist[start[j]]){
-    //                 end_strategy = 1;
-    //                 cout << endl << "CLASS-X:" << endl;
-    //                 cout << '\t' << "INDEX" << '\t' << "CROSS" << '\t' << "CLASS" << endl;
-    //                 cout << '\t' << start[i] << '\t' << crosslist[start[i]] << '\t' << classlist[start[i]] << endl;
-    //                 cout << '\t' << start[j] << '\t' << crosslist[start[j]] << '\t' << classlist[start[j]] << endl;
-
-    //                 int ept_opt = classlist[start[i]] ? i : j;
-    //                 int ept_ref = classlist[start[j]] ? i : j;
-    //                 opt_index = (cpt[c1[crosslist[start[j]]]]+ept[ept_opt])/2;
-    //                 ref_index = (cpt[c0[crosslist[start[j]]]]+ept[ept_ref])/2;
-                
-    //                 draw_grip_direction(opt_index);
-	// 				draw_point(pt[opt_index], "opt", blue);
-	// 				draw_point(pt[ref_index], "ref", green);
-    //                 // circle(result_img, pt[opt_index], 5, Scalar(255, 0, 0), -1);
-    //                 // putText(result_img, "opt", pt[opt_index]+add_text, FONT_HERSHEY_SIMPLEX, 0.5, Scalar(255, 0, 0), 1);
-    //                 // circle(result_img, pt[ref_index], 5, Scalar(0, 255, 0), -1);
-    //                 // putText(result_img, "ref", pt[ref_index]+add_text, FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 255, 0), 1);
-                    
-    //                 target = pt[ref_index] + per_dir(pt[opt_index], pt[ref_index], 30);
-	// 				draw_point(target, "target", yellow);
-	// 				// circle(result_img, target, 5, Scalar(0, 255, 255), -1);
-    //                 // putText(result_img, "target", target+add_text, FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 255, 255), 1);
-    //                 break;
-    //             }
-    //         }
-    //         if(end_strategy)	break;
-    //     }
-    // }
+    
 
 	// === 检测D类交叉 ===
 	if(!end_strategy){
@@ -383,6 +327,63 @@ SOperation CStrategy::strategy(){
 	// imshow("Result", result_img);
 	// cv::destroyWindow("Result"); // === 显示图片 ===
 	return oprt_rt;
+	// // === 检测I类交叉 ===
+	// if(!end_strategy){
+	// 	for(int i = 0; i < start.size(); i+=2){
+	// 		int sum = 0;
+	// 		for(int j = start[i]; j <= start[i+1]; ++j){
+	// 			sum += classlist[j];
+	// 			if(sum) break;
+	// 		}
+	// 		if(!sum){
+	// 			end_strategy = 1;
+	// 			int length1 = abs(ept[i] - cpt[start[i]]);
+	// 			int length2 = abs(ept[i+1] - cpt[start[i+1]]);
+	// 			int index = length1 > length2 ? i : i+1;
+	// 			opt_index = cpt[start[index]]>ept[index]? cpt[start[index]]-1:cpt[start[index]]+1;
+	// 			draw_point(pt[opt_index], "OPT1", blue);
+	// 			draw_grip_direction(opt_index);
+	// 			ref_index = length1 > length2 ? ept[i]: ept[i+1];
+	// 			draw_point(pt[ref_index], "OPT2", green);
+	// 			break;
+	// 		}
+	// 	}
+	// }
+
+	// // === 检测X类交叉 ===
+    // if(!end_strategy){
+    //     for(int i = 0; i < start.size(); ++i){
+    //         for(int j = i+1; j < start.size(); ++j){
+    //             if(crosslist[start[i]] == crosslist[start[j]]){
+    //                 end_strategy = 1;
+    //                 cout << endl << "CLASS-X:" << endl;
+    //                 cout << '\t' << "INDEX" << '\t' << "CROSS" << '\t' << "CLASS" << endl;
+    //                 cout << '\t' << start[i] << '\t' << crosslist[start[i]] << '\t' << classlist[start[i]] << endl;
+    //                 cout << '\t' << start[j] << '\t' << crosslist[start[j]] << '\t' << classlist[start[j]] << endl;
+
+    //                 int ept_opt = classlist[start[i]] ? i : j;
+    //                 int ept_ref = classlist[start[j]] ? i : j;
+    //                 opt_index = (cpt[c1[crosslist[start[j]]]]+ept[ept_opt])/2;
+    //                 ref_index = (cpt[c0[crosslist[start[j]]]]+ept[ept_ref])/2;
+                
+    //                 draw_grip_direction(opt_index);
+	// 				draw_point(pt[opt_index], "opt", blue);
+	// 				draw_point(pt[ref_index], "ref", green);
+    //                 // circle(result_img, pt[opt_index], 5, Scalar(255, 0, 0), -1);
+    //                 // putText(result_img, "opt", pt[opt_index]+add_text, FONT_HERSHEY_SIMPLEX, 0.5, Scalar(255, 0, 0), 1);
+    //                 // circle(result_img, pt[ref_index], 5, Scalar(0, 255, 0), -1);
+    //                 // putText(result_img, "ref", pt[ref_index]+add_text, FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 255, 0), 1);
+                    
+    //                 target = pt[ref_index] + per_dir(pt[opt_index], pt[ref_index], 30);
+	// 				draw_point(target, "target", yellow);
+	// 				// circle(result_img, target, 5, Scalar(0, 255, 255), -1);
+    //                 // putText(result_img, "target", target+add_text, FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 255, 255), 1);
+    //                 break;
+    //             }
+    //         }
+    //         if(end_strategy)	break;
+    //     }
+    // }
 }
 
 double CStrategy::draw_grip_direction(int opt_index)
