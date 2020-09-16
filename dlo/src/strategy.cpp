@@ -65,7 +65,7 @@ SOperation CStrategy::strategy(){
 	}
 	for(int i = 0; i < g_vnClassList.size(); ++i){
 		if(g_vnClassList[i])	c1[g_vnCrossList[i]] = i;
-		else 				c0[g_vnCrossList[i]] = i;
+		else 					c0[g_vnCrossList[i]] = i;
 	}
 
 	// int checkwrong = checklist();
@@ -75,6 +75,7 @@ SOperation CStrategy::strategy(){
 	int opt_index, ref_index;
 	vector<bool> is_end;
 	oprt_rt.strOperationType = "N";		//	标记操作类型, 初始为 N 表示 None
+	bool bMoveLeft = 0, bMoveRight = 0;
 
 	// === 检测最上层的独立线缆 I型 ===
     for(int i = 0; i < start.size(); i+=2){
@@ -85,9 +86,11 @@ SOperation CStrategy::strategy(){
         }												//												*/
         if(mul){
             end_strategy = 1;		oprt_rt.strOperationType = "I";
-
-			int opt1_index = (2*ept[i] + ept[i+1])/3;
-			int opt2_index = (ept[i] + 2*ept[i+1])/3;
+			
+			// int opt1_index = (2*ept[i] + ept[i+1])/3;
+			// int opt2_index = (ept[i] + 2*ept[i+1])/3;
+			int opt1_index = ept[i]+10;
+			int opt2_index = ept[i+1]-10;
 			int rightindex = pt[opt1_index].x < pt[opt2_index].x ? opt1_index : opt2_index;
 			int leftindex = pt[opt1_index].x < pt[opt2_index].x ? opt2_index : opt1_index;
 			oprt_rt.vptPoint.push_back(pt[leftindex]);
