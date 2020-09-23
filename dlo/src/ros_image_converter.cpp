@@ -7,6 +7,7 @@
 /*  构造函数    */
 CImageConverter::CImageConverter()
 {
+    srand((int)time(0));
     CStrategy sttg;  // === 拆解策略 ===
     IMG_FLODER = "pic_buffer/";
     m_nCropNum = 0;
@@ -79,8 +80,8 @@ void CImageConverter::ProcessTraversal(){
     
     for(int c=0; c<m_vstrCropDir.size(); ++c)
     {
-      string crossnum = m_vstrCropDir[c].substr(m_vstrCropDir[c].length()-5, 1); // 文件名中的交叉点序号 -- yolo网络决定
-      g_vnCrossList.push_back(stoi(crossnum));  // 交叉点序号, stoi()string转int
+      string crossnum = m_vstrCropDir[c].substr(m_vstrCropDir[c].length()-6, 2); // 文件名中的交叉点序号 -- yolo网络决定
+      g_vnCrossList.push_back(stoi(crossnum));  // 交叉点序号, stoi()string转int, 首个非零位前的零会自动省略
       std_msgs::String msgsCropDir;
       msgsCropDir.data = m_vstrCropDir[c];
       m_pubCrop.publish(msgsCropDir);
@@ -92,6 +93,14 @@ void CImageConverter::ProcessStrategy(){
     visualization();  // === 可视化 ===
     SOperation oprt = sttg.strategy();
     manipulation(oprt);
+    for(int i = 0; i < cross.size(); ++i){
+		if(c0[i] == -1 || c1[i] == -1)	continue;
+        cout << i << "\t";
+		Mat imgTrainCross0 = imread(m_vstrCropDir[c0[i]]);
+        Mat imgTrainCross1 = imread(m_vstrCropDir[c1[i]]);
+        imwrite(IMG_FLODER+"0/"+to_string(rand())+".png", imgTrainCross0);
+        imwrite(IMG_FLODER+"1/"+to_string(rand())+".png", imgTrainCross1);
+    }
     // ShowImg("m_imgBinary", m_imgBinary);
     // ShowImg("m_imgSkeleton", m_imgSkeleton);
     // ShowImg("m_imgYolo", m_imgYolo);

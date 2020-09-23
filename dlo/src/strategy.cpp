@@ -6,6 +6,9 @@ Scalar red = Scalar(0, 0, 255), green = Scalar(0, 255, 0),
 		blue = Scalar(255, 0, 0), yellow = Scalar(0, 255, 255),
 		purple = Scalar(255, 0, 255), cyan = Scalar(255, 255, 0);
 Mat result_img;
+int nCheckReturn;
+vector<int> c0, c1;
+
 CStrategy::CStrategy(){
 }
 CStrategy::~CStrategy(){
@@ -15,7 +18,6 @@ SOperation CStrategy::strategy(){
 	SOperation oprt_rt;
 	
 	Point add_text = Point(5,5);
-	vector<int> c0, c1;
 	c0.clear(); c1.clear();
     result_img = readImg("pic_buffer/1_R.png");
 	int line_index = 1;
@@ -68,7 +70,7 @@ SOperation CStrategy::strategy(){
 		else 					c0[g_vnCrossList[i]] = i;
 	}
 
-	// int checkwrong = checklist();
+	nCheckReturn = checklist();
 
 	bool end_strategy = 0;
 	Point front_dir, back_dir, target;
@@ -87,8 +89,6 @@ SOperation CStrategy::strategy(){
         if(mul){
             end_strategy = 1;		oprt_rt.strOperationType = "I";
 			
-			// int opt1_index = (2*ept[i] + ept[i+1])/3;
-			// int opt2_index = (ept[i] + 2*ept[i+1])/3;
 			int opt1_index = ept[i]+10;
 			int opt2_index = ept[i+1]-10;
 			int rightindex = pt[opt1_index].x < pt[opt2_index].x ? opt1_index : opt2_index;
@@ -416,6 +416,8 @@ void CStrategy::cout_cross(int i){
 
 int CStrategy::checklist(){
 	int wrong = 0;
+	
+	//	检查每个交叉点是否有且仅有经过两次
 	vector<int> crosspasstimes;
 	int n = cross.size();
 	while(n--)
@@ -430,12 +432,14 @@ int CStrategy::checklist(){
 		}
 	}
 
+	//	检查交叉点列表是否是偶数
 	int sumcross = 0;
 	if(g_vnCrossList.size()%2){
 		cout << "\n\n===== 【ERROR CROSSLIST LENGTH】 LIST LENGTH: " << g_vnCrossList.size() << " =====\n\n\n";
 		wrong = 2;
 	}
 
+	//	检查两类交叉点数量是否相等
 	for(int i = 0; i < g_vnCrossList.size(); ++i){
 		sumcross += g_vnClassList[i];
 	}
@@ -446,11 +450,15 @@ int CStrategy::checklist(){
 		wrong = 2;
 	}
 
-	for(int i = 0; i < cross.size(); ++i){
-		if(c0[i] < 0 || c1[i] < 0){
-			cout << "\n\n===== 【ERROR CLASS WHILE PREDICTING CROSS】 " << " =====\n\n\n";
-			wrong = 2;
-		}
-	}
+	// //	检查是否有未修改的c0[i]或c1[i]
+	// for(int i = 0; i < cross.size(); ++i){
+	// 	if(c0[i] == -1 || c1[i] == -1)	continue;
+	// 	Mat imgTrainCross = imread(m_vstrCropDir[i])
+	// 	// if(c0[i] < 0 || c1[i] < 0){
+	// 	// 	cout << "\n\n===== 【ERROR CLASS WHILE PREDICTING CROSS】 " << " =====\n\n\n";
+	// 	// 	wrong = 2;
+	// 	// 	break;
+	// 	// }
+	// }
 	return wrong;
 }

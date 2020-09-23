@@ -96,7 +96,10 @@ vector<string> traversal(string thin_img_address, Mat rgb_img, dlo::BoundingBoxe
 						Mat rotation = RotateImage(RGBimg, angle, Point(curr_pt.x, curr_pt.y));
 						cv::Rect select = cv::Rect(curr_pt.x - crop_size/2, curr_pt.y - crop_size, crop_size, crop_size);
 						Mat croped = rotation(select);
-						string str_j = to_string(j); string str_save_index = to_string(save_index++); 
+						string str_j;
+						if(j >= 10)	str_j = to_string(j); 
+						else	str_j = "0" + to_string(j);
+						string str_save_index = to_string(save_index++); 
 						string dir_savecroped = "pic_buffer/C/" + str_save_index + "_" + str_j + ".png";
 						crop_file_name.push_back(dir_savecroped);
 						imwrite(dir_savecroped, croped);

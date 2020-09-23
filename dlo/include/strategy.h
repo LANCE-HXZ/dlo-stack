@@ -11,7 +11,6 @@ class CStrategy{
     private:
         Mat result_img;
         Point add_text;
-        vector<int> c0, c1;
     
     public:
         CStrategy();
