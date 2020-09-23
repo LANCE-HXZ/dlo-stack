@@ -53,18 +53,20 @@ void CImageConverter::ProcessSkeleton(){
     imwrite(IMG_FLODER+"4_B.png", m_imgBinary);
 
     pre_dilate(m_imgBinary, 3, 2); // 膨胀去除黑离群点
-    cv::imwrite("pic_buffer/4_B2_dilate.png", m_imgBinary);
+    cv::imwrite(IMG_FLODER + "4_B2_dilate.png", m_imgBinary);
 
     pre_erode(m_imgBinary, 3, 6); // 腐蚀去除白离群点
-    cv::imwrite("pic_buffer/4_B3_erode.png", m_imgBinary);
+    cv::imwrite(IMG_FLODER + "4_B3_erode.png", m_imgBinary);
 
     skeleton(m_imgBinary, IMG_FLODER + "5_S.png", 3);
 
     m_imgSkeleton = readImg(IMG_FLODER + "5_S.png");
     m_imgSkeleton = removeSinglePoint(m_imgSkeleton, 30, 30);
     m_imgSkeleton = removeSinglePoint(m_imgSkeleton, 60, 60);
+    m_imgSkeleton = removeSinglePoint(m_imgSkeleton, 40, 60);
+    m_imgSkeleton = removeSinglePoint(m_imgSkeleton, 90, 90);
     m_imgSkeleton = removeSinglePoint(m_imgSkeleton, 10, 10);
-    imwrite(IMG_FLODER+"4_B1_RemoveOutlier.png", m_imgSkeleton);
+    imwrite(IMG_FLODER+"5_S.png", m_imgSkeleton);
 }
 
 /*  在细化图和目标识别boxes准备好后进入遍历流程  */

@@ -104,8 +104,8 @@ SOperation CStrategy::strategy(){
 			int target_y = PIC_WIDTH + 1.0/2 * EDGE; 			//	目标位置为图像下边缘
 			Point target_dir = Point(10, 0.000001);				//	移动到目标位置的抓取方向
 			int nStepLength = abs(rightindex - leftindex);		// 	两个抓取点中间的遍历步数
-			Point target_left = Point(pt[leftindex].x-nStepLength*1, target_y);
-			Point target_right = Point(pt[rightindex].x+nStepLength*1, target_y);
+			Point target_left = Point(pt[leftindex-nStepLength*1].x, target_y);
+			Point target_right = Point(pt[rightindex+nStepLength*1].x, target_y);
 			oprt_rt.vptPoint.push_back(target_right);
 			oprt_rt.vptPoint.push_back(target_left);
 
@@ -113,8 +113,6 @@ SOperation CStrategy::strategy(){
 			draw_point(target_right, "target_right", yellow);
 			oprt_rt.vdGripperDir.push_back(draw_grip_direction(target_left, target_dir));
 			oprt_rt.vdGripperDir.push_back(draw_grip_direction(target_right, target_dir));
-
-            return oprt_rt;
         }
     }
     
@@ -325,7 +323,6 @@ SOperation CStrategy::strategy(){
 	}
 	cout << "--" << oprt_rt.strOperationType << "--" << endl;
 	cv::imwrite("pic_buffer/8_Result.png", result_img);
-	cv::imwrite("pic_buffer/save/0.png", result_img);
 	// namedWindow("Result", WINDOW_AUTOSIZE); // === 显示图片 ===
 	// imshow("Result", result_img);
 	// cv::destroyWindow("Result"); // === 显示图片 ===
