@@ -81,11 +81,13 @@ SOperation CStrategy::strategy(){
 
 	// === 检测最上层的独立线缆 I型 ===
     for(int i = 0; i < start.size(); i+=2){
+		/*	检查start[i]开始的线缆上的交叉点类型是否都为1
+			全为1表示该线缆在视野最上层, 循环结束时 mul=1	*/
         bool mul = 1;
-        for(int j = start[i]; j <= start[i+1]; ++j){	//	/*
-			mul *= g_vnClassList[j];					//		检查start[i]开始的线缆上的交叉点类型是否都为1
-			if(!mul) 	break;							//		全为1表示该线缆在视野最上层
-        }												//												*/
+        for(int j = start[i]; j <= start[i+1]; ++j){
+			mul *= g_vnClassList[j];
+			if(!mul) 	break;
+        }
         if(mul){
             end_strategy = 1;		oprt_rt.strOperationType = "I";
 			
@@ -113,6 +115,8 @@ SOperation CStrategy::strategy(){
 			draw_point(target_right, "target_right", yellow);
 			oprt_rt.vdGripperDir.push_back(draw_grip_direction(target_left, target_dir));
 			oprt_rt.vdGripperDir.push_back(draw_grip_direction(target_right, target_dir));
+
+			break;
         }
     }
     
@@ -120,18 +124,22 @@ SOperation CStrategy::strategy(){
 	// === 检测D类交叉 ===
 	if(!end_strategy){
 		for(int i = 0; i < g_vnClassList.size()-1; ++i){
-			bool is_end = 0;
 			if (g_vnClassList[i] * g_vnClassList[i+1]) {
+				/*	检查当前交叉D型是否为跨端点的错误识别类型	
+					若结束循环时 is_end=1, 则表示跨端点, 应跳过	*/
+				bool is_end = 0;
 				for(int k = 0; k < start.size(); ++k){
 					if(i == start[k] || i+1 == start[k]){
 						is_end = 1;
 						break;
 					}
 				}
+				
 				// if (!is_end && abs(c0[g_vnCrossList[i]] - c0[g_vnCrossList[i + 1]]) == 1) {
 				if (abs(c0[g_vnCrossList[i]] - c0[g_vnCrossList[i + 1]]) == 1) {
-					end_strategy = 1;
-					oprt_rt.strOperationType = "D";
+					end_strategy = 1;		oprt_rt.strOperationType = "D";
+					
+					/*	打印交叉信息	*/
 					cout << endl << "OPT-D:" << endl;
 					cout << '\t' << '\t' << "INDEX" << '\t' << "CROSS" << '\t' << "CLASS" << endl;
 					cout << '\t' << '\t' << i << '\t' << g_vnCrossList[i] << '\t' << g_vnClassList[i] << endl;
@@ -144,28 +152,19 @@ SOperation CStrategy::strategy(){
 						cout << '\t' << '\t' << c0[g_vnCrossList[i + 1]] << '\t' << g_vnCrossList[c0[g_vnCrossList[i + 1]]] << '\t' << g_vnClassList[c0[g_vnCrossList[i + 1]]] << endl;
 						cout << '\t' << '\t' << c0[g_vnCrossList[i]] << '\t' << g_vnCrossList[c0[g_vnCrossList[i]]] << '\t' << g_vnClassList[c0[g_vnCrossList[i]]] << endl;
 					}
+
 					opt_index = (cpt[i] + cpt[i+1])/2;
-					double dGripDir = draw_grip_direction(opt_index);
+					oprt_rt.vptPoint.push_back(pt[opt_index]);
+					oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
 					draw_point(pt[opt_index], "opt", blue);
+
 					ref_index = (cpt[c0[g_vnCrossList[i]]] + cpt[c0[g_vnCrossList[i + 1]]])/2;
 					draw_point(pt[ref_index], "ref", green);
 					target = pt[ref_index] + per_dir(pt[opt_index], pt[ref_index], 30);
 					draw_point(target, "target", yellow);
 
-					string strGroup = "R";
-					if(pt[opt_index].x >= 400)	strGroup = "L";
-					// km.SetLeftPose(pt[opt_index]-Point(EDGE, EDGE), 0.94, {1.57+dGripDir, 0, 0});
-					// km.SetRightPose(pt[opt_index]-Point(EDGE, EDGE), 0.94, {1.57-0.523-dGripDir, 0, 0});
-                    // km.ExecuteGroup(strGroup);
-					// km.MoveDdxdydz(0, 0, 0.1);
-					// gc.Dual_Gripper_anypose("220", "220");
-					// km.MoveDdxdydz(0, 0, -0.1);
-					// km.SetLeftPose(target-Point(EDGE, EDGE), 0.94, {1.57+dGripDir, 0, 0});
-					// km.SetRightPose(target-Point(EDGE, EDGE), 0.94, {1.57-0.523-dGripDir, 0, 0});
-                    // km.ExecuteGroup(strGroup);
-					// km.MoveDdxdydz(0, 0, 0.1);
-					// gc.Dual_Gripper_anypose("0", "0");
-					// km.GoHome(D_GROUP);
+					oprt_rt.vptPoint.push_back(target);
+					oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
 
 					break;
                 }
@@ -176,61 +175,52 @@ SOperation CStrategy::strategy(){
 	// === 检测Q类交叉 === 
 	if(!end_strategy){
 		for(int i = 0; i < g_vnClassList.size()-1; ++i){
+			/*	检查当前交叉Q型是否为跨端点的错误识别类型	
+				若结束循环时 twolines_ends=1, 则表示跨端点, 应跳过	*/
 			bool twolines_ends = 0;
 			for(int k = 0; k < start.size(); ++k){
-					if(i == start[k] && i+1 == start[k+1]){
-						if(k/2!=(k+1)/2){
-							twolines_ends = 1;
-							break;
-						}
+				if(i == start[k] && i+1 == start[k+1]){
+					if(k/2!=(k+1)/2){
+						twolines_ends = 1;
+						break;
 					}
 				}
+			}
+
 			if (!twolines_ends && g_vnCrossList[i] == g_vnCrossList[i+1]) {
-				end_strategy = 1;
-				oprt_rt.strOperationType = "Q";
+				end_strategy = 1;		oprt_rt.strOperationType = "Q";
+
+				/*	打印交叉信息	*/
 				cout << endl << "OPT-Q:" << endl;
 				cout << '\t' << '\t' << "INDEX" << '\t' << "CROSS" << '\t' << "CLASS" << endl;
 				cout << '\t' << '\t' << i << '\t' << g_vnCrossList[i] << '\t' << g_vnClassList[i] << endl;
 				cout << '\t' << '\t' << i + 1 << '\t' << g_vnCrossList[i + 1] << '\t' << g_vnClassList[i + 1] << endl;
 			
+				/*	抓取位置位于两个自交叉点间曲线段的中间位置附近	*/
 				opt_index = (cpt[i] + cpt[i+1])/2;
-				double dGripDir = draw_grip_direction(opt_index);
+				oprt_rt.vptPoint.push_back(pt[opt_index]);
+				oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
 				draw_point(pt[opt_index], "opt", blue);
 
+				/*	对应的自交叉点	*/
 				Point cross_o = cross[g_vnCrossList[i]];
 				ref_index = cpt[c1[g_vnCrossList[i]]];
 				cout << "i: " << i << endl;
 				draw_point(cross_o, "ref", green);
-				front_dir = cross_o+5*(dir[ref_index+1]+dir[ref_index-1]); // 画近似切线 -- 方向矢量
+
+				/*	自交叉点位置位于上方的线缆切线方向	*/
+				front_dir = cross_o+5*(dir[ref_index+1]+dir[ref_index-1]);
 				back_dir = cross_o-5*(dir[ref_index+1]+dir[ref_index-1]);
 				line(result_img, back_dir, front_dir, Scalar(0, 255, 0), 2);
+
+				/*	自交叉计算旋转方向的参考角度	*/
 				line(result_img, pt[opt_index], cross_o, Scalar(0, 255, 255), 2);
 				putText(result_img, "rotation_dir", front_dir+add_text, FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 0, 255), 1);
 				double angle_o = angle(pt[opt_index], front_dir, cross_o);
-				string angle_text = to_string(angle_o);
-				putText(result_img, angle_text, cross_o+Point(20, -20), FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 0, 255), 2);
+				putText(result_img, to_string(angle_o), cross_o+Point(20, -20), FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 0, 255), 2);
+				oprt_rt.vdGripperDir.push_back(angle_o);
 				cout << "  angle_o: " << angle_o << endl;
-
-				string strGroup = "R";
-				if(pt[opt_index].x >= 400)	strGroup = "L";
-				// // km.SetLeftPose(pt[opt_index]-Point(EDGE, EDGE), 0.945, {1.57+dGripDir, 0, 0});
-				// km.SetRightPose(pt[opt_index]-Point(EDGE, EDGE), 0.945, {3.14-0.523-dGripDir, 0, 0});
-				// km.ExecuteGroup(strGroup);
-				// km.MoveRdxdydz(0, 0, 0.1);
-				// gc.Gripper_anypose('R', "220");
-				// km.MoveRdxdydz(0, 0, -0.2);
-				// // km.SetLeftPose(pt[ref_index]-Point(EDGE, EDGE), 0.745, {1.57+dGripDir, 0, 0});
-				// // km.SetRightPose(pt[ref_index]-Point(EDGE, EDGE), 0.745, {3.14-0.523-dGripDir, 0, 0});
-				// // km.ExecuteGroup(strGroup);
-				// km.MoveOneRightJointIncrease(6, -5);
-				// // km.MoveOneLeftJointIncrease(6, -3.14);
-				// // km.SetLeftPose(pt[opt_index]-Point(EDGE, EDGE), 0.945, {-1.57+dGripDir, 0, 0});
-				// // km.SetRightPose(pt[opt_index]-Point(EDGE, EDGE), 0.945, {-3.14-0.523-dGripDir, 0, 0});
-				// // km.ExecuteGroup(strGroup);
-				// km.MoveRdxdydz(0, 0, 0.1);
-				// gc.Gripper_anypose('R', "0");
-				// km.GoHome(D_GROUP);
-
+				
 				break;
 			}
 		}
