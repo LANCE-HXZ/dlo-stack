@@ -95,6 +95,7 @@ void CImageConverter::ProcessStrategy(){
     manipulation(oprt);
 
     /*  将对应交叉点识别结果成对相反出现的交叉点框分别保存到0/和1/训练集文件夹  */
+    cout << "SAVING CROSS: \n";
     for(int i = 0; i < cross.size(); ++i){
 		if(c0[i] == -1 || c1[i] == -1)	continue;
         cout << i << "\t";

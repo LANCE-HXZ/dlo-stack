@@ -11,6 +11,14 @@ void manipulation(SOperation oprt){
         optionD(oprt, mkm, mgc);
     else if(oprt.strOperationType == "Q")
         optionQ(oprt, mkm, mgc);
+    else if(oprt.strOperationType == "IX")
+        optionIX(oprt, mkm, mgc);
+    else if(oprt.strOperationType == "T")
+        optionT(oprt, mkm, mgc);
+    else{
+        cout << "\n\n===== 【ERROR OPERATION TYPE】 " << " =====\n\n\n";
+        return;
+    }
 
     mkm.GoHome(D_GROUP);
 }
@@ -53,26 +61,31 @@ void optionI(SOperation oprt, CKukaMoveit& mkm, CGripperControl& mgc){
 
 //  抓取点, 目标点
 void optionD(SOperation oprt, CKukaMoveit& mkm, CGripperControl& mgc){
-    if(oprt.vptPoint[0].x >= 400 && oprt.vptPoint[1].x >= 400){  //  L
-        //  左臂移动到目标点上方, 向下到夹取高度
+    if(oprt.vptPoint.size()!=2){
+        cout << "\n\n===== 【ERROR oprt.vptPoint.size() IN optionI】 SIZE: " << oprt.vptPoint.size() << " =====\n\n\n";
+        return;
+    }
+
+    if(oprt.vptPoint[0].x >= MDLEGE && oprt.vptPoint[1].x >= MDLEGE){  //  L
+        //  左臂移动到目标点上方, 向下到夹取高度, 夹取, 上移
         mkm.MoveToLeftPose(oprt.vptPoint[0]-ptEdge, 0.94, {1.57-oprt.vdGripperDir[0], 0, 0});
         mkm.MoveLdxdydz(0, 0, 0.1);
-
-        //  夹取, 上移, 移动到目标位置上方, 下移, 松开
         mgc.Gripper_anypose('L', CLS);
         mkm.MoveLdxdydz(0, 0, -0.1);
+
+        //  移动到目标位置上方, 下移, 松开
         mkm.MoveToLeftPose(oprt.vptPoint[1]-ptEdge, 0.94, {1.57-oprt.vdGripperDir[1], 0, 0});
         mkm.MoveLdxdydz(0, 0, 0.1);
         mgc.Gripper_anypose('L', OPN);
     }
-    else if(oprt.vptPoint[0].x < 400 && oprt.vptPoint[1].x < 400){  //  R
-        //  右臂移动到目标点上方, 向下到夹取高度
+    else if(oprt.vptPoint[0].x < MDLEGE && oprt.vptPoint[1].x < MDLEGE){  //  R
+        //  右臂移动到目标点上方, 向下到夹取高度, 夹取, 上移
         mkm.MoveToRightPose(oprt.vptPoint[0]-ptEdge, 0.94, {1.57-oprt.vdGripperDir[0], 0, 0});
         mkm.MoveRdxdydz(0, 0, 0.1);
-
-        //  夹取, 上移, 移动到目标位置上方, 下移, 松开
         mgc.Gripper_anypose('R', CLS);
         mkm.MoveRdxdydz(0, 0, -0.1);
+
+        //  移动到目标位置上方, 下移, 松开
         mkm.MoveToRightPose(oprt.vptPoint[1]-ptEdge, 0.94, {1.57-oprt.vdGripperDir[1], 0, 0});
         mkm.MoveRdxdydz(0, 0, 0.1);
         mgc.Gripper_anypose('R', OPN);
@@ -81,26 +94,128 @@ void optionD(SOperation oprt, CKukaMoveit& mkm, CGripperControl& mgc){
 
 //  抓取点; 抓取角度, 解耦方向角度
 void optionQ(SOperation oprt, CKukaMoveit& mkm, CGripperControl& mgc){
-    /*  如何处理Q型交叉 */
-    
-    // string strGroup = "R";
-    // if(pt[opt_index].x >= 400)	strGroup = "L";
-    // // km.SetLeftPose(pt[opt_index]-Point(EDGE, EDGE), 0.945, {1.57+dGripDir, 0, 0});
-    // km.SetRightPose(pt[opt_index]-Point(EDGE, EDGE), 0.945, {3.14-0.523-dGripDir, 0, 0});
-    // km.ExecuteGroup(strGroup);
-    // km.MoveRdxdydz(0, 0, 0.1);
-    // gc.Gripper_anypose('R', "220");
-    // km.MoveRdxdydz(0, 0, -0.2);
-    // // km.SetLeftPose(pt[ref_index]-Point(EDGE, EDGE), 0.745, {1.57+dGripDir, 0, 0});
-    // // km.SetRightPose(pt[ref_index]-Point(EDGE, EDGE), 0.745, {3.14-0.523-dGripDir, 0, 0});
-    // // km.ExecuteGroup(strGroup);
-    // km.MoveOneRightJointIncrease(6, -5);
-    // // km.MoveOneLeftJointIncrease(6, -3.14);
-    // // km.SetLeftPose(pt[opt_index]-Point(EDGE, EDGE), 0.945, {-1.57+dGripDir, 0, 0});
-    // // km.SetRightPose(pt[opt_index]-Point(EDGE, EDGE), 0.945, {-3.14-0.523-dGripDir, 0, 0});
-    // // km.ExecuteGroup(strGroup);
-    // km.MoveRdxdydz(0, 0, 0.1);
-    // gc.Gripper_anypose('R', "0");
-    // km.GoHome(D_GROUP);
+    if(oprt.vptPoint.size()!=1){
+        cout << "\n\n===== 【ERROR oprt.vptPoint.size() IN optionI】 SIZE: " << oprt.vptPoint.size() << " =====\n\n\n";
+        return;
+    }
+    if(oprt.vdGripperDir.size()!=2){
+        cout << "\n\n===== 【ERROR oprt.vdGripperDir.size() IN optionI】 SIZE: " << oprt.vdGripperDir.size() << " =====\n\n\n";
+        return;
+    }
 
+    if(oprt.vptPoint[0].x >= MDLEGE && oprt.vptPoint[1].x >= MDLEGE){  //  L
+        //  左臂移动到目标点上方, 向下到夹取高度, 夹取, 上移
+        mkm.MoveToLeftPose(oprt.vptPoint[0]-ptEdge, 0.94, {1.57-oprt.vdGripperDir[0], 0, 0});
+        mkm.MoveLdxdydz(0, 0, 0.1);
+        mgc.Gripper_anypose('L', CLS);
+        mkm.MoveLdxdydz(0, 0, -0.1);
+
+        //  ========    计算旋转方向    ========
+        //  ========    旋转解耦    ========
+
+        //  移动到目标位置上方, 下移, 松开, 上移
+        mkm.MoveToLeftPose(oprt.vptPoint[0]-ptEdge, 0.94, {1.57-oprt.vdGripperDir[0], 0, 0});
+        mkm.MoveLdxdydz(0, 0, 0.1);
+        mgc.Gripper_anypose('L', OPN);
+        mkm.MoveLdxdydz(0, 0, -0.1);
+    }
+    else if(oprt.vptPoint[0].x < MDLEGE && oprt.vptPoint[1].x < MDLEGE){  //  R
+        //  右臂移动到目标点上方, 向下到夹取高度, 夹取, 上移
+        mkm.MoveToRightPose(oprt.vptPoint[0]-ptEdge, 0.94, {1.57-oprt.vdGripperDir[0], 0, 0});
+        mkm.MoveRdxdydz(0, 0, 0.1);
+        mgc.Gripper_anypose('R', CLS);
+        mkm.MoveRdxdydz(0, 0, -0.1);
+
+        //  ========    计算旋转方向    ========
+        //  ========    旋转解耦    ========
+
+        //  移动到目标位置上方, 下移, 松开, 上移
+        mkm.MoveToRightPose(oprt.vptPoint[0]-ptEdge, 0.94, {1.57-oprt.vdGripperDir[0], 0, 0});
+        mkm.MoveRdxdydz(0, 0, 0.1);
+        mgc.Gripper_anypose('R', OPN);
+        mkm.MoveRdxdydz(0, 0, -0.1);
+    }
+}
+
+void optionIX(SOperation oprt, CKukaMoveit& mkm, CGripperControl& mgc){
+    if(oprt.vptPoint.size()!=1){
+        cout << "\n\n===== 【ERROR oprt.vptPoint.size() IN optionI】 SIZE: " << oprt.vptPoint.size() << " =====\n\n\n";
+        return;
+    }
+    if(oprt.vdGripperDir.size()!=2){
+        cout << "\n\n===== 【ERROR oprt.vdGripperDir.size() IN optionI】 SIZE: " << oprt.vdGripperDir.size() << " =====\n\n\n";
+        return;
+    }
+
+    if(oprt.vptPoint[0].x >= MDLEGE && oprt.vptPoint[1].x >= MDLEGE){  //  L
+        //  左臂移动到目标点上方, 向下到夹取高度, 夹取, 上移
+        mkm.MoveToLeftPose(oprt.vptPoint[0]-ptEdge, 0.94, {1.57-oprt.vdGripperDir[0], 0, 0});
+        mkm.MoveLdxdydz(0, 0, 0.1);
+        mgc.Gripper_anypose('L', CLS);
+        mkm.MoveLdxdydz(0, 0, -0.1);
+
+        //  ========    计算旋转方向    ========
+        //  ========    旋转解耦    ========
+
+        //  移动到目标位置上方, 下移, 松开, 上移
+        mkm.MoveToLeftPose(oprt.vptPoint[0]-ptEdge, 0.94, {1.57-oprt.vdGripperDir[0], 0, 0});
+        mkm.MoveLdxdydz(0, 0, 0.1);
+        mgc.Gripper_anypose('L', OPN);
+        mkm.MoveLdxdydz(0, 0, -0.1);
+    }
+    else if(oprt.vptPoint[0].x < MDLEGE && oprt.vptPoint[1].x < MDLEGE){  //  R
+        //  右臂移动到目标点上方, 向下到夹取高度, 夹取, 上移
+        mkm.MoveToRightPose(oprt.vptPoint[0]-ptEdge, 0.94, {1.57-oprt.vdGripperDir[0], 0, 0});
+        mkm.MoveRdxdydz(0, 0, 0.1);
+        mgc.Gripper_anypose('R', CLS);
+        mkm.MoveRdxdydz(0, 0, -0.1);
+
+        //  ========    计算旋转方向    ========
+        //  ========    旋转解耦    ========
+
+        //  移动到目标位置上方, 下移, 松开, 上移
+        mkm.MoveToRightPose(oprt.vptPoint[0]-ptEdge, 0.94, {1.57-oprt.vdGripperDir[0], 0, 0});
+        mkm.MoveRdxdydz(0, 0, 0.1);
+        mgc.Gripper_anypose('R', OPN);
+        mkm.MoveRdxdydz(0, 0, -0.1);
+    }
+}
+
+//  找去点, 目标点; 抓取角度
+void optionT(SOperation oprt, CKukaMoveit& mkm, CGripperControl& mgc){
+    if(oprt.vptPoint.size()!=2){
+        cout << "\n\n===== 【ERROR oprt.vptPoint.size() IN optionI】 SIZE: " << oprt.vptPoint.size() << " =====\n\n\n";
+        return;
+    }
+    if(oprt.vdGripperDir.size()!=1){
+        cout << "\n\n===== 【ERROR oprt.vdGripperDir.size() IN optionI】 SIZE: " << oprt.vdGripperDir.size() << " =====\n\n\n";
+        return;
+    }
+
+    if(oprt.vptPoint[0].x >= MDLEGE && oprt.vptPoint[1].x >= MDLEGE){  //  L
+        //  左臂移动到目标点上方, 向下到夹取高度, 夹取, 上移
+        mkm.MoveToLeftPose(oprt.vptPoint[0]-ptEdge, 0.94, {1.57-oprt.vdGripperDir[0], 0, 0});
+        mkm.MoveLdxdydz(0, 0, 0.1);
+        mgc.Gripper_anypose('L', CLS);
+        mkm.MoveLdxdydz(0, 0, -0.1);
+
+        //  移动到目标位置上方, 下移, 松开, 上移
+        mkm.MoveToLeftPose(oprt.vptPoint[1]-ptEdge, 0.94, {1.57-oprt.vdGripperDir[0], 0, 0});
+        mkm.MoveLdxdydz(0, 0, 0.1);
+        mgc.Gripper_anypose('L', OPN);
+        mkm.MoveLdxdydz(0, 0, -0.1);
+    }
+    else if(oprt.vptPoint[0].x < MDLEGE && oprt.vptPoint[1].x < MDLEGE){  //  R
+        //  右臂移动到目标点上方, 向下到夹取高度, 夹取, 上移
+        mkm.MoveToRightPose(oprt.vptPoint[0]-ptEdge, 0.94, {1.57-oprt.vdGripperDir[0], 0, 0});
+        mkm.MoveRdxdydz(0, 0, 0.1);
+        mgc.Gripper_anypose('R', CLS);
+        mkm.MoveRdxdydz(0, 0, -0.1);
+
+        //  移动到目标位置上方, 下移, 松开, 上移
+        mkm.MoveToRightPose(oprt.vptPoint[1]-ptEdge, 0.94, {1.57-oprt.vdGripperDir[0], 0, 0});
+        mkm.MoveRdxdydz(0, 0, 0.1);
+        mgc.Gripper_anypose('R', OPN);
+        mkm.MoveRdxdydz(0, 0, -0.1);
+    }
 }

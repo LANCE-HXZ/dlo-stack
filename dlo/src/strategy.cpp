@@ -220,7 +220,7 @@ SOperation CStrategy::strategy(){
 				putText(result_img, to_string(angle_o), cross_o+Point(20, -20), FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 0, 255), 2);
 				oprt_rt.vdGripperDir.push_back(angle_o);
 				cout << "  angle_o: " << angle_o << endl;
-				
+
 				break;
 			}
 		}
@@ -291,27 +291,38 @@ SOperation CStrategy::strategy(){
 	// === 检测T类交叉 ===
 	if(!end_strategy){
 		for(int i = 0; i < start.size(); ++i){
-			end_strategy = 1;
-			oprt_rt.strOperationType = "T";
-			cout << endl << "CLASS-T:" << endl;
-			cout << '\t' << "INDEX" << '\t' << "CROSS" << '\t' << "CLASS" << endl;
-			cout << '\t' << start[i] << '\t' << g_vnCrossList[start[i]] << '\t' << g_vnClassList[start[i]] << endl;
-			int j = g_vnClassList[start[i]] ? c0[g_vnCrossList[start[i]]] : c1[g_vnCrossList[start[i]]];
-			cout << '\t' << j << '\t' << g_vnCrossList[j] << '\t' << g_vnClassList[j] << endl;
+			int nEptX = pt[ept[i]].x, nEptY = pt[ept[i]].y;
+			if(nEptX > 160 && nEptX < 640 && nEptY > 160 && nEptY < 480){	//	端点不在图像边缘, 即悬空端点, 可拖动
+				end_strategy = 1;		oprt_rt.strOperationType = "T";
 
-			int ept_opt = i;
-			opt_index = cpt[start[i]]>ept[ept_opt]?cpt[start[i]]+1:cpt[start[i]]-1;
-			int fix_index = cpt[j]+2; // 固定点
-			Point cross_t = cross[g_vnCrossList[j]];
-		
-			draw_grip_direction(opt_index);
-			draw_point(pt[opt_index], "opt", blue);
-			draw_point(pt[fix_index], "fix", purple);
-			draw_point(cross_t, "ref", green);
-			break;
+				/*	打印交叉信息	*/
+				cout << endl << "CLASS-T:" << endl;
+				cout << '\t' << "INDEX" << '\t' << "CROSS" << '\t' << "CLASS" << endl;
+				cout << '\t' << start[i] << '\t' << g_vnCrossList[start[i]] << '\t' << g_vnClassList[start[i]] << endl;
+				int j = g_vnClassList[start[i]] ? c0[g_vnCrossList[start[i]]] : c1[g_vnCrossList[start[i]]];
+				cout << '\t' << j << '\t' << g_vnCrossList[j] << '\t' << g_vnClassList[j] << endl;
+
+				int ept_opt = i;
+				opt_index = cpt[start[i]]>ept[ept_opt]?cpt[start[i]]+1:cpt[start[i]]-1;		//	夹取点取相对于交叉点与端点不同边的一端
+				Point cross_t = cross[g_vnCrossList[j]];
+				// int fix_index = cpt[j]+2; // 固定点
+			
+				oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
+				oprt_rt.vptPoint.push_back(pt[opt_index]);
+				draw_point(pt[opt_index], "opt", blue);
+				draw_point(cross_t, "ref", green);
+				Point ptTarget = pt[opt_index] + 5*(pt[opt_index] - cross_t);
+				oprt_rt.vptPoint.push_back(ptTarget);
+				draw_point(ptTarget, "tar", yellow);
+				// draw_point(pt[fix_index], "fix", purple);
+
+				break;
+			}
 		}
 	}
-	cout << "--" << oprt_rt.strOperationType << "--" << endl;
+
+
+	cout << "======= " << oprt_rt.strOperationType << " ========" << endl;
 	cv::imwrite("pic_buffer/8_Result.png", result_img);
 	// namedWindow("Result", WINDOW_AUTOSIZE); // === 显示图片 ===
 	// imshow("Result", result_img);
