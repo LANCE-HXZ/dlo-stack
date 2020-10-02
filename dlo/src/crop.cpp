@@ -32,7 +32,7 @@ void crop_callback(int event, int x, int y, int flags, void* ustc)
 		circle(init, center, 3, cv::Scalar(0, 0, 255), -1);
 
 		float dx = x - x1; float dy = y - y1;
-		double angle = -atan(dx / (dy + 0.00000001)) * 180 / 3.14159265;
+		double angle = -atan(dx / (dy + 1e-10)) * 180 / 3.14159265;
 		if (dy < 0)
 		{
 			angle += 180;

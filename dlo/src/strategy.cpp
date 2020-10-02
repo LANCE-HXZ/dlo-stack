@@ -396,7 +396,7 @@ double CStrategy::draw_grip_direction(int opt_index)
     Point front_dir = pt[opt_index]+5*(dir[opt_index+1]+dir[opt_index+2]); // 画近似切线 -- 方向矢量
     Point back_dir = pt[opt_index]-5*(dir[opt_index+1]+dir[opt_index+2]);
 	double dy = front_dir.y - back_dir.y;
-	double dx = front_dir.y - back_dir.x + 0.000000001;
+	double dx = front_dir.y - back_dir.x + 1e-10;
     line(result_img, back_dir, front_dir, red, 2);
     putText(result_img, "grip_dir", front_dir+add_text, FONT_HERSHEY_SIMPLEX, 0.5, red, 1);
 	return atan(dy/dx);
@@ -405,7 +405,7 @@ double CStrategy::draw_grip_direction(Point ptTarget, Point ptTargetDir)
 {
 	line(result_img, ptTarget-ptTargetDir, ptTarget+ptTargetDir, yellow, 2);
 	double dy = ptTargetDir.y;
-	double dx = ptTargetDir.x + 0.000000001;
+	double dx = ptTargetDir.x + 1e-10;
 	return atan(dy/dx);
 }
 

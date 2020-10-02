@@ -91,7 +91,7 @@ vector<string> traversal(string thin_img_address, Mat rgb_img, dlo::BoundingBoxe
 					if (!incross[j]){
 						cpt.push_back(point_num);
 						cpt_num++;
-						double angle = -atan(dx / (dy+0.00000001)) * 180 / 3.14159 - 180;
+						double angle = -atan(dx / (dy+1e-10)) * 180 / 3.14159 - 180;
 						if (dy < 0) angle += 180;
 						Mat rotation = RotateImage(RGBimg, angle, Point(curr_pt.x, curr_pt.y));
 						cv::Rect select = cv::Rect(curr_pt.x - crop_size/2, curr_pt.y - crop_size, crop_size, crop_size);
@@ -281,7 +281,7 @@ void traversal_callback(int event, int x, int y, int flags, void* ustc)
 			for (int j = 0; j < center_num; j++) {
 				if (in_square(center[j], nx, ny, dir_size)){
 					if (!incross[j]){
-						double angle = -atan(dx / (dy+0.00000001)) * 180 / 3.14159 - 180;
+						double angle = -atan(dx / (dy+1e-10)) * 180 / 3.14159 - 180;
 						if (dy < 0) angle += 180;
 						Mat rotation = RotateImage(RGBimg, angle, Point(curr_pt.x, curr_pt.y));
 						cv::Rect select = cv::Rect(curr_pt.x - crop_size/2, curr_pt.y - crop_size, crop_size, crop_size);
