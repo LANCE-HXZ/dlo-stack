@@ -273,15 +273,18 @@ SOperation CStrategy::strategy(){
 					}
 				}
 				if(found){
-					end_strategy = 1;
-					oprt_rt.strOperationType = "IX";
+					end_strategy = 1;		oprt_rt.strOperationType = "IX";
+
 					opt_index = (cpt[i]+cpt[i+1])/2;
 					// ref_index = cpt[ref_i];
-					draw_grip_direction(opt_index);
+					oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
+					oprt_rt.vptPoint.push_back(pt[opt_index]);
 					draw_point(pt[opt_index], "opt", blue);
 					draw_point(cross_y, "ref", green);
-					target = cross_y + per_dir(pt[opt_index], cross_y, 30);
-					draw_point(target, "target", yellow);
+					Point ptTarget = cross_y + per_dir(pt[opt_index], cross_y, 30);
+					oprt_rt.vptPoint.push_back(ptTarget);
+					oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
+					draw_point(ptTarget, "target", yellow);
 					break;
 				}
 			}	
