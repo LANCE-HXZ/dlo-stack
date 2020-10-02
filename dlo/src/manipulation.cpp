@@ -92,7 +92,7 @@ void optionD(SOperation oprt, CKukaMoveit& mkm, CGripperControl& mgc){
     }
 }
 
-//  抓取点; 抓取角度, 解耦方向角度
+//  抓取点, 旋转参考点; 抓取角度, 旋转参考角度
 void optionQ(SOperation oprt, CKukaMoveit& mkm, CGripperControl& mgc){
     if(oprt.vptPoint.size()!=1){
         cout << "\n\n===== 【ERROR oprt.vptPoint.size() IN optionI】 SIZE: " << oprt.vptPoint.size() << " =====\n\n\n";
@@ -110,8 +110,11 @@ void optionQ(SOperation oprt, CKukaMoveit& mkm, CGripperControl& mgc){
         mgc.Gripper_anypose('L', CLS);
         mkm.MoveLdxdydz(0, 0, -0.1);
 
-        //  ========    计算旋转方向    ========
-        //  ========    旋转解耦    ========
+        //  确定旋转方向
+        int nRotationDir = (oprt.vdGripperDir[0]-90)/(abs(oprt.vdGripperDir[0]-90)+1e-10);      //  1或-1
+        //  移动到旋转参考点上方, 旋转解耦
+        mkm.MoveToLeftPose(oprt.vptPoint[1]-ptEdge, 0.74, {1.57-oprt.vdGripperDir[0], 0, 0});
+        mkm.MoveOneLeftJointIncrease(6, nRotationDir*3.14);
 
         //  移动到目标位置上方, 下移, 松开, 上移
         mkm.MoveToLeftPose(oprt.vptPoint[0]-ptEdge, 0.94, {1.57-oprt.vdGripperDir[0], 0, 0});
@@ -126,8 +129,11 @@ void optionQ(SOperation oprt, CKukaMoveit& mkm, CGripperControl& mgc){
         mgc.Gripper_anypose('R', CLS);
         mkm.MoveRdxdydz(0, 0, -0.1);
 
-        //  ========    计算旋转方向    ========
-        //  ========    旋转解耦    ========
+        //  确定旋转方向
+        int nRotationDir = (oprt.vdGripperDir[0]-90)/(abs(oprt.vdGripperDir[0]-90)+1e-10);      //  1或-1
+        //  移动到旋转参考点上方, 旋转解耦
+        mkm.MoveToRightPose(oprt.vptPoint[1]-ptEdge, 0.74, {1.57-oprt.vdGripperDir[0], 0, 0});
+        mkm.MoveOneRightJointIncrease(6, nRotationDir*3.14);
 
         //  移动到目标位置上方, 下移, 松开, 上移
         mkm.MoveToRightPose(oprt.vptPoint[0]-ptEdge, 0.94, {1.57-oprt.vdGripperDir[0], 0, 0});

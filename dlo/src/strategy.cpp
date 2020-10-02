@@ -218,6 +218,7 @@ SOperation CStrategy::strategy(){
 				putText(result_img, "rotation_dir", front_dir+add_text, FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 0, 255), 1);
 				double angle_o = angle(pt[opt_index], front_dir, cross_o);
 				putText(result_img, to_string(angle_o), cross_o+Point(20, -20), FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 0, 255), 2);
+				oprt_rt.vptPoint.push_back(cross_o);
 				oprt_rt.vdGripperDir.push_back(angle_o);
 				cout << "  angle_o: " << angle_o << endl;
 
