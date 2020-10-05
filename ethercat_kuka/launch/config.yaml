@@ -1,7 +1,0 @@
-ethercat_port : "enp4s0f1"
-
-rota_pos_limit: 30.0 #degree
-rota_neg_limit: -30.0
-
-upper_pos_limit: 450.0 #mm
-upper_neg_limit: -30.0

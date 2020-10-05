@@ -125,19 +125,17 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-include_directories(
-  include ${catkin_INCLUDE_DIRS}
-  include
+# include_directories(
+#  include ${catkin_INCLUDE_DIRS}
+#  include
 # include
-  ${catkin_INCLUDE_DIRS}
-)
-include_directories(include ${OpenCV_INCLUDE_DIRS})
+#  ${catkin_INCLUDE_DIRS}
+# )
+# include_directories(include ${OpenCV_INCLUDE_DIRS})
 # include_directories(
 # /home/lance/Workspaces/hxz_ws/devel/include
 # )
-include_directories(
-/home/lance/Workspaces/hxz_ws/src/dlo/include/dlo
-)
+
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/dlo.cpp
@@ -234,15 +232,15 @@ target_link_libraries(dlo_recognize_and_untie
   dlo
 )
 
+include_directories(
+  include 
+  ${catkin_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
+  /home/lance/Workspaces/hxz_ws/src/dlo/include
+  ../kukafri_hw/include
+)
+
 add_library(dlo
-  include/dlo.h
-  include/kuka_moveit.h
-  include/gripper_control.h
-  include/img_processing.h
-  include/strategy.h
-  include/dlo_global.h
-  include/traversal.h
-  include/manipulation.h
   src/ros_image_converter.cpp
   src/test_function.cpp
   src/crop.cpp
@@ -255,6 +253,7 @@ add_library(dlo
   src/gripper_control.cpp
   src/img_processing.cpp
   src/manipulation.cpp
+  ../kukafri_hw/src/servo.cpp
 )
 add_dependencies(dlo ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(dlo

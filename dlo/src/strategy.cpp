@@ -95,9 +95,11 @@ SOperation CStrategy::strategy(){
 			int opt2_index = ept[i+1]-10;
 			int rightindex = pt[opt1_index].x < pt[opt2_index].x ? opt1_index : opt2_index;
 			int leftindex = pt[opt1_index].x < pt[opt2_index].x ? opt2_index : opt1_index;
+			oprt_rt.vptPoint.push_back(pt[leftindex]);
+			oprt_rt.vptPoint.push_back(pt[rightindex]);
 
-			oprt_rt.vptPoint.push_back(draw_point(pt[leftindex], "OPT_L", red));
-			oprt_rt.vptPoint.push_back(draw_point(pt[rightindex], "OPT_R", red));
+			draw_point(pt[rightindex], "OPT_R", red);
+			draw_point(pt[leftindex], "OPT_L", red);
             oprt_rt.vdGripperDir.push_back(draw_grip_direction(leftindex));
 			oprt_rt.vdGripperDir.push_back(draw_grip_direction(rightindex));
 
@@ -106,9 +108,11 @@ SOperation CStrategy::strategy(){
 			int nStepLength = abs(rightindex - leftindex);		// 	两个抓取点中间的遍历步数
 			Point target_left = Point(pt[leftindex-nStepLength*1].x, target_y);
 			Point target_right = Point(pt[rightindex+nStepLength*1].x, target_y);
+			oprt_rt.vptPoint.push_back(target_right);
+			oprt_rt.vptPoint.push_back(target_left);
 
-			oprt_rt.vptPoint.push_back(draw_point(target_left, "target_left", yellow));
-			oprt_rt.vptPoint.push_back(draw_point(target_right, "target_right", yellow));
+			draw_point(target_left, "target_left", yellow);
+			draw_point(target_right, "target_right", yellow);
 			oprt_rt.vdGripperDir.push_back(draw_grip_direction(target_left, target_dir));
 			oprt_rt.vdGripperDir.push_back(draw_grip_direction(target_right, target_dir));
 
@@ -150,14 +154,16 @@ SOperation CStrategy::strategy(){
 					}
 
 					opt_index = (cpt[i] + cpt[i+1])/2;
+					oprt_rt.vptPoint.push_back(pt[opt_index]);
+					oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
+					draw_point(pt[opt_index], "opt", blue);
 
 					ref_index = (cpt[c0[g_vnCrossList[i]]] + cpt[c0[g_vnCrossList[i + 1]]])/2;
 					draw_point(pt[ref_index], "ref", green);
 					target = pt[ref_index] + per_dir(pt[opt_index], pt[ref_index], 30);
+					draw_point(target, "target", yellow);
 
-					oprt_rt.vptPoint.push_back(draw_point(pt[opt_index], "opt", blue));
-					oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
-					oprt_rt.vptPoint.push_back(draw_point(target, "target", yellow));
+					oprt_rt.vptPoint.push_back(target);
 					oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
 
 					break;
@@ -192,11 +198,15 @@ SOperation CStrategy::strategy(){
 			
 				/*	抓取位置位于两个自交叉点间曲线段的中间位置附近	*/
 				opt_index = (cpt[i] + cpt[i+1])/2;
-				
+				oprt_rt.vptPoint.push_back(pt[opt_index]);
+				oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
+				draw_point(pt[opt_index], "opt", blue);
+
 				/*	对应的自交叉点	*/
 				Point cross_o = cross[g_vnCrossList[i]];
 				ref_index = cpt[c1[g_vnCrossList[i]]];
 				cout << "i: " << i << endl;
+				draw_point(cross_o, "ref", green);
 
 				/*	自交叉点位置位于上方的线缆切线方向	*/
 				front_dir = cross_o+5*(dir[ref_index+1]+dir[ref_index-1]);
@@ -208,12 +218,9 @@ SOperation CStrategy::strategy(){
 				putText(result_img, "rotation_dir", front_dir+add_text, FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 0, 255), 1);
 				double angle_o = angle(pt[opt_index], front_dir, cross_o);
 				putText(result_img, to_string(angle_o), cross_o+Point(20, -20), FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 0, 255), 2);
-				cout << "  angle_o: " << angle_o << endl;
-
-				oprt_rt.vptPoint.push_back(draw_point(pt[opt_index], "opt", blue));
-				oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
-				oprt_rt.vptPoint.push_back(draw_point(cross_o, "ref", green));
+				oprt_rt.vptPoint.push_back(cross_o);
 				oprt_rt.vdGripperDir.push_back(angle_o);
+				cout << "  angle_o: " << angle_o << endl;
 
 				break;
 			}
@@ -271,14 +278,14 @@ SOperation CStrategy::strategy(){
 
 					opt_index = (cpt[i]+cpt[i+1])/2;
 					// ref_index = cpt[ref_i];
+					oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
+					oprt_rt.vptPoint.push_back(pt[opt_index]);
+					draw_point(pt[opt_index], "opt", blue);
 					draw_point(cross_y, "ref", green);
 					Point ptTarget = cross_y + per_dir(pt[opt_index], cross_y, 30);
-
-					oprt_rt.vptPoint.push_back(draw_point(pt[opt_index], "opt", blue));
+					oprt_rt.vptPoint.push_back(ptTarget);
 					oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
-					oprt_rt.vptPoint.push_back(draw_point(ptTarget, "target", yellow));
-					oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
-					
+					draw_point(ptTarget, "target", yellow);
 					break;
 				}
 			}	
@@ -304,14 +311,15 @@ SOperation CStrategy::strategy(){
 				Point cross_t = cross[g_vnCrossList[j]];
 				// int fix_index = cpt[j]+2; // 固定点
 			
+				oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
+				oprt_rt.vptPoint.push_back(pt[opt_index]);
+				draw_point(pt[opt_index], "opt", blue);
 				draw_point(cross_t, "ref", green);
 				Point ptTarget = pt[opt_index] + 5*(pt[opt_index] - cross_t);
+				oprt_rt.vptPoint.push_back(ptTarget);
+				draw_point(ptTarget, "tar", yellow);
+				// draw_point(pt[fix_index], "fix", purple);
 
-				oprt_rt.vptPoint.push_back(draw_point(pt[opt_index], "opt", blue));
-				oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
-				oprt_rt.vptPoint.push_back(draw_point(ptTarget, "tar", yellow));
-				oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
-				
 				break;
 			}
 		}
@@ -401,11 +409,10 @@ double CStrategy::draw_grip_direction(Point ptTarget, Point ptTargetDir)
 	return atan(dy/dx);
 }
 
-Point CStrategy::draw_point(Point pt, string pt_text, Scalar color, float text_size, int text_thick)
+void CStrategy::draw_point(Point pt, string pt_text, Scalar color, float text_size, int text_thick)
 {
     circle(result_img, pt, 5, color, -1);
 	putText(result_img, pt_text, pt+add_text, FONT_HERSHEY_SIMPLEX, text_size, color, text_thick);
-	return pt;
 }
 
 void CStrategy::cout_cross(int i){
