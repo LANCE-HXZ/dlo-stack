@@ -239,11 +239,7 @@ include_directories(
   /home/lance/Workspaces/hxz_ws/src/dlo/include
   ../kukafri_hw/include
 )
-<<<<<<< HEAD
 
-=======
-# test
->>>>>>> dlo-stack
 add_library(dlo
   src/ros_image_converter.cpp
   src/test_function.cpp
