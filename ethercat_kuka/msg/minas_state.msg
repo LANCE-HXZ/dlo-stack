@@ -1,2 +1,0 @@
-State rota
-State upper
