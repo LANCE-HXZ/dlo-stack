@@ -19,12 +19,12 @@ using namespace std;
 
 class Servo_Lib{
     private:
-        vector<double> LeftPos;
-        vector<double> LeftEuler;
-        vector<double> leftjoint;
-        vector<double> RightPos;
-        vector<double> RightEuler;
-        vector<double> rightjoint;
+        vector<double> m_vdLeftPos;
+        vector<double> m_vdLeftEuler;
+        vector<double> m_vdLeftjoint;
+        vector<double> m_vdRightPos;
+        vector<double> m_vdRightEuler;
+        vector<double> m_vdRightjoint;
 
         ros::NodeHandle nh;
         ros::ServiceClient leftclient;

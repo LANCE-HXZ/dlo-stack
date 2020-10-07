@@ -603,7 +603,7 @@ void DrawArc(Mat &src, Mat &bw, Point ArcCenter, Point StartPoint, Point EndPoin
 }
 
 
-cv::Mat new_bw = readImg("/home/lance/Data/3-WhiteLine/1.png");
+cv::Mat new_bw = cv::imread("/home/lance/Data/3-WhiteLine/1.png");
 // class Ve {
 // public:
 // 	vector<Mat> ReadImage(cv::String pattern);

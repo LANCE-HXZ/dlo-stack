@@ -28,15 +28,15 @@ Servo_Lib::~Servo_Lib()
 {}
 
 void Servo_Lib::leftkukaCb(const kukafri_hw::kukaState::ConstPtr& msg){
-    LeftPos=msg->Pos;
-    LeftEuler=msg->EulerZYX;
-    leftjoint=msg->Joints;
+    m_vdLeftPos=msg->Pos;
+    m_vdLeftEuler=msg->EulerZYX;
+    m_vdLeftjoint=msg->Joints;
 }
 
 void Servo_Lib::rightkukaCb(const kukafri_hw::kukaState::ConstPtr& msg){
-    RightPos=msg->Pos;
-    RightEuler=msg->EulerZYX;
-    rightjoint=msg->Joints;
+    m_vdRightPos=msg->Pos;
+    m_vdRightEuler=msg->EulerZYX;
+    m_vdRightjoint=msg->Joints;
 }
 
 
@@ -104,12 +104,12 @@ void Servo_Lib::MoveDLeftEulerXYZ(double dx,double dy,double dz,double dalpha,do
     SetLeftMoveMode(1,path,time);
     ros::spinOnce();
     kukafri_hw::kukaCmdPosE msg;
-    msg.X_Axis=LeftPos[0]+dx;
-    msg.Y_Axis=LeftPos[1]+dy;
-    msg.Z_Axis=LeftPos[2]+dz;
-    msg.alpha=LeftEuler[0]+dalpha;
-    msg.beta=LeftEuler[1]+dbeta;
-    msg.gamma=LeftEuler[2]+dgamma;
+    msg.X_Axis=m_vdLeftPos[0]+dx;
+    msg.Y_Axis=m_vdLeftPos[1]+dy;
+    msg.Z_Axis=m_vdLeftPos[2]+dz;
+    msg.alpha=m_vdLeftEuler[0]+dalpha;
+    msg.beta=m_vdLeftEuler[1]+dbeta;
+    msg.gamma=m_vdLeftEuler[2]+dgamma;
     LeftEulerXYZ.publish(msg);
 }
 
@@ -117,13 +117,13 @@ void Servo_Lib::MoveDLeftQuaternion(double dX,double dY,double dZ,double dx,doub
     SetLeftMoveMode(1,path,time);
     ros::spinOnce();
     kukafri_hw::kukaCmdPosQ msg;
-    msg.X_Axis=LeftPos[0]+dX;
-    msg.Y_Axis=LeftPos[1]+dY;
-    msg.Z_Axis=LeftPos[2]+dZ;
-    msg.x=LeftPos[3]+dx;
-    msg.y=LeftPos[4]+dy;
-    msg.z=LeftPos[5]+dz;
-    msg.w=LeftPos[6]+dw;
+    msg.X_Axis=m_vdLeftPos[0]+dX;
+    msg.Y_Axis=m_vdLeftPos[1]+dY;
+    msg.Z_Axis=m_vdLeftPos[2]+dZ;
+    msg.x=m_vdLeftPos[3]+dx;
+    msg.y=m_vdLeftPos[4]+dy;
+    msg.z=m_vdLeftPos[5]+dz;
+    msg.w=m_vdLeftPos[6]+dw;
     LeftQuaternion.publish(msg);
 }
 
@@ -131,13 +131,13 @@ void Servo_Lib::MoveDLeftJoint(double dJoint1,double dJoint2,double dJoint3,doub
     SetLeftMoveMode(0,path,time);
     ros::spinOnce();
     kukafri_hw::kukaCmdJoint msg;
-    msg.joint1=leftjoint[0]+dJoint1;
-    msg.joint2=leftjoint[1]+dJoint2;
-    msg.joint3=leftjoint[2]+dJoint3;
-    msg.joint4=leftjoint[3]+dJoint4;
-    msg.joint5=leftjoint[4]+dJoint5;
-    msg.joint6=leftjoint[5]+dJoint6;
-    msg.joint7=leftjoint[6]+dJoint6;
+    msg.joint1=m_vdLeftjoint[0]+dJoint1;
+    msg.joint2=m_vdLeftjoint[1]+dJoint2;
+    msg.joint3=m_vdLeftjoint[2]+dJoint3;
+    msg.joint4=m_vdLeftjoint[3]+dJoint4;
+    msg.joint5=m_vdLeftjoint[4]+dJoint5;
+    msg.joint6=m_vdLeftjoint[5]+dJoint6;
+    msg.joint7=m_vdLeftjoint[6]+dJoint6;
     LeftJoint.publish(msg);
 }
 
@@ -191,12 +191,12 @@ void Servo_Lib::MoveDRightEulerXYZ(double dx,double dy,double dz,double dalpha,d
     SetRightMoveMode(1,path,time);
     ros::spinOnce();
     kukafri_hw::kukaCmdPosE msg;
-    msg.X_Axis=RightPos[0]+dx;
-    msg.Y_Axis=RightPos[1]+dy;
-    msg.Z_Axis=RightPos[2]+dz;
-    msg.alpha=RightEuler[0]+dalpha;
-    msg.beta=RightEuler[1]+dbeta;
-    msg.gamma=RightEuler[2]+dgamma;
+    msg.X_Axis=m_vdRightPos[0]+dx;
+    msg.Y_Axis=m_vdRightPos[1]+dy;
+    msg.Z_Axis=m_vdRightPos[2]+dz;
+    msg.alpha=m_vdRightEuler[0]+dalpha;
+    msg.beta=m_vdRightEuler[1]+dbeta;
+    msg.gamma=m_vdRightEuler[2]+dgamma;
     RightEulerXYZ.publish(msg);
 }
 
@@ -204,13 +204,13 @@ void Servo_Lib::MoveDRightQuaternion(double dX,double dY,double dZ,double dx,dou
     SetRightMoveMode(1,path,time);
     ros::spinOnce();
     kukafri_hw::kukaCmdPosQ msg;
-    msg.X_Axis=RightPos[0]+dX;
-    msg.Y_Axis=RightPos[1]+dY;
-    msg.Z_Axis=RightPos[2]+dZ;
-    msg.x=RightPos[3]+dx;
-    msg.y=RightPos[4]+dy;
-    msg.z=RightPos[5]+dz;
-    msg.w=RightPos[6]+dw;
+    msg.X_Axis=m_vdRightPos[0]+dX;
+    msg.Y_Axis=m_vdRightPos[1]+dY;
+    msg.Z_Axis=m_vdRightPos[2]+dZ;
+    msg.x=m_vdRightPos[3]+dx;
+    msg.y=m_vdRightPos[4]+dy;
+    msg.z=m_vdRightPos[5]+dz;
+    msg.w=m_vdRightPos[6]+dw;
     RightQuaternion.publish(msg);
 }
 
@@ -218,13 +218,13 @@ void Servo_Lib::MoveDRightJoint(double dJoint1,double dJoint2,double dJoint3,dou
     SetRightMoveMode(0,path,time);
     ros::spinOnce();
     kukafri_hw::kukaCmdJoint msg;
-    msg.joint1=rightjoint[0]+dJoint1;
-    msg.joint2=rightjoint[1]+dJoint2;
-    msg.joint3=rightjoint[2]+dJoint3;
-    msg.joint4=rightjoint[3]+dJoint4;
-    msg.joint5=rightjoint[4]+dJoint5;
-    msg.joint6=rightjoint[5]+dJoint6;
-    msg.joint7=rightjoint[6]+dJoint7;
+    msg.joint1=m_vdRightjoint[0]+dJoint1;
+    msg.joint2=m_vdRightjoint[1]+dJoint2;
+    msg.joint3=m_vdRightjoint[2]+dJoint3;
+    msg.joint4=m_vdRightjoint[3]+dJoint4;
+    msg.joint5=m_vdRightjoint[4]+dJoint5;
+    msg.joint6=m_vdRightjoint[5]+dJoint6;
+    msg.joint7=m_vdRightjoint[6]+dJoint7;
     RightJoint.publish(msg);
 }
 
