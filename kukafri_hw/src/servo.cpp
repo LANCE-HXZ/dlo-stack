@@ -174,7 +174,7 @@ void CIiwaServo::MoveRightQuaternion(double dX,double dY,double dZ,double dOx,do
     RightQuaternion.publish(msg);
 }
 
-void CIiwaServo::MoveRightJoint(double dJoint1,double dJoint2,double dJoint3,double dJoint4,double dJoint5,double dJoint6,double dJoint7,double dMoveDuration,int nPathMode){
+void CIiwaServo::MoveRightToJoint(double dJoint1,double dJoint2,double dJoint3,double dJoint4,double dJoint5,double dJoint6,double dJoint7,double dMoveDuration,int nPathMode){
     SetRightMoveMode(0,nPathMode,dMoveDuration);
     kukafri_hw::kukaCmdJoint msg;
     msg.joint1=dJoint1;
@@ -214,7 +214,7 @@ void CIiwaServo::MoveRightQuaternionIncrease(double dDX,double dDY,double dDZ,do
     RightQuaternion.publish(msg);
 }
 
-void CIiwaServo::MoveDRightJoint(double dDJoint1,double dDJoint2,double dDJoint3,double dDJoint4,double dDJoint5,double dDJoint6,double dDJoint7,double dMoveDuration,int nPathMode){
+void CIiwaServo::MoveRightJointIncrease(double dDJoint1,double dDJoint2,double dDJoint3,double dDJoint4,double dDJoint5,double dDJoint6,double dDJoint7,double dMoveDuration,int nPathMode){
     SetRightMoveMode(0,nPathMode,dMoveDuration);
     ros::spinOnce();
     kukafri_hw::kukaCmdJoint msg;

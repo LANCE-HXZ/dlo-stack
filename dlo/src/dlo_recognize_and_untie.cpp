@@ -17,9 +17,11 @@ int main(int argc, char *argv[])
   // ros::AsyncSpinner spinner(4);
   // spinner.start();
   // km_main.GoHome(D_GROUP);
-  // sv.SetLeftMoveMode()
-  sv.MoveLeftToHome(10);
-  sv.MoveRightToHome(10);
+  sv.MoveLeftToHome();
+  sv.MoveRightToHome();
+  ros::Duration(10).sleep();
+  sv.MoveLeftToJoint(0, 0, 0, 0, 0, 0, 0);
+  sv.MoveRightToJoint(0, 0, 0, 0, 0, 0, 0);
   ros::Duration(10).sleep();
   cout << "end1\n";
 
