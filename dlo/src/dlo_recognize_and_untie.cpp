@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
   ros::NodeHandle nh;
   // CKukaMoveit km_main;
   CImageConverter ic;
-  Servo_Lib sv;
+  CIiwaServo sv;
 
   // ros::AsyncSpinner spinner(4);
   // spinner.start();

@@ -17,7 +17,7 @@
 
 using namespace std;
 
-class Servo_Lib{
+class CIiwaServo{
     private:
         vector<double> m_vdLeftPos;
         vector<double> m_vdLeftEuler;
@@ -27,10 +27,10 @@ class Servo_Lib{
         vector<double> m_vdRightjoint;
 
         ros::NodeHandle nh;
-        ros::ServiceClient leftclient;
-        ros::ServiceClient rightclient;
-        ros::ServiceClient lefthomeclient;
-        ros::ServiceClient righthomeclient;
+        ros::ServiceClient LeftClient;
+        ros::ServiceClient RightClient;
+        ros::ServiceClient LeftHomeClient;
+        ros::ServiceClient RightHomeClient;
                 
         ros::Publisher LeftEulerXYZ;
         ros::Publisher LeftQuaternion;
@@ -42,51 +42,60 @@ class Servo_Lib{
         ros::Subscriber LeftKukaPos;
         ros::Subscriber RightKukaPos;
 
-        kukafri_hw::moveToHome homesrv;
+        kukafri_hw::moveToHome homeSrv;
 
-        void SetLeftMoveMode(int moveMode=0,int pathMode=0,double moveDuration=10);
-        void SetRightMoveMode(int moveMode=0,int pathMode=0,double moveDuration=10);
-        void leftkukaCb(const kukafri_hw::kukaState::ConstPtr& msg);
-        void rightkukaCb(const kukafri_hw::kukaState::ConstPtr& msg);
+        void SetLeftMoveMode(int nMoveMode=0, int nPathMode=0, double dMoveDuration=10);
+        void SetRightMoveMode(int nMoveMode=0, int nPathMode=0, double dMoveDuration=10);
+        void LeftKukaCb(const kukafri_hw::kukaState::ConstPtr& msg);
+        void RightkukaCb(const kukafri_hw::kukaState::ConstPtr& msg);
 
     public:
-        Servo_Lib();
-        ~Servo_Lib();
+        CIiwaServo();
+        ~CIiwaServo();
 
-        /*返回Lefthome位置*/
-        void MoveLeftToHome(double time=10);
-        /*以相机坐标系为准，移动机械臂以指定位姿移动到指定点       alpha为沿X轴旋转到的目标角度    beta为沿Y轴旋转到的目标角度   gamma为沿Z轴旋转到的目标角度*/
-        void MoveLeftEulerXYZ(double X_Axis=0.6,double Y_Axis=0.225,double Z_Axis=0.669,double alpha=0,double beta=0,double gamma=-90,double time=10,int path=0);
+        /*  返回Lefthome位置    */
+        void MoveLeftToHome(double dMoveDuration=10);
+        /*  以相机坐标系为准，移动机械臂以指定位姿移动到指定点       alpha为沿X轴旋转到的目标角度    beta为沿Y轴旋转到的目标角度   gamma为沿Z轴旋转到的目标角度*/
+        void MoveLeftEulerXYZ(double dX=0.6, double dY=0.225, double dZ=0.669, double dOx=0, double dOy=0, double dOz=-90, 
+                              double dMoveDuration=10, int nPathMode=0);
         /*以相机坐标系为准，移动机械臂以指定位姿移动到指定点       x,y,z,w为目标点四元数*/
-        void MoveLeftQuaternion(double X_Axis=0.6,double Y_Axis=0.225,double Z_Axis=0.669,double x=0,double y=0,double z=-0.707,double w=0.707,double time=10,int path=0);
+        void MoveLeftQuaternion(double dX=0.6, double dY=0.225, double dZ=0.669, double dOx=0, double dOy=0, double dOz=-0.707, double dOw=0.707,
+                                double dMoveDuration=10, int nPathMode=0);
         /*指定机械臂七个关节角进行移动*/
-        void MoveLeftJoint(double Joint1=-23.09,double Joint2=-29.527,double Joint3=4.9144,double Joint4=-72.56458,double Joint5=25.49335,double Joint6=46.8971,double Joint7=9.2455,double time=10,int path=0);
+        void MoveLeftToJoint(double dJoint1=-23.09, double dJoint2=-29.527, double dJoint3=4.9144, double dJoint4=-72.56458, double dJoint5=25.49335,
+                             double dJoint6=46.8971, double dJoint7=9.2455, double dMoveDuration=10, int nPathMode=0);
         /*机械臂相对于当前位置移动一个坐标和位姿,位姿用EulerXYZ表示*/
-        void MoveDLeftEulerXYZ(double dx=0,double dy=0,double dz=0,double dalpha=0,double dbeta=0,double dgamma=0,double time=10,int path=0);
+        void MoveLeftEulerIncrease(double dDX=0,double dDY=0,double dDZ=0,double dDOx=0,double dDOy=0,double dDOz=0,double dMoveDuration=10,int nPathMode=0);
         /*机械臂相对于当前位置移动一个坐标和位姿，位姿用四元数表示*/
-        void MoveDLeftQuaternion(double dX=0,double dY=0,double dZ=0,double dx=0,double dy=0,double dz=0,double dw=0,double time=10,int path=0);
+        void MoveDLeftQuaternion(double dDX=0,double dDY=0,double dDZ=0,double dDOx=0,double dDOy=0,double dDOz=0,double dDOw=0,
+                                 double dMoveDuration=10,int nPathMode=0);
         /*机械臂各关节角相对于当前关节角移动一个关节角,单位为°*/
-        void MoveDLeftJoint(double dJoint1=0,double dJoint2=0,double dJoint3=0,double dJoint4=0,double dJoint5=0,double dJoint6=0,double dJoint7=0,double time=10,int path=0);
+        void MoveDLeftJoint(double dDJoint1=0,double dDJoint2=0,double dDJoint3=0,double dDJoint4=0,double dDJoint5=0,double dDJoint6=0,double dDJoint7=0,
+                            double dMoveDuration=10,int nPathMode=0);
 
         /*返回Righthome位置*/
-        void MoveRightToHome(double time=10);
+        void MoveRightToHome(double dMoveDuration=10);
         /*以相机坐标系为准，移动机械臂以指定位姿移动到指定点       alpha为沿X轴旋转到的目标角度    beta为沿Y轴旋转到的目标角度   gamma为沿Z轴旋转到的目标角度*/
-        void MoveRightEulerXYZ(double X_Axis=-0.6,double Y_Axis=0.225,double Z_Axis=0.7,double alpha=0,double beta=0,double gamma=-90,double time=10,int path=0);
+        void MoveRightEulerXYZ(double dX=-0.6,double dY=0.225,double dZ=0.7,double dOx=0,double dOy=0,double dOz=-90,double dMoveDuration=10,int nPathMode=0);
         /*以相机坐标系为准，移动机械臂以指定位姿移动到指定点       x,y,z,w为目标点四元数*/
-        void MoveRightQuaternion(double X_Axis=-0.6,double Y_Axis=0.225,double Z_Axis=0.7,double x=0,double y=0,double z=-0.707,double w=0.707,double time=10,int path=0);
+        void MoveRightQuaternion(double dX=-0.6,double dY=0.225,double dZ=0.7,double dOx=0,double dOy=0,double dOz=-0.707,double dOw=0.707,
+                                 double dMoveDuration=10,int nPathMode=0);
         /*指定机械臂七个关节角进行移动*/
-        void MoveRightJoint(double Joint1=28.6085,double Joint2=-29.537,double Joint3=-6.1648,double Joint4=-72.56458,double Joint5=-29.92,double Joint6=48.27,double Joint7=-8.845,double time=10,int path=0);
+        void MoveRightJoint(double dJoint1=28.6085,double dJoint2=-29.537,double dJoint3=-6.1648,double dJoint4=-72.56458,double dJoint5=-29.92,
+                            double dJoint6=48.27,double dJoint7=-8.845,double dMoveDuration=10,int nPathMode=0);
         /*机械臂相对于当前位置移动一个坐标和位姿,位姿用EulerXYZ表示*/
-        void MoveDRightEulerXYZ(double dx=0,double dy=0,double dz=0,double dalpha=0,double dbeta=0,double dgamma=0,double time=10,int path=0);
+        void MoveDRightEulerXYZ(double dDX=0,double dDY=0,double dDZ=0,double dDOx=0,double dDOy=0,double dDOz=0,double dMoveDuration=10,int nPathMode=0);
         /*机械臂相对于当前位置移动一个坐标和位姿，位姿用四元数表示*/
-        void MoveDRightQuaternion(double dX=0,double dY=0,double dZ=0,double dx=0,double dy=0,double dz=0,double dw=0,double time=10,int path=0);
+        void MoveDRightQuaternion(double dDX=0,double dDY=0,double dDZ=0,double dDOx=0,double dDOy=0,double dDOz=0,double dDOw=0,
+                                  double dMoveDuration=10,int nPathMode=0);
         /*机械臂各关节角相对于当前关节角移动一个关节角,单位为°*/
-        void MoveDRightJoint(double dJoint1=0,double dJoint2=0,double dJoint3=0,double dJoint4=0,double dJoint5=0,double dJoint6=0,double dJoint7=0,double time=10,int path=0);
+        void MoveDRightJoint(double dDJoint1=0,double dDJoint2=0,double dDJoint3=0,double dDJoint4=0,double dDJoint5=0,double dDJoint6=0,double dDJoint7=0,
+                             double dMoveDuration=10,int nPathMode=0);
 
         /*返回Dualhome位置*/
-        void MoveDualToHome(double time=10);
+        void MoveDualToHome(double dMoveDuration=10);
         /*以相机坐标系为准，移动机械臂以指定位姿移动到指定点       alpha为沿X轴旋转到的目标角度    beta为沿Y轴旋转到的目标角度   gamma为沿Z轴旋转到的目标角度*/
-        void MoveDualEulerXYZ(double X_Axis=-0.6,double Y_Axis=0.225,double Z_Axis=0.7,double alpha=0,double beta=0,double gamma=-90,double time=10,int path=0);
+        void MoveDualEulerXYZ(double dX=-0.6,double dY=0.225,double dZ=0.7,double dOx=0,double dOy=0,double dOz=-90,double dMoveDuration=10,int nPathMode=0);
 };
 
 #endif
