@@ -1,7 +1,7 @@
 #include "kukafri_hw/servo.h"
 
 using namespace std;
-
+ 
 CIiwaServo::CIiwaServo(){
     LeftClient=nh.serviceClient<kukafri_hw::setMoveMode>("/left/setMoveMode");
     LeftHomeClient=nh.serviceClient<kukafri_hw::moveToHome>("/left/MoveToHome");
@@ -40,200 +40,200 @@ void CIiwaServo::RightkukaCb(const kukafri_hw::kukaState::ConstPtr& msg){
 }
 
 
-void CIiwaServo::SetLeftMoveMode(int moveMode,int pathMode,double moveDuration){
+void CIiwaServo::SetLeftMoveMode(int nMoveMode,int nPathMode,double dMoveDuration){
     kukafri_hw::setMoveMode leftsrv;
-    leftsrv.request.moveMode=moveMode;
-    leftsrv.request.pathMode=pathMode;
-    leftsrv.request.moveDuration=moveDuration;
+    leftsrv.request.moveMode=nMoveMode;
+    leftsrv.request.pathMode=nPathMode;
+    leftsrv.request.moveDuration=dMoveDuration;
     LeftClient.call(leftsrv);
 }
 
-void CIiwaServo::SetRightMoveMode(int moveMode,int pathMode,double moveDuration){
+void CIiwaServo::SetRightMoveMode(int nMoveMode,int nPathMode,double dMoveDuration){
     kukafri_hw::setMoveMode rightsrv;
-    rightsrv.request.moveMode=moveMode;
-    rightsrv.request.pathMode=pathMode;
-    rightsrv.request.moveDuration=moveDuration;
+    rightsrv.request.moveMode=nMoveMode;
+    rightsrv.request.pathMode=nPathMode;
+    rightsrv.request.moveDuration=dMoveDuration;
     RightClient.call(rightsrv);
 }
 
 /****************************************左臂相关函数****************************************************/
-void CIiwaServo::MoveLeftToHome(double time){
-    SetLeftMoveMode(0,0,time);
+void CIiwaServo::MoveLeftToHome(double dMoveDuration){
+    SetLeftMoveMode(0,0,dMoveDuration);
     LeftHomeClient.call(homeSrv);
 }
 
-void CIiwaServo::MoveLeftEulerXYZ(double X_Axis,double Y_Axis,double Z_Axis,double alpha,double beta,double gamma,double time,int path){
-    SetLeftMoveMode(1,path,time);
+void CIiwaServo::MoveLeftEulerXYZ(double dX,double dY,double dZ,double dOx,double dOy,double dOz,double dMoveDuration,int nPathMode){
+    SetLeftMoveMode(1,nPathMode,dMoveDuration);
     kukafri_hw::kukaCmdPosE msg;
-    msg.X_Axis=X_Axis;
-    msg.Y_Axis=Y_Axis;
-    msg.Z_Axis=Z_Axis;
-    msg.alpha=alpha;
-    msg.beta=beta;
-    msg.gamma=gamma;
+    msg.X_Axis=dX;
+    msg.Y_Axis=dY;
+    msg.Z_Axis=dZ;
+    msg.alpha=dOx;
+    msg.beta=dOy;
+    msg.gamma=dOz;
     LeftEulerXYZ.publish(msg);
 }
 
-void CIiwaServo::MoveLeftQuaternion(double X_Axis,double Y_Axis,double Z_Axis,double x,double y,double z,double w,double time,int path){
-    SetLeftMoveMode(1,path,time);
+void CIiwaServo::MoveLeftQuaternion(double dX,double dY,double dZ,double dOx,double dOy,double dOz,double dOw,double dMoveDuration,int nPathMode){
+    SetLeftMoveMode(1,nPathMode,dMoveDuration);
     kukafri_hw::kukaCmdPosQ msg;
-    msg.X_Axis=X_Axis;
-    msg.Y_Axis=Y_Axis;
-    msg.Z_Axis=Z_Axis;
-    msg.x=x;
-    msg.y=y;
-    msg.z=z;
-    msg.w=w;
+    msg.X_Axis=dX;
+    msg.Y_Axis=dY;
+    msg.Z_Axis=dZ;
+    msg.x=dOx;
+    msg.y=dOy;
+    msg.z=dOz;
+    msg.w=dOw;
     LeftQuaternion.publish(msg);
 }
 
-void CIiwaServo::MoveLeftToJoint(double Joint1,double Joint2,double Joint3,double Joint4,double Joint5,double Joint6,double Joint7,double time,int path){
-    SetLeftMoveMode(0,path,time);
+void CIiwaServo::MoveLeftToJoint(double dJoint1,double dJoint2,double dJoint3,double dJoint4,double dJoint5,double dJoint6,double dJoint7,double dMoveDuration,int nPathMode){
+    SetLeftMoveMode(0,nPathMode,dMoveDuration);
     kukafri_hw::kukaCmdJoint msg;
-    msg.joint1=Joint1;
-    msg.joint2=Joint2;
-    msg.joint3=Joint3;
-    msg.joint4=Joint4;
-    msg.joint5=Joint5;
-    msg.joint6=Joint6;
-    msg.joint7=Joint7;
+    msg.joint1=dJoint1;
+    msg.joint2=dJoint2;
+    msg.joint3=dJoint3;
+    msg.joint4=dJoint4;
+    msg.joint5=dJoint5;
+    msg.joint6=dJoint6;
+    msg.joint7=dJoint7;
     LeftJoint.publish(msg);
 }
 
-void CIiwaServo::MoveLeftEulerIncrease(double dx,double dy,double dz,double dalpha,double dbeta,double dgamma,double time,int path){
-    SetLeftMoveMode(1,path,time);
+void CIiwaServo::MoveLeftEulerIncrease(double dDX,double dDY,double dDZ,double dOx,double dDOy,double dDOz,double dMoveDuration,int nPathMode){
+    SetLeftMoveMode(1,nPathMode,dMoveDuration);
     ros::spinOnce();
     kukafri_hw::kukaCmdPosE msg;
-    msg.X_Axis=m_vdLeftPos[0]+dx;
-    msg.Y_Axis=m_vdLeftPos[1]+dy;
-    msg.Z_Axis=m_vdLeftPos[2]+dz;
-    msg.alpha=m_vdLeftEuler[0]+dalpha;
-    msg.beta=m_vdLeftEuler[1]+dbeta;
-    msg.gamma=m_vdLeftEuler[2]+dgamma;
+    msg.X_Axis=m_vdLeftPos[0]+dDX;
+    msg.Y_Axis=m_vdLeftPos[1]+dDY;
+    msg.Z_Axis=m_vdLeftPos[2]+dDZ;
+    msg.alpha=m_vdLeftEuler[0]+dOx;
+    msg.beta=m_vdLeftEuler[1]+dDOy;
+    msg.gamma=m_vdLeftEuler[2]+dDOz;
     LeftEulerXYZ.publish(msg);
 }
 
-void CIiwaServo::MoveDLeftQuaternion(double dX,double dY,double dZ,double dx,double dy,double dz,double dw,double time,int path){
-    SetLeftMoveMode(1,path,time);
+void CIiwaServo::MoveLeftQuaternionIncrease(double dDX,double dDY,double dDZ,double dDOx,double dDOy,double dDOz,double dDOw,double dMoveDuration,int nPathMode){
+    SetLeftMoveMode(1,nPathMode,dMoveDuration);
     ros::spinOnce();
     kukafri_hw::kukaCmdPosQ msg;
-    msg.X_Axis=m_vdLeftPos[0]+dX;
-    msg.Y_Axis=m_vdLeftPos[1]+dY;
-    msg.Z_Axis=m_vdLeftPos[2]+dZ;
-    msg.x=m_vdLeftPos[3]+dx;
-    msg.y=m_vdLeftPos[4]+dy;
-    msg.z=m_vdLeftPos[5]+dz;
-    msg.w=m_vdLeftPos[6]+dw;
+    msg.X_Axis=m_vdLeftPos[0]+dDX;
+    msg.Y_Axis=m_vdLeftPos[1]+dDY;
+    msg.Z_Axis=m_vdLeftPos[2]+dDZ;
+    msg.x=m_vdLeftPos[3]+dDOx;
+    msg.y=m_vdLeftPos[4]+dDOy;
+    msg.z=m_vdLeftPos[5]+dDOz;
+    msg.w=m_vdLeftPos[6]+dDOw;
     LeftQuaternion.publish(msg);
 }
 
-void CIiwaServo::MoveDLeftJoint(double dJoint1,double dJoint2,double dJoint3,double dJoint4,double dJoint5,double dJoint6,double dJoint7,double time,int path){
-    SetLeftMoveMode(0,path,time);
+void CIiwaServo::MoveLeftJointIncrease(double dDJoint1,double dDJoint2,double dDJoint3,double dDJoint4,double dDJoint5,double dDJoint6,double dDJoint7,double dMoveDuration,int nPathMode){
+    SetLeftMoveMode(0,nPathMode,dMoveDuration);
     ros::spinOnce();
     kukafri_hw::kukaCmdJoint msg;
-    msg.joint1=m_vdLeftjoint[0]+dJoint1;
-    msg.joint2=m_vdLeftjoint[1]+dJoint2;
-    msg.joint3=m_vdLeftjoint[2]+dJoint3;
-    msg.joint4=m_vdLeftjoint[3]+dJoint4;
-    msg.joint5=m_vdLeftjoint[4]+dJoint5;
-    msg.joint6=m_vdLeftjoint[5]+dJoint6;
-    msg.joint7=m_vdLeftjoint[6]+dJoint6;
+    msg.joint1=m_vdLeftjoint[0]+dDJoint1;
+    msg.joint2=m_vdLeftjoint[1]+dDJoint2;
+    msg.joint3=m_vdLeftjoint[2]+dDJoint3;
+    msg.joint4=m_vdLeftjoint[3]+dDJoint4;
+    msg.joint5=m_vdLeftjoint[4]+dDJoint5;
+    msg.joint6=m_vdLeftjoint[5]+dDJoint6;
+    msg.joint7=m_vdLeftjoint[6]+dDJoint6;
     LeftJoint.publish(msg);
 }
 
 /******************************************************************************************************/
 
 /****************************************右臂相关函数****************************************************/
-void CIiwaServo::MoveRightToHome(double time){
-    SetRightMoveMode(0,0,time);
+void CIiwaServo::MoveRightToHome(double dMoveDuration){
+    SetRightMoveMode(0,0,dMoveDuration);
     RightHomeClient.call(homeSrv);
 }
 
-void CIiwaServo::MoveRightEulerXYZ(double X_Axis,double Y_Axis,double Z_Axis,double alpha,double beta,double gamma,double time,int path){
-    SetRightMoveMode(1,path,time);
+void CIiwaServo::MoveRightEulerXYZ(double dX,double dY,double dZ,double dOx,double dOy,double dOz,double dMoveDuration,int nPathMode){
+    SetRightMoveMode(1,nPathMode,dMoveDuration);
     kukafri_hw::kukaCmdPosE msg;
-    msg.X_Axis=X_Axis;
-    msg.Y_Axis=Y_Axis;
-    msg.Z_Axis=Z_Axis;
-    msg.alpha=alpha;
-    msg.beta=beta;
-    msg.gamma=gamma;
+    msg.X_Axis=dX;
+    msg.Y_Axis=dY;
+    msg.Z_Axis=dZ;
+    msg.alpha=dOx;
+    msg.beta=dOy;
+    msg.gamma=dOz;
     RightEulerXYZ.publish(msg);
 }
 
-void CIiwaServo::MoveRightQuaternion(double X_Axis,double Y_Axis,double Z_Axis,double x,double y,double z,double w,double time,int path){
-    SetRightMoveMode(1,path,time);
+void CIiwaServo::MoveRightQuaternion(double dX,double dY,double dZ,double dOx,double dOy,double dOz,double dOw,double dMoveDuration,int nPathMode){
+    SetRightMoveMode(1,nPathMode,dMoveDuration);
     kukafri_hw::kukaCmdPosQ msg;
-    msg.X_Axis=X_Axis;
-    msg.Y_Axis=Y_Axis;
-    msg.Z_Axis=Z_Axis;
-    msg.x=x;
-    msg.y=y;
-    msg.z=z;
-    msg.w=w;
+    msg.X_Axis=dX;
+    msg.Y_Axis=dY;
+    msg.Z_Axis=dZ;
+    msg.x=dOx;
+    msg.y=dOy;
+    msg.z=dOz;
+    msg.w=dOw;
     RightQuaternion.publish(msg);
 }
 
-void CIiwaServo::MoveRightJoint(double Joint1,double Joint2,double Joint3,double Joint4,double Joint5,double Joint6,double Joint7,double time,int path){
-    SetRightMoveMode(0,path,time);
+void CIiwaServo::MoveRightJoint(double dJoint1,double dJoint2,double dJoint3,double dJoint4,double dJoint5,double dJoint6,double dJoint7,double dMoveDuration,int nPathMode){
+    SetRightMoveMode(0,nPathMode,dMoveDuration);
     kukafri_hw::kukaCmdJoint msg;
-    msg.joint1=Joint1;
-    msg.joint2=Joint2;
-    msg.joint3=Joint3;
-    msg.joint4=Joint4;
-    msg.joint5=Joint5;
-    msg.joint6=Joint6;
-    msg.joint7=Joint7;
+    msg.joint1=dJoint1;
+    msg.joint2=dJoint2;
+    msg.joint3=dJoint3;
+    msg.joint4=dJoint4;
+    msg.joint5=dJoint5;
+    msg.joint6=dJoint6;
+    msg.joint7=dJoint7;
     RightJoint.publish(msg);
 }
 
-void CIiwaServo::MoveDRightEulerXYZ(double dx,double dy,double dz,double dalpha,double dbeta,double dgamma,double time,int path){
-    SetRightMoveMode(1,path,time);
+void CIiwaServo::MoveRightEulerIncrease(double dDX,double dDY,double dDZ,double dOx,double dDOy,double dDOz,double dMoveDuration,int nPathMode){
+    SetRightMoveMode(1,nPathMode,dMoveDuration);
     ros::spinOnce();
     kukafri_hw::kukaCmdPosE msg;
-    msg.X_Axis=m_vdRightPos[0]+dx;
-    msg.Y_Axis=m_vdRightPos[1]+dy;
-    msg.Z_Axis=m_vdRightPos[2]+dz;
-    msg.alpha=m_vdRightEuler[0]+dalpha;
-    msg.beta=m_vdRightEuler[1]+dbeta;
-    msg.gamma=m_vdRightEuler[2]+dgamma;
+    msg.X_Axis=m_vdRightPos[0]+dDX;
+    msg.Y_Axis=m_vdRightPos[1]+dDY;
+    msg.Z_Axis=m_vdRightPos[2]+dDZ;
+    msg.alpha=m_vdRightEuler[0]+dOx;
+    msg.beta=m_vdRightEuler[1]+dDOy;
+    msg.gamma=m_vdRightEuler[2]+dDOz;
     RightEulerXYZ.publish(msg);
 }
 
-void CIiwaServo::MoveDRightQuaternion(double dX,double dY,double dZ,double dx,double dy,double dz,double dw,double time,int path){
-    SetRightMoveMode(1,path,time);
+void CIiwaServo::MoveRightQuaternionIncrease(double dDX,double dDY,double dDZ,double dDOx,double dDOy,double dDOz,double dDOw,double dMoveDuration,int nPathMode){
+    SetRightMoveMode(1,nPathMode,dMoveDuration);
     ros::spinOnce();
     kukafri_hw::kukaCmdPosQ msg;
-    msg.X_Axis=m_vdRightPos[0]+dX;
-    msg.Y_Axis=m_vdRightPos[1]+dY;
-    msg.Z_Axis=m_vdRightPos[2]+dZ;
-    msg.x=m_vdRightPos[3]+dx;
-    msg.y=m_vdRightPos[4]+dy;
-    msg.z=m_vdRightPos[5]+dz;
-    msg.w=m_vdRightPos[6]+dw;
+    msg.X_Axis=m_vdRightPos[0]+dDX;
+    msg.Y_Axis=m_vdRightPos[1]+dDY;
+    msg.Z_Axis=m_vdRightPos[2]+dDZ;
+    msg.x=m_vdRightPos[3]+dDOx;
+    msg.y=m_vdRightPos[4]+dDOy;
+    msg.z=m_vdRightPos[5]+dDOz;
+    msg.w=m_vdRightPos[6]+dDOw;
     RightQuaternion.publish(msg);
 }
 
-void CIiwaServo::MoveDRightJoint(double dJoint1,double dJoint2,double dJoint3,double dJoint4,double dJoint5,double dJoint6,double dJoint7,double time,int path){
-    SetRightMoveMode(0,path,time);
+void CIiwaServo::MoveDRightJoint(double dDJoint1,double dDJoint2,double dDJoint3,double dDJoint4,double dDJoint5,double dDJoint6,double dDJoint7,double dMoveDuration,int nPathMode){
+    SetRightMoveMode(0,nPathMode,dMoveDuration);
     ros::spinOnce();
     kukafri_hw::kukaCmdJoint msg;
-    msg.joint1=m_vdRightjoint[0]+dJoint1;
-    msg.joint2=m_vdRightjoint[1]+dJoint2;
-    msg.joint3=m_vdRightjoint[2]+dJoint3;
-    msg.joint4=m_vdRightjoint[3]+dJoint4;
-    msg.joint5=m_vdRightjoint[4]+dJoint5;
-    msg.joint6=m_vdRightjoint[5]+dJoint6;
-    msg.joint7=m_vdRightjoint[6]+dJoint7;
+    msg.joint1=m_vdRightjoint[0]+dDJoint1;
+    msg.joint2=m_vdRightjoint[1]+dDJoint2;
+    msg.joint3=m_vdRightjoint[2]+dDJoint3;
+    msg.joint4=m_vdRightjoint[3]+dDJoint4;
+    msg.joint5=m_vdRightjoint[4]+dDJoint5;
+    msg.joint6=m_vdRightjoint[5]+dDJoint6;
+    msg.joint7=m_vdRightjoint[6]+dDJoint7;
     RightJoint.publish(msg);
 }
 
 /******************************************************************************************************/
 
 /****************************************双臂相关函数****************************************************/
-void CIiwaServo::MoveDualToHome(double time){
-    SetRightMoveMode(0,0,time);
-    SetRightMoveMode(0,0,time);
+void CIiwaServo::MoveDualToHome(double dMoveDuration){
+    SetRightMoveMode(0,0,dMoveDuration);
+    SetRightMoveMode(0,0,dMoveDuration);
     RightHomeClient.call(homeSrv);
     LeftHomeClient.call(homeSrv);
 }

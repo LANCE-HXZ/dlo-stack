@@ -67,10 +67,10 @@ class CIiwaServo{
         /*机械臂相对于当前位置移动一个坐标和位姿,位姿用EulerXYZ表示*/
         void MoveLeftEulerIncrease(double dDX=0,double dDY=0,double dDZ=0,double dDOx=0,double dDOy=0,double dDOz=0,double dMoveDuration=10,int nPathMode=0);
         /*机械臂相对于当前位置移动一个坐标和位姿，位姿用四元数表示*/
-        void MoveDLeftQuaternion(double dDX=0,double dDY=0,double dDZ=0,double dDOx=0,double dDOy=0,double dDOz=0,double dDOw=0,
+        void MoveLeftQuaternionIncrease(double dDX=0,double dDY=0,double dDZ=0,double dDOx=0,double dDOy=0,double dDOz=0,double dDOw=0,
                                  double dMoveDuration=10,int nPathMode=0);
         /*机械臂各关节角相对于当前关节角移动一个关节角,单位为°*/
-        void MoveDLeftJoint(double dDJoint1=0,double dDJoint2=0,double dDJoint3=0,double dDJoint4=0,double dDJoint5=0,double dDJoint6=0,double dDJoint7=0,
+        void MoveLeftJointIncrease(double dDJoint1=0,double dDJoint2=0,double dDJoint3=0,double dDJoint4=0,double dDJoint5=0,double dDJoint6=0,double dDJoint7=0,
                             double dMoveDuration=10,int nPathMode=0);
 
         /*返回Righthome位置*/
@@ -84,9 +84,9 @@ class CIiwaServo{
         void MoveRightJoint(double dJoint1=28.6085,double dJoint2=-29.537,double dJoint3=-6.1648,double dJoint4=-72.56458,double dJoint5=-29.92,
                             double dJoint6=48.27,double dJoint7=-8.845,double dMoveDuration=10,int nPathMode=0);
         /*机械臂相对于当前位置移动一个坐标和位姿,位姿用EulerXYZ表示*/
-        void MoveDRightEulerXYZ(double dDX=0,double dDY=0,double dDZ=0,double dDOx=0,double dDOy=0,double dDOz=0,double dMoveDuration=10,int nPathMode=0);
+        void MoveRightEulerIncrease(double dDX=0,double dDY=0,double dDZ=0,double dDOx=0,double dDOy=0,double dDOz=0,double dMoveDuration=10,int nPathMode=0);
         /*机械臂相对于当前位置移动一个坐标和位姿，位姿用四元数表示*/
-        void MoveDRightQuaternion(double dDX=0,double dDY=0,double dDZ=0,double dDOx=0,double dDOy=0,double dDOz=0,double dDOw=0,
+        void MoveRightQuaternionIncrease(double dDX=0,double dDY=0,double dDZ=0,double dDOx=0,double dDOy=0,double dDOz=0,double dDOw=0,
                                   double dMoveDuration=10,int nPathMode=0);
         /*机械臂各关节角相对于当前关节角移动一个关节角,单位为°*/
         void MoveDRightJoint(double dDJoint1=0,double dDJoint2=0,double dDJoint3=0,double dDJoint4=0,double dDJoint5=0,double dDJoint6=0,double dDJoint7=0,
