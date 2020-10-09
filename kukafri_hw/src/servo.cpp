@@ -73,6 +73,18 @@ void CIiwaServo::MoveLeftEulerXYZ(double dX,double dY,double dZ,double dOx,doubl
     msg.gamma=dOz;
     LeftEulerXYZ.publish(msg);
 }
+void CIiwaServo::MoveLeftEulerXYZ(Point ptTarget,double dZ,double dOx,double dOy,double dOz,double dMoveDuration,int nPathMode){
+    SetLeftMoveMode(1,nPathMode,dMoveDuration);
+    kukafri_hw::kukaCmdPosE msg;
+    vector<double> xy = PointPixel2CameraFrame(ptTarget);
+    msg.X_Axis=xy[0];
+    msg.Y_Axis=xy[1];
+    msg.Z_Axis=dZ;
+    msg.alpha=dOx;
+    msg.beta=dOy;
+    msg.gamma=dOz;
+    LeftEulerXYZ.publish(msg);
+}
 
 void CIiwaServo::MoveLeftQuaternion(double dX,double dY,double dZ,double dOx,double dOy,double dOz,double dOw,double dMoveDuration,int nPathMode){
     SetLeftMoveMode(1,nPathMode,dMoveDuration);
@@ -160,6 +172,18 @@ void CIiwaServo::MoveRightEulerXYZ(double dX,double dY,double dZ,double dOx,doub
     msg.gamma=dOz;
     RightEulerXYZ.publish(msg);
 }
+void CIiwaServo::MoveRightEulerXYZ(Point ptTarget,double dZ,double dOx,double dOy,double dOz,double dMoveDuration,int nPathMode){
+    SetRightMoveMode(1,nPathMode,dMoveDuration);
+    kukafri_hw::kukaCmdPosE msg;
+    vector<double> xy = PointPixel2CameraFrame(ptTarget);
+    msg.X_Axis=xy[0];
+    msg.Y_Axis=xy[1];
+    msg.Z_Axis=dZ;
+    msg.alpha=dOx;
+    msg.beta=dOy;
+    msg.gamma=dOz;
+    RightEulerXYZ.publish(msg);
+}
 
 void CIiwaServo::MoveRightQuaternion(double dX,double dY,double dZ,double dOx,double dOy,double dOz,double dOw,double dMoveDuration,int nPathMode){
     SetRightMoveMode(1,nPathMode,dMoveDuration);
@@ -240,3 +264,11 @@ void CIiwaServo::MoveDualToHome(double dMoveDuration){
 
 /******************************************************************************************************/
 
+/*  将图像的像素坐标(col, row)转换为相机坐标的(x, y), 像素相关参数在 move_kuka.h 文件宏定义中修改
+    输入: 像素坐标系下的 cv::Point(col, row)
+    输出: 相机坐标系下的 {x, y}  */
+vector<double> CIiwaServo::PointPixel2CameraFrame(Point ptPixel){
+    double fix_x = 0.01*(8.6/267.33*(ptPixel.x-352.67)-0.5);        //  /*
+    double fix_y = 0.01*(5.8/82*(ptPixel.y-298.75)+5);              //      手动测量误差后进行补偿, 相机移动或重新标定后需自行设计补偿方程  */
+    return {(ptPixel.x-PAN_X)/PIXELS_OF_1MX+fix_x, (ptPixel.y-PAN_Y)/PIXELS_OF_1MY-fix_y};
+}

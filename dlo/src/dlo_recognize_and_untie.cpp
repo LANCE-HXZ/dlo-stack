@@ -19,13 +19,13 @@ int main(int argc, char *argv[])
   // km_main.GoHome(D_GROUP);
 
   /*  IiwaServo test  */
-  sv.MoveLeftToHome();
-  sv.MoveRightToHome();
-  ros::Duration(10).sleep();
+  // sv.MoveLeftToHome(10);
+  // sv.MoveRightToHome(10);
+  // ros::Duration(10).sleep();
   // sv.MoveLeftToJoint(0, 0, 0, 0, 0, 0, 0);
   // sv.MoveRightToJoint(0, 0, 0, 0, 0, 0, 0);
   // ros::Duration(10).sleep();
-  cout << "\t\t=====  Home  =====\n";
+  cout << "\t\t=====  Now Start  =====\n";
 
   ros::Subscriber camera_sub = nh.subscribe("/camera/color/image_raw", 1, &CImageConverter::CallbackCameraImgGet, &ic);  // 持续订阅相机rgb图像
   ros::Subscriber bw_sub = nh.subscribe("bw_topic", 1, &CImageConverter::CallbackBinaryImgGet, &ic);  // 订阅vgg16网络返回的轮廓图

@@ -5,6 +5,7 @@
 #include "gripper_control.h"
 #include "img_processing.h"
 #include "dlo_global.h"
+
 using namespace cv;
 
 class CStrategy{

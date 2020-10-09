@@ -109,3 +109,4 @@ Mat removeSinglePoint(cv::Mat &src, int nRadius, int nMin){
 	ptWhite.clear();
 	return dst;
 }
+

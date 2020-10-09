@@ -91,8 +91,8 @@ SOperation CStrategy::strategy(){
         if(mul){
             end_strategy = 1;		oprt_rt.strOperationType = "I";
 			
-			int opt1_index = ept[i]+10;
-			int opt2_index = ept[i+1]-10;
+			int opt1_index = ept[i]+20;
+			int opt2_index = ept[i+1]-20;
 			int rightindex = pt[opt1_index].x < pt[opt2_index].x ? opt1_index : opt2_index;
 			int leftindex = pt[opt1_index].x < pt[opt2_index].x ? opt2_index : opt1_index;
 			oprt_rt.vptPoint.push_back(pt[leftindex]);
@@ -399,7 +399,7 @@ double CStrategy::draw_grip_direction(int opt_index)
 	double dx = front_dir.y - back_dir.x + 1e-10;
     line(result_img, back_dir, front_dir, red, 2);
     putText(result_img, "grip_dir", front_dir+add_text, FONT_HERSHEY_SIMPLEX, 0.5, red, 1);
-	return atan(dy/dx);
+	return atan(dy/dx)*180/3.141592658;
 }
 double CStrategy::draw_grip_direction(Point ptTarget, Point ptTargetDir)
 {

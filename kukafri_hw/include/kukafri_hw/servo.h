@@ -6,6 +6,7 @@
 #include <time.h>
 #include <math.h>
 #include <algorithm> 
+#include <opencv2/opencv.hpp>
 
 #include "kukafri_hw/servo.h"
 #include "kukafri_hw/setMoveMode.h"
@@ -15,7 +16,31 @@
 #include "kukafri_hw/kukaCmdJoint.h"
 #include "kukafri_hw/kukaState.h"
 
+
+#define L_EE "L_link_ee"   // 左臂末端执行器名称
+#define R_EE "R_link_ee"   // 右臂末端执行器名称
+#define D_GROUP "D"  // 双臂规划组名称
+#define L_GROUP "L"     // 左臂规划组名称
+#define R_GROUP "R"     // 右臂规划组名称
+#define CAMERA_FRAME "camera_frame"    // 相机坐标系名称
+
+// 以下注意带小数点, 避免计算时出现整数除法
+#define MOV_Z 1.0       // 仅xy平面平移时的高度z的默认值
+#define MAX_V 0.05      // 机械臂最大速度
+#define MAX_A 0.05      // 机械臂最大加速度
+
+#define PIC_WIDTH 480.0   // 相机获取的图像的宽度(像素), 像素坐标系中的rows, y轴
+#define PIC_LENGTH 640.0  // 相机获取的图像的长度(像素), 像素坐标系中的cols, x轴
+#define MAPPING_WIDTH 0.835     // 视野中操作平面的宽度(m), y轴
+#define MAPPING_LENGTH 1.101   // 视野中操作平面的长度(m), x轴
+#define PIXELS_OF_1MY PIC_WIDTH/MAPPING_WIDTH      // 每1m宽度(y轴)对应的像素点个数
+#define PIXELS_OF_1MX PIC_LENGTH/MAPPING_LENGTH    // 每1m长度(x轴)对应的像素点个数
+#define PAN_Y PIC_WIDTH/2.0      // 图像中心到图像像素cv::Point(0, 0)的距离(像素个数), y轴
+#define PAN_X PIC_LENGTH/2.0    // 图像中心到图像像素cv::Point(0, 0)的距离(像素个数), x轴
+
+
 using namespace std;
+using cv::Point;
 
 class CIiwaServo{
     private:
@@ -58,6 +83,7 @@ class CIiwaServo{
         /*  以相机坐标系为准，移动机械臂以指定位姿移动到指定点       alpha为沿X轴旋转到的目标角度    beta为沿Y轴旋转到的目标角度   gamma为沿Z轴旋转到的目标角度*/
         void MoveLeftEulerXYZ(double dX=0.6, double dY=0.225, double dZ=0.669, double dOx=0, double dOy=0, double dOz=-90, 
                               double dMoveDuration=10, int nPathMode=0);
+            void MoveLeftEulerXYZ(Point ptTarget,double dZ=0.94,double dOx=0,double dOy=0,double dOz=0,double dMoveDuration=10,int nPathMode=0);
         /*以相机坐标系为准，移动机械臂以指定位姿移动到指定点       x,y,z,w为目标点四元数*/
         void MoveLeftQuaternion(double dX=0.6, double dY=0.225, double dZ=0.669, double dOx=0, double dOy=0, double dOz=-0.707, double dOw=0.707,
                                 double dMoveDuration=10, int nPathMode=0);
@@ -78,6 +104,7 @@ class CIiwaServo{
         /*以相机坐标系为准，移动机械臂以指定位姿移动到指定点       alpha为沿X轴旋转到的目标角度    beta为沿Y轴旋转到的目标角度   gamma为沿Z轴旋转到的目标角度*/
         void MoveRightEulerXYZ(double dX=-0.6,double dY=0.225,double dZ=0.7,double dOx=0,double dOy=0,double dOz=-90,double dMoveDuration=10,int nPathMode=0);
         /*以相机坐标系为准，移动机械臂以指定位姿移动到指定点       x,y,z,w为目标点四元数*/
+            void MoveRightEulerXYZ(Point ptTarget,double dZ=0.94,double dOx=0,double dOy=0,double dOz=0,double dMoveDuration=10,int nPathMode=0);
         void MoveRightQuaternion(double dX=-0.6,double dY=0.225,double dZ=0.7,double dOx=0,double dOy=0,double dOz=-0.707,double dOw=0.707,
                                  double dMoveDuration=10,int nPathMode=0);
         /*指定机械臂七个关节角进行移动*/
@@ -96,6 +123,8 @@ class CIiwaServo{
         void MoveDualToHome(double dMoveDuration=10);
         /*以相机坐标系为准，移动机械臂以指定位姿移动到指定点       alpha为沿X轴旋转到的目标角度    beta为沿Y轴旋转到的目标角度   gamma为沿Z轴旋转到的目标角度*/
         void MoveDualEulerXYZ(double dX=-0.6,double dY=0.225,double dZ=0.7,double dOx=0,double dOy=0,double dOz=-90,double dMoveDuration=10,int nPathMode=0);
+
+        vector<double> PointPixel2CameraFrame(Point ptPixel);
 };
 
 #endif
