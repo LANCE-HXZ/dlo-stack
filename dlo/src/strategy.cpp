@@ -401,7 +401,7 @@ double CStrategy::draw_grip_direction(int opt_index)
     line(result_img, back_dir, front_dir, red, 2);
     putText(result_img, "grip_dir", front_dir+add_text, FONT_HERSHEY_SIMPLEX, 0.5, red, 1);
 	// return atan(dy/dx)*180/3.141592658;
-	return dDirAngle;
+	return -dDirAngle;
 }
 double CStrategy::draw_grip_direction(Point ptTarget, Point ptTargetDir)
 {

@@ -45,8 +45,8 @@ void optionI(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
     // cout << "\n==================" << (oprt.vptPoint[1]-ptEdge) << endl;
     // xy = msv.PointPixel2CameraFrame(oprt.vptPoint[1]-ptEdge);
     // cout << "==================" << xy[0] << '\t' << xy[1] << endl;
-    // msv.MoveLeftEulerXYZ(oprt.vptPoint[0]-ptEdge, 0.7, 0, 0, oprt.vdGripperDir[0]);
-    // msv.MoveRightEulerXYZ(oprt.vptPoint[1]-ptEdge, 0.7, 0, 0, oprt.vdGripperDir[1]);
+    msv.MoveLeftEulerXYZ(oprt.vptPoint[0]-ptEdge, 0.7, 0, 0, oprt.vdGripperDir[0]);
+    msv.MoveRightEulerXYZ(oprt.vptPoint[1]-ptEdge, 0.7, 0, 0, oprt.vdGripperDir[1]);
     ros::Duration(10).sleep();
 
     // //  左右臂向下到夹取高度

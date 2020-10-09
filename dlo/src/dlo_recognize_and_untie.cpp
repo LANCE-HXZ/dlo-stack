@@ -19,9 +19,9 @@ int main(int argc, char *argv[])
   // km_main.GoHome(D_GROUP);
 
   /*  IiwaServo test  */
-  // sv.MoveLeftToHome(10);
-  // sv.MoveRightToHome(10);
-  // ros::Duration(10).sleep();
+  sv.MoveLeftToHome(10);
+  sv.MoveRightToHome(10);
+  ros::Duration(10).sleep();
   // sv.MoveLeftToJoint(0, 0, 0, 0, 0, 0, 0);
   // sv.MoveRightToJoint(0, 0, 0, 0, 0, 0, 0);
   // ros::Duration(10).sleep();
