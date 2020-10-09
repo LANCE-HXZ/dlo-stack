@@ -27,6 +27,5 @@ struct SOperation{
 
 cv::Scalar getcolor(int n, int ept_index, int line_index);  //  strategy.cpp & visualization.cpp
 cv::Point per_dir(cv::Point pre_pt, cv::Point curr_pt, int per_step);   //  strategy.cpp & test_function.cpp & traversal.cpp
-double angle(cv::Point pt1, cv::Point pt2, cv::Point pt0);  //  crop.cpp & strategy.cpp
 
 #endif

@@ -110,3 +110,14 @@ Mat removeSinglePoint(cv::Mat &src, int nRadius, int nMin){
 	return dst;
 }
 
+/*	计算两条相交线段的夹角, 用于 crop.cpp & strategy.cpp
+	输入: 第一条线段的非交点端点， 第二条线段的非交点端点， 两条线段的交点
+	输出: 角度制夹角值，°	*/
+double angle(cv::Point pt1, cv::Point pt2, cv::Point pt0){
+	double dx1 = pt1.x - pt0.x;
+	double dy1 = pt1.y - pt0.y;
+	double dx2 = pt2.x - pt0.x;
+	double dy2 = pt2.y - pt0.y;
+	double angle_line = (dx1*dx2 + dy1 * dy2) / sqrt((dx1*dx1 + dy1 * dy1)*(dx2*dx2 + dy2 * dy2) + 1e-10);
+	return acos(angle_line) * 180 / 3.141592653;
+}
