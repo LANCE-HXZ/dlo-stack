@@ -2,7 +2,7 @@
 <launch>
         <arg name="side" default="right"/>
 
-        <rosparam command="load" file="$(find kukafri_hw)/config/cameralsy.yaml"/>
+        <rosparam command="load" file="$(find kukafri_hw)/config/camerahxz.yaml"/>
         <rosparam command="load" file="$(find kukafri_hw)/config/homejoints.yaml"/>
 
         

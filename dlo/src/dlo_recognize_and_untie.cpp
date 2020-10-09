@@ -10,57 +10,59 @@ int main(int argc, char *argv[])
 {
   ros::init(argc, argv, "Main_Node");
   ros::NodeHandle nh;
-  // CKukaMoveit km_main;
   CImageConverter ic;
   CIiwaServo sv;
-
+  /*  KukaMoveit test */
+  // CKukaMoveit km_main;
   // ros::AsyncSpinner spinner(4);
   // spinner.start();
   // km_main.GoHome(D_GROUP);
+
+  /*  IiwaServo test  */
   sv.MoveLeftToHome();
   sv.MoveRightToHome();
   ros::Duration(10).sleep();
-  sv.MoveLeftToJoint(0, 0, 0, 0, 0, 0, 0);
-  sv.MoveRightToJoint(0, 0, 0, 0, 0, 0, 0);
-  ros::Duration(10).sleep();
-  cout << "end1\n";
+  // sv.MoveLeftToJoint(0, 0, 0, 0, 0, 0, 0);
+  // sv.MoveRightToJoint(0, 0, 0, 0, 0, 0, 0);
+  // ros::Duration(10).sleep();
+  cout << "\t\t=====  Home  =====\n";
 
-  // ros::Subscriber camera_sub = nh.subscribe("/camera/color/image_raw", 1, &CImageConverter::CallbackCameraImgGet, &ic);  // 持续订阅相机rgb图像
-  // ros::Subscriber bw_sub = nh.subscribe("bw_topic", 1, &CImageConverter::CallbackBinaryImgGet, &ic);  // 订阅vgg16网络返回的轮廓图
-  // ros::Subscriber boxes_sub = nh.subscribe("boxes_topic", 1000, &CImageConverter::CallbackBoxesGet, &ic);  // 订阅yolo v3网络返回的端点交叉点识别结果boxes信息
-  // ros::Subscriber crop_class_sub = nh.subscribe("crop_class_topic", 1000, &CImageConverter::CallbackCropClassGet, &ic);  // 订阅二分类网络返回的交叉点分类结果
+  ros::Subscriber camera_sub = nh.subscribe("/camera/color/image_raw", 1, &CImageConverter::CallbackCameraImgGet, &ic);  // 持续订阅相机rgb图像
+  ros::Subscriber bw_sub = nh.subscribe("bw_topic", 1, &CImageConverter::CallbackBinaryImgGet, &ic);  // 订阅vgg16网络返回的轮廓图
+  ros::Subscriber boxes_sub = nh.subscribe("boxes_topic", 1000, &CImageConverter::CallbackBoxesGet, &ic);  // 订阅yolo v3网络返回的端点交叉点识别结果boxes信息
+  ros::Subscriber crop_class_sub = nh.subscribe("crop_class_topic", 1000, &CImageConverter::CallbackCropClassGet, &ic);  // 订阅二分类网络返回的交叉点分类结果
   
-  // ros::Rate loop_rate(10);
-  // while(ros::ok()){
-  //   // ROS_INFO_STREAM("Main thread [" << boost::this_thread::get_id() << "]");
-  //   // namedWindow("m_imgCamera");
-  //   // imshow("m_imgCamera", ic.m_imgCamera);
-  //   // startWindowThread();
-  //   // waitKey();
-  //   if(ic.flagCameraImgReady){
-  //     ic.ProcessShowCameraView();
-  //     ic.flagCameraImgReady = 0;
-  //     if(ic.flagReady4Next)
-  //       ic.Init();
-  //   }
-  //   if(ic.flagBinaryImgReady){
-  //     ic.ProcessSkeleton();
-  //     ic.flagSkeletonReady = 1;
-  //     ic.flagBinaryImgReady = 0;
-  //   }
-  //   if(ic.flagBoxesReady && ic.flagSkeletonReady){
-  //     ic.ProcessTraversal();
-  //     ic.flagSkeletonReady = 0;
-  //     ic.flagBoxesReady = 0;
-  //   }
-  //   if(ic.flagCropClassReady){
-  //     ic.ProcessStrategy();
-  //     ic.flagCropClassReady = 0;
-  //     ic.flagReady4Next = 1;
-  //   }
-  //   ros::spinOnce();
-  //   loop_rate.sleep();
-  // }
+  ros::Rate loop_rate(10);
+  while(ros::ok()){
+    // ROS_INFO_STREAM("Main thread [" << boost::this_thread::get_id() << "]");
+    // namedWindow("m_imgCamera");
+    // imshow("m_imgCamera", ic.m_imgCamera);
+    // startWindowThread();
+    // waitKey();
+    if(ic.flagCameraImgReady){
+      ic.ProcessShowCameraView();
+      ic.flagCameraImgReady = 0;
+      if(ic.flagReady4Next)
+        ic.Init();
+    }
+    if(ic.flagBinaryImgReady){
+      ic.ProcessSkeleton();
+      ic.flagSkeletonReady = 1;
+      ic.flagBinaryImgReady = 0;
+    }
+    if(ic.flagBoxesReady && ic.flagSkeletonReady){
+      ic.ProcessTraversal();
+      ic.flagSkeletonReady = 0;
+      ic.flagBoxesReady = 0;
+    }
+    if(ic.flagCropClassReady){
+      ic.ProcessStrategy();
+      ic.flagCropClassReady = 0;
+      ic.flagReady4Next = 1;
+    }
+    ros::spinOnce();
+    loop_rate.sleep();
+  }
 	return 0;
 }
 
