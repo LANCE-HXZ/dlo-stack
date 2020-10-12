@@ -62,8 +62,10 @@ void CIiwaServo::MoveLeftToHome(double dMoveDuration){
     LeftHomeClient.call(homeSrv);
 }
 
-void CIiwaServo::MoveLeftEulerXYZ(double dX,double dY,double dZ,double dOx,double dOy,double dOz,double dMoveDuration,int nPathMode){
+void CIiwaServo::MoveLeftEulerXYZ(double dX,double dY,double dZ,double dOx,double dOy,double dOz,double dOz,double dMoveDuration,int nPathMode){
     SetLeftMoveMode(1,nPathMode,dMoveDuration);
+    vector<double> xy = PointPixel2CameraFrame(oprt.vptPoint[1]-ptEdge);
+    cout << "X: " << xy[0] << "\tY: " << xy[1] << "\tDir: " << dOz << endl;
     kukafri_hw::kukaCmdPosE msg;
     msg.X_Axis=dX;
     msg.Y_Axis=dY;
@@ -73,7 +75,7 @@ void CIiwaServo::MoveLeftEulerXYZ(double dX,double dY,double dZ,double dOx,doubl
     msg.gamma=dOz;
     LeftEulerXYZ.publish(msg);
 }
-void CIiwaServo::MoveLeftEulerXYZ(Point ptTarget,double dZ,double dOx,double dOy,double dOz,double dMoveDuration,int nPathMode){
+void CIiwaServo::MoveLeftEulerXYZ(Point ptTarget,double dZ,double dOz,double dOx,double dOy,double dMoveDuration,int nPathMode){
     SetLeftMoveMode(1,nPathMode,dMoveDuration);
     kukafri_hw::kukaCmdPosE msg;
     vector<double> xy = PointPixel2CameraFrame(ptTarget);
@@ -163,6 +165,8 @@ void CIiwaServo::MoveRightToHome(double dMoveDuration){
 
 void CIiwaServo::MoveRightEulerXYZ(double dX,double dY,double dZ,double dOx,double dOy,double dOz,double dMoveDuration,int nPathMode){
     SetRightMoveMode(1,nPathMode,dMoveDuration);
+    vector<double> xy = PointPixel2CameraFrame(oprt.vptPoint[1]-ptEdge);
+    cout << "X: " << xy[0] << "\tY: " << xy[1] << "\tDir: " << dOz << endl;
     kukafri_hw::kukaCmdPosE msg;
     msg.X_Axis=dX;
     msg.Y_Axis=dY;
@@ -172,7 +176,7 @@ void CIiwaServo::MoveRightEulerXYZ(double dX,double dY,double dZ,double dOx,doub
     msg.gamma=dOz;
     RightEulerXYZ.publish(msg);
 }
-void CIiwaServo::MoveRightEulerXYZ(Point ptTarget,double dZ,double dOx,double dOy,double dOz,double dMoveDuration,int nPathMode){
+void CIiwaServo::MoveRightEulerXYZ(Point ptTarget,double dZ,double dOz,double dOx,double dOy,double dMoveDuration,int nPathMode){
     SetRightMoveMode(1,nPathMode,dMoveDuration);
     kukafri_hw::kukaCmdPosE msg;
     vector<double> xy = PointPixel2CameraFrame(ptTarget);

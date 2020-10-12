@@ -83,7 +83,7 @@ class CIiwaServo{
         /*  以相机坐标系为准，移动机械臂以指定位姿移动到指定点       alpha为沿X轴旋转到的目标角度    beta为沿Y轴旋转到的目标角度   gamma为沿Z轴旋转到的目标角度*/
         void MoveLeftEulerXYZ(double dX=0.6, double dY=0.225, double dZ=0.669, double dOx=0, double dOy=0, double dOz=-90, 
                               double dMoveDuration=10, int nPathMode=0);
-            void MoveLeftEulerXYZ(Point ptTarget,double dZ=0.94,double dOx=0,double dOy=0,double dOz=0,double dMoveDuration=10,int nPathMode=0);
+            void MoveLeftEulerXYZ(Point ptTarget,double dZ=0.94,double dOz=0,double dOx=0,double dOy=0,double dMoveDuration=10,int nPathMode=0);
         /*以相机坐标系为准，移动机械臂以指定位姿移动到指定点       x,y,z,w为目标点四元数*/
         void MoveLeftQuaternion(double dX=0.6, double dY=0.225, double dZ=0.669, double dOx=0, double dOy=0, double dOz=-0.707, double dOw=0.707,
                                 double dMoveDuration=10, int nPathMode=0);
@@ -104,7 +104,7 @@ class CIiwaServo{
         /*以相机坐标系为准，移动机械臂以指定位姿移动到指定点       alpha为沿X轴旋转到的目标角度    beta为沿Y轴旋转到的目标角度   gamma为沿Z轴旋转到的目标角度*/
         void MoveRightEulerXYZ(double dX=-0.6,double dY=0.225,double dZ=0.7,double dOx=0,double dOy=0,double dOz=-90,double dMoveDuration=10,int nPathMode=0);
         /*以相机坐标系为准，移动机械臂以指定位姿移动到指定点       x,y,z,w为目标点四元数*/
-            void MoveRightEulerXYZ(Point ptTarget,double dZ=0.94,double dOx=0,double dOy=0,double dOz=0,double dMoveDuration=10,int nPathMode=0);
+            void MoveRightEulerXYZ(Point ptTarget,double dZ=0.94,double dOz=0,double dOx=0,double dOy=0,double dMoveDuration=10,int nPathMode=0);
         void MoveRightQuaternion(double dX=-0.6,double dY=0.225,double dZ=0.7,double dOx=0,double dOy=0,double dOz=-0.707,double dOw=0.707,
                                  double dMoveDuration=10,int nPathMode=0);
         /*指定机械臂七个关节角进行移动*/
