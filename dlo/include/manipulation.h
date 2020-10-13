@@ -5,6 +5,7 @@
 #define MDL "160"       //  夹爪半开, 用于限位线缆
 #define OPN "0"         //  夹爪开
 #define MDLEGE 400    //  左右臂分界线的像素坐标x
+#define OPRTZ 0.7
 
 // #include "kuka_moveit.h"
 #include "kukafri_hw/servo.h"

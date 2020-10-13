@@ -35,8 +35,8 @@ void optionI(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
     cout << oprt.vdGripperDir[0] << '\t' << oprt.vdGripperDir[1] << endl;
 
     //	左右臂移动到抓取位置上方
-    msv.MoveLeftEulerXYZ(oprt.vptPoint[0]-ptEdge, 0.7, oprt.vdGripperDir[0]);
-    msv.MoveRightEulerXYZ(oprt.vptPoint[1]-ptEdge, 0.7, oprt.vdGripperDir[1]);
+    msv.MoveLeftEulerXYZ(oprt.vptPoint[0]-ptEdge, OPRTZ, oprt.vdGripperDir[0]);
+    msv.MoveRightEulerXYZ(oprt.vptPoint[1]-ptEdge, OPRTZ, oprt.vdGripperDir[1]);
     ros::Duration(10).sleep();
 
     //  左右臂向下到夹取高度
@@ -48,7 +48,7 @@ void optionI(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
     //  左臂上移, 然后移动到左臂目标点上方, 下移
     msv.MoveLeftEulerIncrease(0, 0, -0.1);
     ros::Duration(10).sleep();
-    msv.MoveLeftEulerXYZ(oprt.vptPoint[2]-ptEdge, 0.7, oprt.vdGripperDir[2]);
+    msv.MoveLeftEulerXYZ(oprt.vptPoint[2]-ptEdge, OPRTZ, oprt.vdGripperDir[2]);
     ros::Duration(10).sleep();
     msv.MoveLeftEulerIncrease(0, 0, 0.1);
     ros::Duration(10).sleep();
@@ -59,7 +59,7 @@ void optionI(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
     mgc.Gripper_anypose('R', CLS);
     msv.MoveRightEulerIncrease(0, 0, -0.1);
     ros::Duration(10).sleep();
-    msv.MoveRightEulerXYZ(oprt.vptPoint[3]-ptEdge, 0.7, oprt.vdGripperDir[3]);
+    msv.MoveRightEulerXYZ(oprt.vptPoint[3]-ptEdge, OPRTZ, oprt.vdGripperDir[3]);
     ros::Duration(10).sleep();
     msv.MoveRightEulerIncrease(0, 0, 0.1);
     ros::Duration(10).sleep();
@@ -80,7 +80,7 @@ void optionD(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
 
     if(oprt.vptPoint[0].x >= MDLEGE && oprt.vptPoint[1].x >= MDLEGE){  //  L
         //  左臂移动到目标点上方, 向下到夹取高度, 夹取, 上移
-        msv.MoveLeftEulerXYZ(oprt.vptPoint[0]-ptEdge, 0.7, oprt.vdGripperDir[0]);
+        msv.MoveLeftEulerXYZ(oprt.vptPoint[0]-ptEdge, OPRTZ, oprt.vdGripperDir[0]);
         ros::Duration(10).sleep();
         msv.MoveLeftEulerIncrease(0, 0, 0.1);
         ros::Duration(10).sleep();
@@ -89,7 +89,7 @@ void optionD(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
         ros::Duration(10).sleep();
 
         //  移动到目标位置上方, 下移, 松开
-        msv.MoveLeftEulerXYZ(oprt.vptPoint[1]-ptEdge, 0.7, oprt.vdGripperDir[1]);
+        msv.MoveLeftEulerXYZ(oprt.vptPoint[1]-ptEdge, OPRTZ, oprt.vdGripperDir[1]);
         ros::Duration(10).sleep();
         msv.MoveLeftEulerIncrease(0, 0, 0.1);
         ros::Duration(10).sleep();
@@ -97,7 +97,7 @@ void optionD(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
     }
     else if(oprt.vptPoint[0].x < MDLEGE && oprt.vptPoint[1].x < MDLEGE){  //  R
         //  右臂移动到目标点上方, 向下到夹取高度, 夹取, 上移
-        msv.MoveRightEulerXYZ(oprt.vptPoint[0]-ptEdge, 0.7, oprt.vdGripperDir[0]);
+        msv.MoveRightEulerXYZ(oprt.vptPoint[0]-ptEdge, OPRTZ, oprt.vdGripperDir[0]);
         ros::Duration(10).sleep();
         msv.MoveRightEulerIncrease(0, 0, 0.1);
         ros::Duration(10).sleep();
@@ -106,7 +106,7 @@ void optionD(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
         ros::Duration(10).sleep();
 
         //  移动到目标位置上方, 下移, 松开
-        msv.MoveRightEulerXYZ(oprt.vptPoint[1]-ptEdge, 0.7, oprt.vdGripperDir[1]);
+        msv.MoveRightEulerXYZ(oprt.vptPoint[1]-ptEdge, OPRTZ, oprt.vdGripperDir[1]);
         ros::Duration(10).sleep();
         msv.MoveRightEulerIncrease(0, 0, 0.1);
         ros::Duration(10).sleep();
@@ -127,7 +127,7 @@ void optionQ(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
 
     if(oprt.vptPoint[0].x >= MDLEGE && oprt.vptPoint[1].x >= MDLEGE){  //  L
         //  左臂移动到目标点上方, 向下到夹取高度, 夹取, 上移
-        msv.MoveLeftEulerXYZ(oprt.vptPoint[0]-ptEdge, 0.7, oprt.vdGripperDir[0]);
+        msv.MoveLeftEulerXYZ(oprt.vptPoint[0]-ptEdge, OPRTZ, oprt.vdGripperDir[0]);
         ros::Duration(10).sleep();
         msv.MoveLeftEulerIncrease(0, 0, 0.1);
         ros::Duration(10).sleep();
@@ -138,13 +138,13 @@ void optionQ(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
         //  确定旋转方向
         int nRotationDir = (oprt.vdGripperDir[0]-90)/(abs(oprt.vdGripperDir[0]-90)+1e-10);      //  1或-1
         //  移动到旋转参考点上方, 旋转解耦
-        msv.MoveLeftEulerXYZ(oprt.vptPoint[1]-ptEdge, 0.7, oprt.vdGripperDir[1]);
+        msv.MoveLeftEulerXYZ(oprt.vptPoint[1]-ptEdge, OPRTZ, oprt.vdGripperDir[1]);
         ros::Duration(10).sleep();
         msv.MoveLeftJointIncrease(0,0,0,0,0, nRotationDir*3.14);
         ros::Duration(10).sleep();
 
         //  移动到目标位置上方, 下移, 松开, 上移
-        msv.MoveLeftEulerXYZ(oprt.vptPoint[0]-ptEdge, 0.7, oprt.vdGripperDir[0]);
+        msv.MoveLeftEulerXYZ(oprt.vptPoint[0]-ptEdge, OPRTZ, oprt.vdGripperDir[0]);
         ros::Duration(10).sleep();
         msv.MoveLeftEulerIncrease(0, 0, 0.1);
         ros::Duration(10).sleep();
@@ -154,7 +154,7 @@ void optionQ(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
     }
     else if(oprt.vptPoint[0].x < MDLEGE && oprt.vptPoint[1].x < MDLEGE){  //  R
         //  右臂移动到目标点上方, 向下到夹取高度, 夹取, 上移
-        msv.MoveRightEulerXYZ(oprt.vptPoint[0]-ptEdge, 0.7, oprt.vdGripperDir[0]);
+        msv.MoveRightEulerXYZ(oprt.vptPoint[0]-ptEdge, OPRTZ, oprt.vdGripperDir[0]);
         ros::Duration(10).sleep();
         msv.MoveRightEulerIncrease(0, 0, 0.1);
         ros::Duration(10).sleep();
@@ -165,13 +165,13 @@ void optionQ(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
         //  确定旋转方向
         int nRotationDir = (oprt.vdGripperDir[0]-90)/(abs(oprt.vdGripperDir[0]-90)+1e-10);      //  1或-1
         //  移动到旋转参考点上方, 旋转解耦
-        msv.MoveRightEulerXYZ(oprt.vptPoint[1]-ptEdge, 0.7, oprt.vdGripperDir[1]);
+        msv.MoveRightEulerXYZ(oprt.vptPoint[1]-ptEdge, OPRTZ, oprt.vdGripperDir[1]);
         ros::Duration(10).sleep();
         msv.MoveRightJointIncrease(0,0,0,0,0, nRotationDir*3.14);
         ros::Duration(10).sleep();
 
         //  移动到目标位置上方, 下移, 松开, 上移
-        msv.MoveRightEulerXYZ(oprt.vptPoint[0]-ptEdge, 0.7, oprt.vdGripperDir[0]);
+        msv.MoveRightEulerXYZ(oprt.vptPoint[0]-ptEdge, OPRTZ, oprt.vdGripperDir[0]);
         ros::Duration(10).sleep();
         msv.MoveRightEulerIncrease(0, 0, 0.1);
         ros::Duration(10).sleep();
@@ -194,7 +194,7 @@ void optionIX(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
 
     if(oprt.vptPoint[0].x >= MDLEGE && oprt.vptPoint[1].x >= MDLEGE){  //  L
         //  左臂移动到目标点上方, 向下到夹取高度, 夹取, 上移
-        msv.MoveLeftEulerXYZ(oprt.vptPoint[0]-ptEdge, 0.7, oprt.vdGripperDir[0]);
+        msv.MoveLeftEulerXYZ(oprt.vptPoint[0]-ptEdge, OPRTZ, oprt.vdGripperDir[0]);
         ros::Duration(10).sleep();
         msv.MoveLeftEulerIncrease(0, 0, 0.1);
         ros::Duration(10).sleep();
@@ -203,7 +203,7 @@ void optionIX(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
         ros::Duration(10).sleep();
 
         //  移动到目标位置上方, 下移, 松开
-        msv.MoveLeftEulerXYZ(oprt.vptPoint[1]-ptEdge, 0.7, oprt.vdGripperDir[1]);
+        msv.MoveLeftEulerXYZ(oprt.vptPoint[1]-ptEdge, OPRTZ, oprt.vdGripperDir[1]);
         ros::Duration(10).sleep();
         msv.MoveLeftEulerIncrease(0, 0, 0.1);
         ros::Duration(10).sleep();
@@ -211,7 +211,7 @@ void optionIX(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
     }
     else if(oprt.vptPoint[0].x < MDLEGE && oprt.vptPoint[1].x < MDLEGE){  //  R
         //  右臂移动到目标点上方, 向下到夹取高度, 夹取, 上移
-        msv.MoveRightEulerXYZ(oprt.vptPoint[0]-ptEdge, 0.7, oprt.vdGripperDir[0]);
+        msv.MoveRightEulerXYZ(oprt.vptPoint[0]-ptEdge, OPRTZ, oprt.vdGripperDir[0]);
         ros::Duration(10).sleep();
         msv.MoveRightEulerIncrease(0, 0, 0.1);
         ros::Duration(10).sleep();
@@ -220,7 +220,7 @@ void optionIX(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
         ros::Duration(10).sleep();
 
         //  移动到目标位置上方, 下移, 松开
-        msv.MoveRightEulerXYZ(oprt.vptPoint[1]-ptEdge, 0.7, oprt.vdGripperDir[1]);
+        msv.MoveRightEulerXYZ(oprt.vptPoint[1]-ptEdge, OPRTZ, oprt.vdGripperDir[1]);
         ros::Duration(10).sleep();
         msv.MoveRightEulerIncrease(0, 0, 0.1);
         ros::Duration(10).sleep();
@@ -241,7 +241,7 @@ void optionT(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
 
     if(oprt.vptPoint[0].x >= MDLEGE && oprt.vptPoint[1].x >= MDLEGE){  //  L
         //  左臂移动到目标点上方, 向下到夹取高度, 夹取, 上移
-        msv.MoveLeftEulerXYZ(oprt.vptPoint[0]-ptEdge, 0.7, oprt.vdGripperDir[0]);
+        msv.MoveLeftEulerXYZ(oprt.vptPoint[0]-ptEdge, OPRTZ, oprt.vdGripperDir[0]);
         ros::Duration(10).sleep();
         msv.MoveLeftEulerIncrease(0, 0, 0.1);
         ros::Duration(10).sleep();
@@ -250,7 +250,7 @@ void optionT(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
         ros::Duration(10).sleep();
 
         //  移动到目标位置上方, 下移, 松开
-        msv.MoveLeftEulerXYZ(oprt.vptPoint[1]-ptEdge, 0.7, oprt.vdGripperDir[1]);
+        msv.MoveLeftEulerXYZ(oprt.vptPoint[1]-ptEdge, OPRTZ, oprt.vdGripperDir[1]);
         ros::Duration(10).sleep();
         msv.MoveLeftEulerIncrease(0, 0, 0.1);
         ros::Duration(10).sleep();
@@ -258,7 +258,7 @@ void optionT(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
     }
     else if(oprt.vptPoint[0].x < MDLEGE && oprt.vptPoint[1].x < MDLEGE){  //  R
         //  右臂移动到目标点上方, 向下到夹取高度, 夹取, 上移
-        msv.MoveRightEulerXYZ(oprt.vptPoint[0]-ptEdge, 0.7, oprt.vdGripperDir[0]);
+        msv.MoveRightEulerXYZ(oprt.vptPoint[0]-ptEdge, OPRTZ, oprt.vdGripperDir[0]);
         ros::Duration(10).sleep();
         msv.MoveRightEulerIncrease(0, 0, 0.1);
         ros::Duration(10).sleep();
@@ -267,7 +267,7 @@ void optionT(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
         ros::Duration(10).sleep();
 
         //  移动到目标位置上方, 下移, 松开
-        msv.MoveRightEulerXYZ(oprt.vptPoint[1]-ptEdge, 0.7, oprt.vdGripperDir[1]);
+        msv.MoveRightEulerXYZ(oprt.vptPoint[1]-ptEdge, OPRTZ, oprt.vdGripperDir[1]);
         ros::Duration(10).sleep();
         msv.MoveRightEulerIncrease(0, 0, 0.1);
         ros::Duration(10).sleep();
