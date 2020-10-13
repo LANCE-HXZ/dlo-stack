@@ -98,19 +98,19 @@ SOperation CStrategy::strategy(){
 			oprt_rt.vptPoint.push_back(pt[leftindex]);
 			oprt_rt.vptPoint.push_back(pt[rightindex]);
 
-			draw_point(pt[rightindex], "OPT_R", red);
 			draw_point(pt[leftindex], "OPT_L", red);
+			draw_point(pt[rightindex], "OPT_R", red);
             oprt_rt.vdGripperDir.push_back(draw_grip_direction(leftindex));
 			oprt_rt.vdGripperDir.push_back(draw_grip_direction(rightindex));
 
 			int target_y = PIC_WIDTH + 1.0/2 * EDGE; 			//	目标位置为图像下边缘
-			Point target_dir = Point(10, 0.000001);				//	移动到目标位置的抓取方向
 			int nStepLength = abs(rightindex - leftindex);		// 	两个抓取点中间的遍历步数
-			Point target_left = Point(pt[leftindex-nStepLength*1].x, target_y);
-			Point target_right = Point(pt[rightindex+nStepLength*1].x, target_y);
-			oprt_rt.vptPoint.push_back(target_right);
+			Point target_left = Point(pt[leftindex].x, target_y);
+			Point target_right = Point(pt[rightindex].x, target_y);
 			oprt_rt.vptPoint.push_back(target_left);
+			oprt_rt.vptPoint.push_back(target_right);
 
+			Point target_dir = Point(10, 0.000001);				//	移动到目标位置的抓取方向
 			draw_point(target_left, "target_left", yellow);
 			draw_point(target_right, "target_right", yellow);
 			oprt_rt.vdGripperDir.push_back(draw_grip_direction(target_left, target_dir));
@@ -395,20 +395,28 @@ double CStrategy::draw_grip_direction(int opt_index)
 {
     Point front_dir = pt[opt_index]+5*(dir[opt_index+1]+dir[opt_index+2]); // 画近似切线 -- 方向矢量
     Point back_dir = pt[opt_index]-5*(dir[opt_index+1]+dir[opt_index+2]);
-	// double dy = front_dir.y - back_dir.y;
-	// double dx = front_dir.y - back_dir.x + 1e-10;
-	double dDirAngle = angle(pt[opt_index]+Point(0, 20), front_dir, pt[opt_index]);
+	double dy = front_dir.y - pt[opt_index].y;
+	double dx = front_dir.x - pt[opt_index].x + 1e-10;
+	// double dDirAngle = angle(pt[opt_index]+Point(20, 0), front_dir, pt[opt_index]);
     line(result_img, back_dir, front_dir, red, 2);
     putText(result_img, "grip_dir", front_dir+add_text, FONT_HERSHEY_SIMPLEX, 0.5, red, 1);
-	// return atan(dy/dx)*180/3.141592658;
-	return -dDirAngle;
+	double dAngle = atan(dy/dx)*180/3.141592658;
+	if(dAngle >= 0)
+		return dAngle-90;
+	return dAngle+90;
+	// return -dDirAngle;
 }
 double CStrategy::draw_grip_direction(Point ptTarget, Point ptTargetDir)
 {
 	line(result_img, ptTarget-ptTargetDir, ptTarget+ptTargetDir, yellow, 2);
+	double dDirAngle = angle(ptTarget+Point(20, 0), ptTargetDir, ptTarget);
 	double dy = ptTargetDir.y;
 	double dx = ptTargetDir.x + 1e-10;
-	return atan(dy/dx);
+	double dAngle = atan(dy/dx)*180/3.141592658;
+	if(dAngle >= 0)
+		return dAngle-90;
+	return dAngle+90;
+	// return -dDirAngle;
 }
 
 void CStrategy::draw_point(Point pt, string pt_text, Scalar color, float text_size, int text_thick)
