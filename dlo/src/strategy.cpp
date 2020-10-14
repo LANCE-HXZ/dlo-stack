@@ -78,7 +78,7 @@ SOperation CStrategy::strategy(){
 	vector<bool> is_end;
 	oprt_rt.strOperationType = "N";		//	标记操作类型, 初始为 N 表示 None
 	bool bMoveLeft = 0, bMoveRight = 0;
-
+	
 	// === 检测最上层的独立线缆 I型 ===
     for(int i = 0; i < start.size(); i+=2){
 		/*	检查start[i]开始的线缆上的交叉点类型是否都为1
@@ -88,6 +88,7 @@ SOperation CStrategy::strategy(){
 			mul *= g_vnClassList[j];
 			if(!mul) 	break;
         }
+		if(start[i] > start[i+1])	break;		//	表示为全程无交叉的独立线缆
         if(mul){
             end_strategy = 1;		oprt_rt.strOperationType = "I";
 			
