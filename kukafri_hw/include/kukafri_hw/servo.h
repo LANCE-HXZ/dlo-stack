@@ -24,8 +24,11 @@
 #define R_GROUP "R"     // 右臂规划组名称
 #define CAMERA_FRAME "camera_frame"    // 相机坐标系名称
 
+#define PTEDGE Point(80, 80)        //  相机视野四周添加了宽度为EDGE的边界, 控制机器人时给的坐标需要将添加的边界去除
+#define L_DZ 0.01        //  左夹指夹取位置相对于原配夹指的位移(比原配夹指长为正)
+#define R_DZ 0.0        //  右夹指夹取位置相对于原配夹指的位移(比原配夹指长为正)
 // 以下注意带小数点, 避免计算时出现整数除法
-#define MOV_Z 1.0       // 仅xy平面平移时的高度z的默认值
+#define OPRTZ 0.72      // 常用操作平面的Z值
 #define MAX_V 0.05      // 机械臂最大速度
 #define MAX_A 0.05      // 机械臂最大加速度
 
@@ -83,7 +86,7 @@ class CIiwaServo{
         /*  以相机坐标系为准，移动机械臂以指定位姿移动到指定点       alpha为沿X轴旋转到的目标角度    beta为沿Y轴旋转到的目标角度   gamma为沿Z轴旋转到的目标角度*/
         void MoveLeftEulerXYZ(double dX=0.6, double dY=0.225, double dZ=0.669, double dOx=0, double dOy=0, double dOz=-90, 
                               double dMoveDuration=10, int nPathMode=0);
-            void MoveLeftEulerXYZ(Point ptTarget,double dZ=0.94,double dOz=0,double dOx=0,double dOy=0,double dMoveDuration=10,int nPathMode=0);
+            void MoveLeftEulerXYZ(Point ptTarget,double dZ=0.94,double dOz=0,double dMoveDuration=10,double dOx=0,double dOy=0,int nPathMode=0);
         /*以相机坐标系为准，移动机械臂以指定位姿移动到指定点       x,y,z,w为目标点四元数*/
         void MoveLeftQuaternion(double dX=0.6, double dY=0.225, double dZ=0.669, double dOx=0, double dOy=0, double dOz=-0.707, double dOw=0.707,
                                 double dMoveDuration=10, int nPathMode=0);
@@ -104,7 +107,7 @@ class CIiwaServo{
         /*以相机坐标系为准，移动机械臂以指定位姿移动到指定点       alpha为沿X轴旋转到的目标角度    beta为沿Y轴旋转到的目标角度   gamma为沿Z轴旋转到的目标角度*/
         void MoveRightEulerXYZ(double dX=-0.6,double dY=0.225,double dZ=0.7,double dOx=0,double dOy=0,double dOz=-90,double dMoveDuration=10,int nPathMode=0);
         /*以相机坐标系为准，移动机械臂以指定位姿移动到指定点       x,y,z,w为目标点四元数*/
-            void MoveRightEulerXYZ(Point ptTarget,double dZ=0.94,double dOz=0,double dOx=0,double dOy=0,double dMoveDuration=10,int nPathMode=0);
+            void MoveRightEulerXYZ(Point ptTarget,double dZ=0.94,double dOz=0,double dMoveDuration=10,double dOx=0,double dOy=0,int nPathMode=0);
         void MoveRightQuaternion(double dX=-0.6,double dY=0.225,double dZ=0.7,double dOx=0,double dOy=0,double dOz=-0.707,double dOw=0.707,
                                  double dMoveDuration=10,int nPathMode=0);
         /*指定机械臂七个关节角进行移动*/
@@ -124,7 +127,32 @@ class CIiwaServo{
         /*以相机坐标系为准，移动机械臂以指定位姿移动到指定点       alpha为沿X轴旋转到的目标角度    beta为沿Y轴旋转到的目标角度   gamma为沿Z轴旋转到的目标角度*/
         void MoveDualEulerXYZ(double dX=-0.6,double dY=0.225,double dZ=0.7,double dOx=0,double dOy=0,double dOz=-90,double dMoveDuration=10,int nPathMode=0);
 
+        /*  将图像的像素坐标(col, row)转换为相机坐标的(x, y), 像素相关参数在 move_kuka.h 文件宏定义中修改
+            输入: 像素坐标系下的 cv::Point(col, row)
+            输出: 相机坐标系下的 {x, y}  */
         vector<double> PointPixel2CameraFrame(Point ptPixel);
+        /*  根据夹角计算机械臂欧拉角度时可能得到相差180的两个角度值，输入较大的一个值，比较从当前角度分别旋转至两个目标角度所需的行程角度，输出所需行程较小的那个目标角度
+            输入: cSide左夹爪或右夹爪（‘L'为左，其余任意值为右），dBiggerAngle两个目标角度的较大值，nAxis旋转轴（0 = X，1 = Y，2 = Z，默认为绕Z轴旋转的角度）
+            输出: 末端欧拉角位姿所应到达的nAxis轴所对应的相对于参考坐标系的角度 */
+        double CloserAngle(char cSide, double dBiggerAngle, int nAxis = 2);
+
+        /*  计算等速运动所需的时间, 根据当前位置xyz和目标xyz计算距离后除以速度得到所需运动周期
+            输入: cSide左夹爪或右夹爪（‘L'为左，'R'为右），ptOprt目标位置的像素坐标x和y，z2目标位置的z(m), 运动速度(m/s)
+            输出: 所需运动周期(s) */
+        double UniformTime(char cSide, Point ptOprt, double z2 = OPRTZ, double dSpeed = 0.05);
+        double UniformTime(char cSide, double x2, double y2, double z2 = OPRTZ, double dSpeed = 0.05);
+
+        /*  封装一层, 增加cSide参数以减少左右臂的重复代码, 将一些重复步骤封装进函数内, 简化代码
+            输入: cSide左夹爪或右夹爪（‘L'为左，'R'为右），ptOprt像素坐标系的操作点，dOprtZ夹取高度 */
+        void DloMoveEuler(char cSide, Point ptOprt, double dGripperDir, double dMoveDuration=-1, double dOprtZ = OPRTZ);
+        /*  函数重载, 用在当左右臂需要同时进行移动而移动参数不一样时   */
+        void DloMoveEuler(Point ptOprtL, double dOprtZL, double dGripperDirL, Point ptOprtR, double dOprtZR, double dGripperDirR, double dMoveDuration=-1);
+        /*  封装一层, 增加cSide参数以减少左右臂的重复代码, 将一些重复步骤封装进函数内, 简化代码
+            输入: cSide左夹爪或右夹爪（‘L'为左，'R'为右, 'D'为双臂同时），其余参数同MoveLeftEulerIncrease() */
+        void DloMoveEulerIncrease(char cSide, double dDZ=0,double dDX=0,double dDY=0,double dDOx=0,double dDOy=0,double dDOz=0,double dMoveDuration=-1,int nPathMode=0);
+        /*  以上函数的重载, 用在当左右臂需要同时进行移动而移动参数不一样时
+            输入: 两个vector<double>, 第一个表示左臂移动参数, 第二个表示右臂移动参数, 两个vector<double>的内容及其余参数同MoveLeftEulerIncrease()   */
+        void DloMoveEulerIncrease(vector<double> dDLeft, vector<double> dDRight, double dMoveDuration=10, int nPathMode=0);
 };
 
 #endif

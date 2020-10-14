@@ -5,12 +5,12 @@ using namespace std;
 CIiwaServo::CIiwaServo(){
     LeftClient=nh.serviceClient<kukafri_hw::setMoveMode>("/left/setMoveMode");
     LeftHomeClient=nh.serviceClient<kukafri_hw::moveToHome>("/left/MoveToHome");
+    RightClient=nh.serviceClient<kukafri_hw::setMoveMode>("/right/setMoveMode");
+    RightHomeClient=nh.serviceClient<kukafri_hw::moveToHome>("/right/MoveToHome");
+
     LeftEulerXYZ=nh.advertise<kukafri_hw::kukaCmdPosE>("/left/cmdPos_EulerZYX",1000);
     LeftQuaternion=nh.advertise<kukafri_hw::kukaCmdPosQ>("/left/cmdPos_Quaternion",1000);
     LeftJoint=nh.advertise<kukafri_hw::kukaCmdJoint>("/left/cmdJoint",1000);
-
-    RightClient=nh.serviceClient<kukafri_hw::setMoveMode>("/right/setMoveMode");
-    RightHomeClient=nh.serviceClient<kukafri_hw::moveToHome>("/right/MoveToHome");
     RightEulerXYZ=nh.advertise<kukafri_hw::kukaCmdPosE>("/right/cmdPos_EulerZYX",1000);
     RightQuaternion=nh.advertise<kukafri_hw::kukaCmdPosQ>("/right/cmdPos_Quaternion",1000);
     RightJoint=nh.advertise<kukafri_hw::kukaCmdJoint>("/right/cmdJoint",1000);
@@ -21,7 +21,7 @@ CIiwaServo::CIiwaServo(){
     homeSrv.request.no_use=0;
     SetLeftMoveMode();
     SetRightMoveMode();
-    ros::Duration(3).sleep();
+    ros::Duration(0.1).sleep();
 }
 
 CIiwaServo::~CIiwaServo()
@@ -73,7 +73,7 @@ void CIiwaServo::MoveLeftEulerXYZ(double dX,double dY,double dZ,double dOx,doubl
     msg.gamma=dOz;
     LeftEulerXYZ.publish(msg);
 }
-void CIiwaServo::MoveLeftEulerXYZ(Point ptTarget,double dZ,double dOz,double dOx,double dOy,double dMoveDuration,int nPathMode){
+void CIiwaServo::MoveLeftEulerXYZ(Point ptTarget,double dZ,double dOz,double dMoveDuration,double dOx,double dOy,int nPathMode){
     SetLeftMoveMode(1,nPathMode,dMoveDuration);
     kukafri_hw::kukaCmdPosE msg;
     vector<double> xy = PointPixel2CameraFrame(ptTarget);
@@ -113,14 +113,14 @@ void CIiwaServo::MoveLeftToJoint(double dJoint1,double dJoint2,double dJoint3,do
     LeftJoint.publish(msg);
 }
 
-void CIiwaServo::MoveLeftEulerIncrease(double dDX,double dDY,double dDZ,double dOx,double dDOy,double dDOz,double dMoveDuration,int nPathMode){
+void CIiwaServo::MoveLeftEulerIncrease(double dDX,double dDY,double dDZ,double dDOx,double dDOy,double dDOz,double dMoveDuration,int nPathMode){
     SetLeftMoveMode(1,nPathMode,dMoveDuration);
     ros::spinOnce();
     kukafri_hw::kukaCmdPosE msg;
     msg.X_Axis=m_vdLeftPos[0]+dDX;
     msg.Y_Axis=m_vdLeftPos[1]+dDY;
     msg.Z_Axis=m_vdLeftPos[2]+dDZ;
-    msg.alpha=m_vdLeftEuler[0]+dOx;
+    msg.alpha=m_vdLeftEuler[0]+dDOx;
     msg.beta=m_vdLeftEuler[1]+dDOy;
     msg.gamma=m_vdLeftEuler[2]+dDOz;
     LeftEulerXYZ.publish(msg);
@@ -173,7 +173,7 @@ void CIiwaServo::MoveRightEulerXYZ(double dX,double dY,double dZ,double dOx,doub
     msg.gamma=dOz;
     RightEulerXYZ.publish(msg);
 }
-void CIiwaServo::MoveRightEulerXYZ(Point ptTarget,double dZ,double dOz,double dOx,double dOy,double dMoveDuration,int nPathMode){
+void CIiwaServo::MoveRightEulerXYZ(Point ptTarget,double dZ,double dOz,double dMoveDuration,double dOx,double dOy,int nPathMode){
     SetRightMoveMode(1,nPathMode,dMoveDuration);
     kukafri_hw::kukaCmdPosE msg;
     vector<double> xy = PointPixel2CameraFrame(ptTarget);
@@ -213,14 +213,14 @@ void CIiwaServo::MoveRightToJoint(double dJoint1,double dJoint2,double dJoint3,d
     RightJoint.publish(msg);
 }
 
-void CIiwaServo::MoveRightEulerIncrease(double dDX,double dDY,double dDZ,double dOx,double dDOy,double dDOz,double dMoveDuration,int nPathMode){
+void CIiwaServo::MoveRightEulerIncrease(double dDX,double dDY,double dDZ,double dDOx,double dDOy,double dDOz,double dMoveDuration,int nPathMode){
     SetRightMoveMode(1,nPathMode,dMoveDuration);
     ros::spinOnce();
     kukafri_hw::kukaCmdPosE msg;
     msg.X_Axis=m_vdRightPos[0]+dDX;
     msg.Y_Axis=m_vdRightPos[1]+dDY;
     msg.Z_Axis=m_vdRightPos[2]+dDZ;
-    msg.alpha=m_vdRightEuler[0]+dOx;
+    msg.alpha=m_vdRightEuler[0]+dDOx;
     msg.beta=m_vdRightEuler[1]+dDOy;
     msg.gamma=m_vdRightEuler[2]+dDOz;
     RightEulerXYZ.publish(msg);
@@ -273,4 +273,132 @@ vector<double> CIiwaServo::PointPixel2CameraFrame(Point ptPixel){
     double fix_x = 0.01*(8.6/267.33*(ptPixel.x-352.67)-0.5);        //  /*
     double fix_y = 0.01*(5.8/82*(ptPixel.y-298.75)+5);              //      手动测量误差后进行补偿, 相机移动或重新标定后需自行设计补偿方程  */
     return {(ptPixel.x-PAN_X)/PIXELS_OF_1MX+fix_x, (ptPixel.y-PAN_Y)/PIXELS_OF_1MY-fix_y};
+}
+
+/*  根据夹角计算机械臂欧拉角度时可能得到相差180的两个角度值，输入较大的一个值，比较从当前角度分别旋转至两个目标角度所需的行程角度，输出所需行程较小的那个目标角度
+    输入: cSide左夹爪或右夹爪（‘L'为左，其余任意值为右），dBiggerAngle两个目标角度的较大值，nAxis旋转轴（0 = X，1 = Y，2 = Z，默认为绕Z轴旋转的角度）
+    输出: 末端欧拉角位姿所应到达的nAxis轴所对应的相对于参考坐标系的角度 */
+double CIiwaServo::CloserAngle(char cSide, double dBiggerAngle, int nAxis){
+    if(nAxis < 0 || nAxis > 2){
+        cout << "\n\n===== 【ERROR AXIS IN CloserAngle()】 nAxis: " << nAxis << " =====\n\n\n";
+        return 0;
+    }
+    if(dBiggerAngle < 0 || dBiggerAngle > 180){
+        cout << "\n\n===== 【ERROR BIGGERANGLE IN CloserAngle()】 dBiggerAngle: " << dBiggerAngle << " =====\n\n\n";
+        return 0;
+    }
+    ros::spinOnce();
+    double dSmallerAngle = dBiggerAngle - 180;
+    double dCurAngle = (cSide == 'L') ? m_vdLeftEuler[nAxis] : m_vdRightEuler[nAxis];
+    double dAbsToBigger = abs(dBiggerAngle - dCurAngle);
+    double dAbsToSmaller = abs(dSmallerAngle - dCurAngle);
+    return dAbsToSmaller < dAbsToBigger ? dSmallerAngle : dBiggerAngle;
+}
+
+/*  计算等速运动所需的时间, 根据当前位置xyz和目标xyz计算距离后除以速度得到所需运动周期
+    输入: cSide左夹爪或右夹爪（‘L'为左，'R'为右），ptOprt目标位置的像素坐标x和y，z2目标位置的z(m), 运动速度(m/s)
+    输出: 所需运动周期(s) */
+double CIiwaServo::UniformTime(char cSide, Point ptOprt, double z2, double dSpeed){
+    if(dSpeed > 0.1){
+        cout << "\n\n===== 【SPEED IS TOO FAST】 dSpeed: " << dSpeed << " =====\n\n\n";
+        return 10;
+    }
+    ros::spinOnce();
+    vector<double> xy = PointPixel2CameraFrame(ptOprt-PTEDGE);
+    double x1, y1, z1, x2 = xy[0], y2 = xy[1];
+    if(cSide == 'L'){
+        x1 = m_vdLeftPos[0];
+        y1 = m_vdLeftPos[1];
+        z1 = m_vdLeftPos[2];
+    }
+    else if(cSide == 'R'){
+        x1 = m_vdRightPos[0];
+        y1 = m_vdRightPos[1];
+        z1 = m_vdRightPos[2];
+    }
+    return sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2)+(z1-z2)*(z1-z2))/dSpeed;
+}
+double CIiwaServo::UniformTime(char cSide, double x2, double y2, double z2, double dSpeed){
+    if(dSpeed > 0.1){
+        cout << "\n\n===== 【SPEED IS TOO FAST】 dSpeed: " << dSpeed << " =====\n\n\n";
+        return 10;
+    }
+    ros::spinOnce();
+    double x1, y1, z1;
+    if(cSide == 'L'){
+        x1 = m_vdLeftPos[0];
+        y1 = m_vdLeftPos[1];
+        z1 = m_vdLeftPos[2];
+    }
+    else if(cSide == 'R'){
+        x1 = m_vdRightPos[0];
+        y1 = m_vdRightPos[1];
+        z1 = m_vdRightPos[2];
+    }
+    return sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2)+(z1-z2)*(z1-z2))/dSpeed;
+}
+
+/*  封装一层, 增加cSide参数以减少左右臂的重复代码, 将一些重复步骤封装进函数内, 简化代码
+    输入: cSide左夹爪或右夹爪（‘L'为左，'R'为右），ptOprt像素坐标系的操作点，dOprtZ夹取高度 */
+void CIiwaServo::DloMoveEuler(char cSide, Point ptOprt, double dGripperDir, double dMoveDuration, double dOprtZ){
+    if(dMoveDuration == -1)
+        dMoveDuration = UniformTime(cSide, ptOprt, dOprtZ);
+    if(cSide == 'L')
+        MoveLeftEulerXYZ(ptOprt-PTEDGE, dOprtZ-L_DZ, CloserAngle(cSide, dGripperDir), dMoveDuration);
+    else if(cSide == 'R')
+        MoveRightEulerXYZ(ptOprt-PTEDGE, dOprtZ-R_DZ, CloserAngle(cSide, dGripperDir), dMoveDuration);
+    else{
+        cout << "\n\n===== 【ERROR SIDE IN DloMoveEuler()】 cSide: " << cSide << " =====\n\n\n";
+        return;
+    }
+    ros::Duration(dMoveDuration + 0.1).sleep();
+}
+/*  函数重载, 用在当左右臂需要同时进行移动而移动参数不一样时   */
+void CIiwaServo::DloMoveEuler(Point ptOprtL, double dOprtZL, double dGripperDirL, Point ptOprtR, double dOprtZR, double dGripperDirR, double dMoveDuration){
+    if(dMoveDuration == -1)
+        dMoveDuration = max(UniformTime('L', ptOprtL, dOprtZL), UniformTime('R', ptOprtR, dOprtZR));
+    MoveLeftEulerXYZ(ptOprtL-PTEDGE, dOprtZL-L_DZ, CloserAngle('L', dGripperDirL), dMoveDuration);
+    MoveRightEulerXYZ(ptOprtR-PTEDGE, dOprtZR-R_DZ, CloserAngle('R', dGripperDirR), dMoveDuration);
+    ros::Duration(dMoveDuration + 0.1).sleep();
+}
+
+/*  封装一层, 增加cSide参数以减少左右臂的重复代码, 将一些重复步骤封装进函数内, 简化代码
+    输入: cSide左夹爪或右夹爪（‘L'为左，'R'为右, 'D'为双臂同时），其余参数同MoveLeftEulerIncrease() */
+void CIiwaServo::DloMoveEulerIncrease(char cSide,double dDZ,double dDX,double dDY,double dDOx,double dDOy,double dDOz,double dMoveDuration,int nPathMode){
+    ros::spinOnce();
+    double x2, y2, z2;
+    if(dMoveDuration == -1){
+        if(cSide == 'L'){
+            x2 = m_vdLeftPos[0]+dDX;
+            y2 = m_vdLeftPos[1]+dDY;
+            z2 = m_vdLeftPos[2]+dDZ;
+            dMoveDuration = UniformTime(cSide, x2, y2, z2);
+        }
+        else if(cSide == 'R' || cSide == 'D'){
+            x2 = m_vdRightPos[0]+dDX;
+            y2 = m_vdRightPos[1]+dDY;
+            z2 = m_vdRightPos[2]+dDZ;
+            dMoveDuration = UniformTime('R', x2, y2, z2);
+        }
+    }
+    if(cSide == 'L'){
+        MoveLeftEulerIncrease(dDX, dDY, dDZ, dDOx, dDOy, dDOz, dMoveDuration, nPathMode);
+        ros::Duration(dMoveDuration + 0.1).sleep();
+    }
+    else if(cSide == 'R'){
+        MoveRightEulerIncrease(dDX, dDY, dDZ, dDOx, dDOy, dDOz, dMoveDuration, nPathMode);
+        ros::Duration(dMoveDuration + 0.1).sleep();
+    }
+    else if(cSide == 'D'){
+        MoveLeftEulerIncrease(dDX, dDY, dDZ, dDOx, dDOy, dDOz, dMoveDuration, nPathMode);
+        MoveRightEulerIncrease(dDX, dDY, dDZ, dDOx, dDOy, dDOz, dMoveDuration, nPathMode);
+        ros::Duration(dMoveDuration + 0.1).sleep();
+    }
+}
+/*  函数重载, 用在当左右臂需要同时进行移动而移动参数不一样时
+    输入: 两个vector<double>, 第一个表示左臂移动参数, 第二个表示右臂移动参数, 两个vector<double>的内容及其余参数同MoveLeftEulerIncrease()   */
+void CIiwaServo::DloMoveEulerIncrease(vector<double> dDLeft, vector<double> dDRight, double dMoveDuration, int nPathMode){
+    MoveLeftEulerIncrease(dDLeft[0], dDLeft[1], dDLeft[2], dDLeft[3], dDLeft[4], dDLeft[5], dMoveDuration, nPathMode);
+    MoveRightEulerIncrease(dDRight[0], dDRight[1], dDRight[2], dDRight[3], dDRight[4], dDRight[5], dMoveDuration, nPathMode);
+    ros::Duration(dMoveDuration + 0.1).sleep();
 }
