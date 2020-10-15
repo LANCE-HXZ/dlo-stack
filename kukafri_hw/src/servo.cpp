@@ -402,3 +402,21 @@ void CIiwaServo::DloMoveEulerIncrease(vector<double> dDLeft, vector<double> dDRi
     MoveRightEulerIncrease(dDRight[0], dDRight[1], dDRight[2], dDRight[3], dDRight[4], dDRight[5], dMoveDuration, nPathMode);
     ros::Duration(dMoveDuration + 0.1).sleep();
 }
+
+// void CIiwaServo::DloMoveToHome(char cSide){
+//     ros::spinOnce();
+//     double x2, y2, z2, dTime;
+//     if(cSide == 'L'){
+//         x2 = m_vdLeftPos[0]+dDX;
+//         y2 = m_vdLeftPos[1]+dDY;
+//         z2 = m_vdLeftPos[2]+dDZ;
+//         dTime = UniformTime(cSide, x2, y2, z2);
+//     }
+//     else if(cSide == 'R' || cSide == 'D'){
+//         x2 = m_vdRightPos[0]+dDX;
+//         y2 = m_vdRightPos[1]+dDY;
+//         z2 = m_vdRightPos[2]+dDZ;
+//         dTime = UniformTime('R', x2, y2, z2);
+//     }
+//     }
+// }

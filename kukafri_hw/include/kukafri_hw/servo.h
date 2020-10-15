@@ -153,6 +153,8 @@ class CIiwaServo{
         /*  以上函数的重载, 用在当左右臂需要同时进行移动而移动参数不一样时
             输入: 两个vector<double>, 第一个表示左臂移动参数, 第二个表示右臂移动参数, 两个vector<double>的内容及其余参数同MoveLeftEulerIncrease()   */
         void DloMoveEulerIncrease(vector<double> dDLeft, vector<double> dDRight, double dMoveDuration=10, int nPathMode=0);
+
+        // void DloMoveToHome(char cSide = 'D');
 };
 
 #endif

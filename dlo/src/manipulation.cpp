@@ -19,7 +19,8 @@ void manipulation(SOperation oprt){
     //     cout << "\n\n===== 【ERROR OPERATION TYPE】 " << " =====\n\n\n";
     //     return;
     // }
-
+    mgc.Dual_Gripper_anypose(OPN, OPN);
+    msv.DloMoveEulerIncrease('D', -0.1);
     msv.MoveLeftToHome();
     msv.MoveRightToHome();
     ros::Duration(10.1).sleep();
@@ -59,9 +60,6 @@ void optionI(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
     msv.DloMoveEulerIncrease('R', 0, -0.1);
     mgc.Dual_Gripper_anypose(MDL, CLS);
     msv.DloMoveEulerIncrease('L', 0, 0.1);
-    
-
-    mgc.Dual_Gripper_anypose(OPN, OPN);
 }
 
 //  抓取点, 目标点
@@ -88,7 +86,6 @@ void optionD(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
     //  移动到目标位置上方, 下移, 松开
     msv.DloMoveEuler(cSide, oprt.vptPoint[1], oprt.vdGripperDir[1]);
     msv.DloMoveEulerIncrease(cSide, 0.1);
-    mgc.Gripper_anypose(cSide, OPN);
 }
 
 //  抓取点, 旋转参考点; 抓取角度, 旋转参考角度
