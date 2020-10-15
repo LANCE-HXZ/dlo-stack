@@ -283,7 +283,7 @@ SOperation CStrategy::strategy(){
 					oprt_rt.vptPoint.push_back(pt[opt_index]);
 					draw_point(pt[opt_index], "opt", blue);
 					draw_point(cross_y, "ref", green);
-					Point ptTarget = cross_y + per_dir(pt[opt_index], cross_y, 30);
+					Point ptTarget = cross_y + per_dir(pt[opt_index], cross_y, 75);
 					oprt_rt.vptPoint.push_back(ptTarget);
 					oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
 					draw_point(ptTarget, "target", yellow);
