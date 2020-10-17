@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
-    <arg name="deviceL" default="/dev/ttyUSB1"/>
-    <arg name="deviceR" default="/dev/ttyUSB0"/>
+    <arg name="deviceL" default="/dev/ttyUSB0"/>
+    <arg name="deviceR" default="/dev/ttyUSB1"/>
     <node pkg="robotiq_2f_gripper_control" 
           name="L_Robotiq2FGripperRtuNode" 
           type="L_Robotiq2FGripperRtuNode.py" 
