@@ -25,7 +25,7 @@ class CImageConverter
     ros::NodeHandle m_nh;
     ros::Publisher m_pubCrop;
     ros::Publisher m_pubSrc;
-    string IMG_FLODER;
+    string IMG_FLODER, ROUND;
     CStrategy sttg;  // === 拆解策略 ===
   
   public:

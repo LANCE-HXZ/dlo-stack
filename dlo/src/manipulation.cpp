@@ -20,15 +20,10 @@ void manipulation(SOperation oprt){
     //     cout << "\n\n===== 【ERROR OPERATION TYPE】 " << " =====\n\n\n";
     //     return;
     // }
-    cout << "1111111\n";
     mgc.Dual_Gripper_anypose(OPN, OPN);
-    cout << "2222222\n";
-    msv.DloMoveEulerIncrease('L', -0.15);
-    cout << "3333333\n";
+    msv.DloMoveEulerIncrease('D', -0.2);
     msv.MoveLeftToHome();
-    cout << "4444444\n";
-    // msv.MoveRightToHome();
-    cout << "5555555\n";
+    msv.MoveRightToHome();
     ros::Duration(10.1).sleep();
 }
 
@@ -81,10 +76,14 @@ void optionD(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
         cSide = 'R';
     else{
         ////////////跨左右区的操作/////////////
+        cout << "ACROSS MIDDLE\n";
     }
+    cout << "Side: " << cSide << endl;
 
     //  单臂移动到目标点上方, 向下到夹取高度, 夹取, 上移
+    cout << "=1\n";
     msv.DloMoveEuler(cSide, oprt.vptPoint[0], oprt.vdGripperDir[0]);
+    cout << "=2\n";
     msv.DloMoveEulerIncrease(cSide, 0.1);
     mgc.Gripper_anypose(cSide, CLS);
     msv.DloMoveEulerIncrease(cSide, -0.1);

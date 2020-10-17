@@ -27,11 +27,13 @@ CImageConverter::~CImageConverter()
 void CImageConverter::Init()
   {
     cout << "NOW IN Init()" << endl;
+    ROUND = to_string(rand());
     g_vnClassList = g_vnCrossList = {}; m_vstrCropDir = {};
     m_nCropNum = 0; flagBinaryImgReady = flagReady4Next = 0;
     m_imgSrc = m_imgCamera;
     MakeConstantBorder(m_imgSrc, m_imgSrc, EDGE);
     imwrite(IMG_FLODER + "1_R.png", m_imgSrc);
+    imwrite(IMG_FLODER + "S/" + ROUND + "_1_R.png", m_imgSrc);
     // imshow("R", m_imgSrc);
     // waitKey();
     std_msgs::String signal;
@@ -49,15 +51,19 @@ void CImageConverter::ProcessShowCameraView(){
 /*  在二值轮廓图准备好后进入细化流程  */
 void CImageConverter::ProcessSkeleton(){
     m_imgBinary = readImg(IMG_FLODER + "3_O.png");
+    imwrite(IMG_FLODER + "S/" + ROUND + "_3_O.png", m_imgBinary);
 
     rgb2binary(m_imgBinary, m_imgBinary);
-    imwrite(IMG_FLODER+"4_B.png", m_imgBinary);
+    imwrite(IMG_FLODER + "4_B.png", m_imgBinary);
+    imwrite(IMG_FLODER + "S/" + ROUND + "_4_B.png", m_imgBinary);
 
     pre_dilate(m_imgBinary, 3, 2); // 膨胀去除黑离群点
-    cv::imwrite(IMG_FLODER + "4_B2_dilate.png", m_imgBinary);
+    imwrite(IMG_FLODER + "4_B2_dilate.png", m_imgBinary);
+    imwrite(IMG_FLODER + "S/" + ROUND + "_4_B2_dilate.png", m_imgBinary);
 
     pre_erode(m_imgBinary, 3, 6); // 腐蚀去除白离群点
-    cv::imwrite(IMG_FLODER + "4_B3_erode.png", m_imgBinary);
+    imwrite(IMG_FLODER + "4_B3_erode.png", m_imgBinary);
+    imwrite(IMG_FLODER + "S/" + ROUND + "_4_B3_erode.png", m_imgBinary);
 
     skeleton(m_imgBinary, IMG_FLODER + "5_S.png", 3);
 
@@ -68,15 +74,20 @@ void CImageConverter::ProcessSkeleton(){
     m_imgSkeleton = removeSinglePoint(m_imgSkeleton, 90, 90);
     m_imgSkeleton = removeSinglePoint(m_imgSkeleton, 10, 10);
     imwrite(IMG_FLODER+"5_S.png", m_imgSkeleton);
+    imwrite(IMG_FLODER + "S/" + ROUND + "_5_S.png", m_imgSkeleton);
 }
 
 /*  在细化图和目标识别boxes准备好后进入遍历流程  */
 void CImageConverter::ProcessTraversal(){
     m_boxesCopy = m_boxes;
+    Mat imgO = readImg(IMG_FLODER + "3_O.png");
+    imwrite(IMG_FLODER + "S/" + ROUND + "_3_O.png", imgO);
     m_imgYolo = readImg(IMG_FLODER + "2_D.png");
+    imwrite(IMG_FLODER + "S/" + ROUND + "_2_D.png", m_imgYolo);
     
     m_vstrCropDir = traversal(IMG_FLODER + "5_S.png", m_imgSrc, m_boxes); // 裁剪图路径列表 -- 按遍历顺序
     m_imgTraversal = readImg(IMG_FLODER + "6_T.png");
+    imwrite(IMG_FLODER + "S/" + ROUND + "_6_T.png", m_imgTraversal);
     
     for(int c=0; c<m_vstrCropDir.size(); ++c)
     {
@@ -92,6 +103,10 @@ void CImageConverter::ProcessTraversal(){
 void CImageConverter::ProcessStrategy(){
     visualization();  // === 可视化 ===
     SOperation oprt = sttg.strategy();
+    Mat imgResult = readImg(IMG_FLODER + "8_Result.png");
+    imwrite(IMG_FLODER + "S/" + ROUND + "_8_Result.png", imgResult);
+    Mat imgVisualization = readImg(IMG_FLODER + "7_V.png");
+    imwrite(IMG_FLODER + "S/" + ROUND + "_7_V.png", imgVisualization);
     manipulation(oprt);
 
     /*  将对应交叉点识别结果成对相反出现的交叉点框分别保存到0/和1/训练集文件夹  */
