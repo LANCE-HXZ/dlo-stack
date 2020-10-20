@@ -1,6 +1,8 @@
 #include "manipulation.h"
 
 Point ptEdge = Point(EDGE, EDGE);   //  相机视野四周添加了宽度为EDGE的边界, 控制机器人时给的坐标需要将添加的边界去除
+vector<vector<double>> g_vvdEndTarget = {{0, -20, 0, -20, 0, 0, 0},
+                                        {0, -20, 0, -20, 0, 0, 0}};
 
 void manipulation(SOperation oprt){
     CIiwaServo msv;
@@ -16,10 +18,10 @@ void manipulation(SOperation oprt){
         optionIX(oprt, msv, mgc);
     // else if(oprt.strOperationType == "T")
     //     optionT(oprt, msv, mgc);
-    // else{
-    //     cout << "\n\n===== 【ERROR OPERATION TYPE】 " << " =====\n\n\n";
-    //     return;
-    // }
+    else{
+        cout << "\n\n===== 【ERROR OPERATION TYPE】 " << " =====\n\n\n";
+        return;
+    }
     mgc.Dual_Gripper_anypose(OPN, OPN);
     double dTime1 = msv.MoveLeftEulerXYZ();
     double dTime2 = msv.MoveRightEulerXYZ();
@@ -45,7 +47,7 @@ void optionI(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
     msv.DloMoveEulerIncrease('L', -0.15);
     double dTime1 = msv.MoveLeftEulerXYZ();
     ros::Duration(dTime1+0.1).sleep();
-    msv.MoveLeftToJoint(0, -20, 0, -20, 0, 0, 0);
+    msv.MoveLeftToJoint(g_vvdEndTarget[g_nEndTarget++]);
     ros::Duration(10.1).sleep();
     // msv.DloMoveEuler('L', oprt.vptPoint[2], oprt.vdGripperDir[2], oprt.vdAddInfo[0]);
     // msv.DloMoveEulerIncrease('L', 0.1);
@@ -58,7 +60,7 @@ void optionI(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
     msv.DloMoveEulerIncrease('R', -0.15);
     dTime1 = msv.MoveRightEulerXYZ();
     ros::Duration(dTime1+0.1).sleep();
-    msv.MoveRightToJoint(0, -20, 0, -20, 0, 0, 0);
+    msv.MoveRightToJoint(g_vvdEndTarget[g_nEndTarget++]);   //  操作结束后移动至下一个端点放置点
     ros::Duration(10.1).sleep();
     // msv.DloMoveEuler('R', oprt.vptPoint[3], oprt.vdGripperDir[3], oprt.vdAddInfo[1]);
     // msv.DloMoveEulerIncrease('R', 0.1);
@@ -69,11 +71,6 @@ void optionI(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
     msv.MoveLeftToJoint(0, -20, 0, -20, 0, 45, 0);
     msv.MoveRightToJoint(0, -20, 0, -20, 0, 45, 0);
     ros::Duration(10.1).sleep();
-
-    //  ========    增加一步拉直绳子    ========
-    // msv.DloMoveEulerIncrease('R', 0, -0.2);
-    // mgc.Dual_Gripper_anypose(MDL, CLS);
-    // msv.DloMoveEulerIncrease('L', 0, 0.2);
 }
 
 //  抓取点, 目标点

@@ -5,6 +5,7 @@
 #include "kukafri_hw/servo.h"
 
 vector<int64> g_vnClassList, g_vnCrossList;
+int g_nEndTarget = 0;
 
 int main(int argc, char *argv[])
 {

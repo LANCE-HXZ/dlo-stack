@@ -1,4 +1,5 @@
 #include "img_processing.h"
+
 using namespace cv;
 
 
@@ -120,4 +121,20 @@ double angle(cv::Point pt1, cv::Point pt2, cv::Point pt0){
 	double dy2 = pt2.y - pt0.y;
 	double angle_line = (dx1*dx2 + dy1*dy2) / sqrt((dx1*dx1 + dy1*dy1) * (dx2*dx2 + dy2*dy2) + 1e-10);
 	return acos(angle_line) * 180 / 3.141592653;
+}
+
+
+// 计算 |p1 p2| X |p1 p|
+float GetCross(Point& p1, Point& p2,Point& p)
+{
+    return (p2.x - p1.x) * (p.y - p1.y) -(p.x - p1.x) * (p2.y - p1.y);
+}
+//判断点是否在矩形内(含边界), 是则返回true, 否返回false
+bool IsPointInMatrix(Point& p, vector<Point> vptMatrix)
+{
+    Point p1 = vptMatrix[0];
+    Point p2 = vptMatrix[1];
+    Point p3 = vptMatrix[2];
+    Point p4 = vptMatrix[3];
+    return GetCross(p1,p2,p) * GetCross(p3,p4,p) >= 0 && GetCross(p2,p3,p) * GetCross(p4,p1,p) >= 0;
 }

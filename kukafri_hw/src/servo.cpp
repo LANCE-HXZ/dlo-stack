@@ -116,6 +116,18 @@ void CIiwaServo::MoveLeftToJoint(double dJoint1,double dJoint2,double dJoint3,do
     msg.joint7=dJoint7;
     LeftJoint.publish(msg);
 }
+void CIiwaServo::MoveLeftToJoint(vector<double> vdJoint,double dMoveDuration,int nPathMode){
+    SetLeftMoveMode(0,nPathMode,dMoveDuration);
+    kukafri_hw::kukaCmdJoint msg;
+    msg.joint1=vdJoint[0];
+    msg.joint2=vdJoint[1];
+    msg.joint3=vdJoint[2];
+    msg.joint4=vdJoint[3];
+    msg.joint5=vdJoint[4];
+    msg.joint6=vdJoint[5];
+    msg.joint7=vdJoint[6];
+    LeftJoint.publish(msg);
+}
 
 double CIiwaServo::MoveLeftEulerIncrease(double dDX,double dDY,double dDZ,double dDOx,double dDOy,double dDOz,double dMoveDuration,int nPathMode){
     ros::spinOnce();
@@ -220,6 +232,18 @@ void CIiwaServo::MoveRightToJoint(double dJoint1,double dJoint2,double dJoint3,d
     msg.joint5=dJoint5;
     msg.joint6=dJoint6;
     msg.joint7=dJoint7;
+    RightJoint.publish(msg);
+}
+void CIiwaServo::MoveRightToJoint(vector<double> vdJoint,double dMoveDuration,int nPathMode){
+    SetRightMoveMode(0,nPathMode,dMoveDuration);
+    kukafri_hw::kukaCmdJoint msg;
+    msg.joint1=vdJoint[0];
+    msg.joint2=vdJoint[1];
+    msg.joint3=vdJoint[2];
+    msg.joint4=vdJoint[3];
+    msg.joint5=vdJoint[4];
+    msg.joint6=vdJoint[5];
+    msg.joint7=vdJoint[6];
     RightJoint.publish(msg);
 }
 

@@ -18,6 +18,7 @@ extern vector<int> cpt, ept, start;
 extern int point_num, cpt_num, ept_num, line_num, nCheckReturn;
 extern cv::Scalar red, green, blue, yellow,purple, cyan;
 extern vector<int> c0, c1;
+extern int g_nEndTarget;
 
 struct SOperation{
     string strOperationType;        //  操作类型

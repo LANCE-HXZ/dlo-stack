@@ -94,6 +94,7 @@ class CIiwaServo{
         /*指定机械臂七个关节角进行移动*/
         void MoveLeftToJoint(double dJoint1=-23.09, double dJoint2=-29.527, double dJoint3=4.9144, double dJoint4=-72.56458, double dJoint5=25.49335,
                              double dJoint6=46.8971, double dJoint7=9.2455, double dMoveDuration=10.01, int nPathMode=0);
+            void MoveLeftToJoint(vector<double> vdJoint,double dMoveDuration=10.01,int nPathMode=0);
         /*机械臂相对于当前位置移动一个坐标和位姿,位姿用EulerXYZ表示*/
         double MoveLeftEulerIncrease(double dDX=0,double dDY=0,double dDZ=0,double dDOx=0,double dDOy=0,double dDOz=0,double dMoveDuration=10.01,int nPathMode=0);
         /*机械臂相对于当前位置移动一个坐标和位姿，位姿用四元数表示*/
@@ -114,6 +115,7 @@ class CIiwaServo{
         /*指定机械臂七个关节角进行移动*/
         void MoveRightToJoint(double dJoint1=28.6085,double dJoint2=-29.537,double dJoint3=-6.1648,double dJoint4=-72.56458,double dJoint5=-29.92,
                             double dJoint6=48.27,double dJoint7=-8.845,double dMoveDuration=10.01,int nPathMode=0);
+            void MoveRightToJoint(vector<double> vdJoint,double dMoveDuration=10.01,int nPathMode=0);
         /*机械臂相对于当前位置移动一个坐标和位姿,位姿用EulerXYZ表示*/
         double MoveRightEulerIncrease(double dDX=0,double dDY=0,double dDZ=0,double dDOx=0,double dDOy=0,double dDOz=0,double dMoveDuration=10.01,int nPathMode=0);
         /*机械臂相对于当前位置移动一个坐标和位姿，位姿用四元数表示*/

@@ -13,6 +13,7 @@
 using namespace cv;
 
 extern Point ptEdge;
+extern vector<vector<double>> g_vvdEndTarget;
 
 void manipulation(SOperation oprt);
 
