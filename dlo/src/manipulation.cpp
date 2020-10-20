@@ -41,25 +41,39 @@ void optionI(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
     msv.DloMoveEulerIncrease('D', 0.1);
     //  左夹爪夹紧, 右夹爪限位
     mgc.Dual_Gripper_anypose(MDL, CLS);
-    //  左臂上移, 然后移动到左臂目标点上方, 下移
-    msv.DloMoveEulerIncrease('L', -0.1);
-    msv.DloMoveEuler('L', oprt.vptPoint[2], oprt.vdGripperDir[2], oprt.vdAddInfo[0]);
-    msv.DloMoveEulerIncrease('L', 0.1);
-    //  松左夹爪至限位位置
-    mgc.Gripper_anypose('L', MDL);
+    //  左臂上移, 然后移动到左臂目标点上方, 回家, 关节角控制至释放点
+    msv.DloMoveEulerIncrease('L', -0.15);
+    double dTime1 = msv.MoveLeftEulerXYZ();
+    ros::Duration(dTime1+0.1).sleep();
+    msv.MoveLeftToJoint(0, -20, 0, -20, 0, 0, 0);
+    ros::Duration(10.1).sleep();
+    // msv.DloMoveEuler('L', oprt.vptPoint[2], oprt.vdGripperDir[2], oprt.vdAddInfo[0]);
+    // msv.DloMoveEulerIncrease('L', 0.1);
+
+    //  松左夹爪松开
+    mgc.Gripper_anypose('L', OPN);
     
-    //  右夹爪夹紧, 右臂上移, 移动到右臂目标点上方, 下移
+    //  右夹爪夹紧, 右臂上移, 回家, 关节角控制至释放点
     mgc.Gripper_anypose('R', CLS);
-    msv.DloMoveEulerIncrease('R', -0.1);
-    msv.DloMoveEuler('R', oprt.vptPoint[3], oprt.vdGripperDir[3], oprt.vdAddInfo[1]);
-    msv.DloMoveEulerIncrease('R', 0.1);
-    //  松右夹爪至限位位置
-    // mgc.Gripper_anypose('R', MDL);
+    msv.DloMoveEulerIncrease('R', -0.15);
+    dTime1 = msv.MoveRightEulerXYZ();
+    ros::Duration(dTime1+0.1).sleep();
+    msv.MoveRightToJoint(0, -20, 0, -20, 0, 0, 0);
+    ros::Duration(10.1).sleep();
+    // msv.DloMoveEuler('R', oprt.vptPoint[3], oprt.vdGripperDir[3], oprt.vdAddInfo[1]);
+    // msv.DloMoveEulerIncrease('R', 0.1);
+    //  松右夹爪
+    mgc.Gripper_anypose('R', OPN);
+
+    //  扔
+    msv.MoveLeftToJoint(0, -20, 0, -20, 0, 45, 0);
+    msv.MoveRightToJoint(0, -20, 0, -20, 0, 45, 0);
+    ros::Duration(10.1).sleep();
 
     //  ========    增加一步拉直绳子    ========
-    msv.DloMoveEulerIncrease('R', 0, -0.2);
-    mgc.Dual_Gripper_anypose(MDL, CLS);
-    msv.DloMoveEulerIncrease('L', 0, 0.2);
+    // msv.DloMoveEulerIncrease('R', 0, -0.2);
+    // mgc.Dual_Gripper_anypose(MDL, CLS);
+    // msv.DloMoveEulerIncrease('L', 0, 0.2);
 }
 
 //  抓取点, 目标点

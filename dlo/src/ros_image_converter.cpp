@@ -107,6 +107,8 @@ void CImageConverter::ProcessStrategy(){
     imwrite(IMG_FLODER + "S/" + ROUND + "_8_Result.png", imgResult);
     Mat imgVisualization = readImg(IMG_FLODER + "7_V.png");
     imwrite(IMG_FLODER + "S/" + ROUND + "_7_V.png", imgVisualization);
+    imshow("result", imgResult);
+    waitKey();
     manipulation(oprt);
 
     /*  将对应交叉点识别结果成对相反出现的交叉点框分别保存到0/和1/训练集文件夹  */
@@ -119,7 +121,6 @@ void CImageConverter::ProcessStrategy(){
         imwrite(IMG_FLODER+"0/"+to_string(rand())+".png", imgTrainCross0);
         imwrite(IMG_FLODER+"1/"+to_string(rand())+".png", imgTrainCross1);
     }
-    waitKey();
     // ShowImg("m_imgBinary", m_imgBinary);
     // ShowImg("m_imgSkeleton", m_imgSkeleton);
     // ShowImg("m_imgYolo", m_imgYolo);

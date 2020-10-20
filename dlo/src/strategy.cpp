@@ -92,8 +92,8 @@ SOperation CStrategy::strategy(){
         if(mul){
             end_strategy = 1;		oprt_rt.strOperationType = "I";
 			
-			int opt1_index = ept[i]+10;
-			int opt2_index = ept[i+1]-10;
+			int opt1_index = ept[i]+20;
+			int opt2_index = ept[i+1]-20;
 			while(abs(pt[opt1_index].x - pt[opt2_index].x) < 150 && abs(pt[opt1_index].y - pt[opt2_index].y) < 150){
 				opt1_index+=10;				opt2_index-=10;
 				if(abs(opt1_index - opt2_index) < 20){
