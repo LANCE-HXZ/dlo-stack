@@ -21,10 +21,9 @@ void manipulation(SOperation oprt){
     //     return;
     // }
     mgc.Dual_Gripper_anypose(OPN, OPN);
-    msv.DloMoveEulerIncrease('D', -0.2);
-    msv.MoveLeftToHome();
-    msv.MoveRightToHome();
-    ros::Duration(10.1).sleep();
+    double dTime1 = msv.MoveLeftEulerXYZ();
+    double dTime2 = msv.MoveRightEulerXYZ();
+    ros::Duration(max(dTime1, dTime2)+0.1).sleep();
 }
 
 //  左臂抓取点, 右臂抓取点, 左臂目标点, 右臂目标点
@@ -44,7 +43,7 @@ void optionI(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
     mgc.Dual_Gripper_anypose(MDL, CLS);
     //  左臂上移, 然后移动到左臂目标点上方, 下移
     msv.DloMoveEulerIncrease('L', -0.1);
-    msv.DloMoveEuler('L', oprt.vptPoint[2], oprt.vdGripperDir[2]);
+    msv.DloMoveEuler('L', oprt.vptPoint[2], oprt.vdGripperDir[2], oprt.vdAddInfo[0]);
     msv.DloMoveEulerIncrease('L', 0.1);
     //  松左夹爪至限位位置
     mgc.Gripper_anypose('L', MDL);
@@ -52,15 +51,15 @@ void optionI(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
     //  右夹爪夹紧, 右臂上移, 移动到右臂目标点上方, 下移
     mgc.Gripper_anypose('R', CLS);
     msv.DloMoveEulerIncrease('R', -0.1);
-    msv.DloMoveEuler('R', oprt.vptPoint[3], oprt.vdGripperDir[3]);
+    msv.DloMoveEuler('R', oprt.vptPoint[3], oprt.vdGripperDir[3], oprt.vdAddInfo[1]);
     msv.DloMoveEulerIncrease('R', 0.1);
     //  松右夹爪至限位位置
     // mgc.Gripper_anypose('R', MDL);
 
     //  ========    增加一步拉直绳子    ========
-    msv.DloMoveEulerIncrease('R', 0, -0.1);
+    msv.DloMoveEulerIncrease('R', 0, -0.2);
     mgc.Dual_Gripper_anypose(MDL, CLS);
-    msv.DloMoveEulerIncrease('L', 0, 0.1);
+    msv.DloMoveEulerIncrease('L', 0, 0.2);
 }
 
 //  抓取点, 目标点
@@ -91,6 +90,8 @@ void optionD(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
     //  移动到目标位置上方, 下移, 松开
     msv.DloMoveEuler(cSide, oprt.vptPoint[1], oprt.vdGripperDir[1]);
     msv.DloMoveEulerIncrease(cSide, 0.1);
+    mgc.Gripper_anypose(cSide, OPN);
+    msv.DloMoveEulerIncrease(cSide, -0.15);
 }
 
 //  抓取点, 旋转参考点; 抓取角度, 旋转参考角度

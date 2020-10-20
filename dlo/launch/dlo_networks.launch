@@ -1,0 +1,4 @@
+<launch>
+    <node pkg="dlo" name="predict" type="predict.py" output="screen" respawn="false" required="false"> </node>
+    <node pkg="dlo" name="ros_crop_predict" type="ros_crop_predict.py" output="screen" respawn="false" required="false"> </node>
+</launch>

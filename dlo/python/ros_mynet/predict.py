@@ -8,7 +8,7 @@ from std_msgs.msg import String
 import sensor_msgs
 from cv_bridge import CvBridge, CvBridgeError
 import sys
-# sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')
+#sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')
 import torch.backends.cudnn as cudnn
 import cv2
 from torchvision import transforms

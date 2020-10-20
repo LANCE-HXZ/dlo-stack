@@ -23,6 +23,7 @@ struct SOperation{
     string strOperationType;        //  操作类型
     vector<cv::Point> vptPoint;        //  移动抓取点
     vector<double> vdGripperDir;    //  夹爪抓取方向
+    vector<double> vdAddInfo;        //  其他需要添加的信息[是否选择距离更远的角度]
 };
 
 cv::Scalar getcolor(int n, int ept_index, int line_index);  //  strategy.cpp & visualization.cpp

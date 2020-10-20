@@ -92,10 +92,28 @@ SOperation CStrategy::strategy(){
         if(mul){
             end_strategy = 1;		oprt_rt.strOperationType = "I";
 			
-			int opt1_index = ept[i]+35;
-			int opt2_index = ept[i+1]-35;
+			int opt1_index = ept[i]+10;
+			int opt2_index = ept[i+1]-10;
+			while(abs(pt[opt1_index].x - pt[opt2_index].x) < 150 && abs(pt[opt1_index].y - pt[opt2_index].y) < 150){
+				opt1_index+=10;				opt2_index-=10;
+				if(abs(opt1_index - opt2_index) < 20){
+					cout << "\n\n===== 【NO OPRATION POINT CAN USE IN TYPE I】 " << " =====\n";
+					oprt_rt.strOperationType = "N";
+					break;
+				}
+			}
 			int rightindex = pt[opt1_index].x < pt[opt2_index].x ? opt1_index : opt2_index;
 			int leftindex = pt[opt1_index].x < pt[opt2_index].x ? opt2_index : opt1_index;
+			if(pt[opt1_index].x < pt[opt2_index].x){	//	遍历先经过的点在右手工作区域
+				rightindex = opt1_index;	leftindex = opt2_index;
+				oprt_rt.vdAddInfo.push_back((pt[leftindex+1].x >= pt[leftindex].x) ? 0 : 1);
+				oprt_rt.vdAddInfo.push_back((pt[rightindex+1].x >= pt[rightindex].x) ? 0 : 1);
+			}
+			else{										//	遍历先经过的点在左手工作区域
+				rightindex = opt2_index;	leftindex = opt1_index;
+				oprt_rt.vdAddInfo.push_back((pt[leftindex+1].x < pt[leftindex].x) ? 0 : 1);
+				oprt_rt.vdAddInfo.push_back((pt[rightindex+1].x < pt[rightindex].x) ? 0 : 1);
+			}
 			oprt_rt.vptPoint.push_back(pt[leftindex]);
 			oprt_rt.vptPoint.push_back(pt[rightindex]);
 
@@ -104,10 +122,10 @@ SOperation CStrategy::strategy(){
             oprt_rt.vdGripperDir.push_back(draw_grip_direction(leftindex));
 			oprt_rt.vdGripperDir.push_back(draw_grip_direction(rightindex));
 
-			int target_y = PIC_WIDTH + 1.0/2 * EDGE; 			//	目标位置为图像下边缘
+			int target_y = PIC_WIDTH + 1.5/2 * EDGE; 			//	目标位置为图像下边缘
 			int nStepLength = abs(rightindex - leftindex);		// 	两个抓取点中间的遍历步数
-			Point target_left = Point(pt[leftindex].x, target_y);
-			Point target_right = Point(pt[rightindex].x, target_y);
+			Point target_left = Point(600, target_y);
+			Point target_right = Point(200, target_y);
 			oprt_rt.vptPoint.push_back(target_left);
 			oprt_rt.vptPoint.push_back(target_right);
 
