@@ -30,7 +30,7 @@ SOperation CStrategy::strategy(){
 		circle(result_img, pt[n], 1, color_value, -1);
 		if(n == ept[ept_index])	
 			++line_index;
-		if(n == cpt[cpt_index])	
+		if(cpt_num && n == cpt[cpt_index])	
 			++cpt_index;
 		if(line_index > line_num)	break;
 	}
@@ -71,20 +71,24 @@ SOperation CStrategy::strategy(){
 	}
 
 	nCheckReturn = checklist();
-
 	Point front_dir, back_dir, target;
 	int opt_index, ref_index;
 	vector<bool> is_end;
 	oprt_rt.strOperationType = "N";		//	标记操作类型, 初始为 N 表示 None
 	bool bMoveLeft = 0, bMoveRight = 0;
 
-	// === 无交叉点时将线缆拉出视野　===
+	// === 无交叉点时将线缆拉出视野 NC型　===
 	if(cross.size() == 0){
 		oprt_rt.strOperationType = "NC";
 		for(int i = 0; i < start.size(); i+=2){
+			cout << "11" << endl;
 			Point ptEnd1 = pt[ept[i]+1], ptEnd2 = pt[ept[i+1]-1];
-			if(IsPointInMatrix(ptEnd1) && IsPointInMatrix(ptEnd2)){
+			if(IsPointInMatrix(ptEnd1)){
+				cout << "22" << endl;
 				circle(result_img, ptEnd1, 10, 0, -1);
+			}
+			if(IsPointInMatrix(ptEnd2)){
+				cout << "33" << endl;
 				circle(result_img, ptEnd2, 10, 0, -1);
 			}
 		}

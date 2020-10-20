@@ -88,7 +88,7 @@ void CImageConverter::ProcessTraversal(){
     m_vstrCropDir = traversal(IMG_FLODER + "5_S.png", m_imgSrc, m_boxes); // 裁剪图路径列表 -- 按遍历顺序
     m_imgTraversal = readImg(IMG_FLODER + "6_T.png");
     imwrite(IMG_FLODER + "S/" + ROUND + "_6_T.png", m_imgTraversal);
-    
+
     if(m_vstrCropDir.size()==0){    //  遍历后无交叉点
         flagCropClassReady = 1;
         return;
@@ -108,12 +108,13 @@ void CImageConverter::ProcessTraversal(){
 void CImageConverter::ProcessStrategy(){
     visualization();  // === 可视化 ===
     SOperation oprt = sttg.strategy();
+    cout << "3" << endl;
     Mat imgResult = readImg(IMG_FLODER + "8_Result.png");
     imwrite(IMG_FLODER + "S/" + ROUND + "_8_Result.png", imgResult);
     Mat imgVisualization = readImg(IMG_FLODER + "7_V.png");
     imwrite(IMG_FLODER + "S/" + ROUND + "_7_V.png", imgVisualization);
     imshow("result", imgResult);
-    waitKey();
+    // waitKey();
     manipulation(oprt);
 
     /*  将对应交叉点识别结果成对相反出现的交叉点框分别保存到0/和1/训练集文件夹  */

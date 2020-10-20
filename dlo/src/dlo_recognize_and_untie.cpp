@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
   ros::init(argc, argv, "Main_Node");
   ros::NodeHandle nh;
   CImageConverter ic;
-  CIiwaServo sv;
+  // CIiwaServo sv;
   /*  KukaMoveit test */
   // CKukaMoveit km_main;
   // ros::AsyncSpinner spinner(4);

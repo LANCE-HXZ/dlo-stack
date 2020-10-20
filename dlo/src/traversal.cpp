@@ -57,7 +57,7 @@ vector<string> traversal(string thin_img_address, Mat rgb_img, dlo::BoundingBoxe
 				no_used_end = 1;
 				break;
 		}
-		if(!no_used_end){break;}
+		if(!no_used_end){cout << "all end used!\n"; break;}
 		cout << '\t' << "Start - ";
 		// clock_t now, start, end; // time
 		// start = clock(); // time
