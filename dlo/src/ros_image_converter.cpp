@@ -89,6 +89,11 @@ void CImageConverter::ProcessTraversal(){
     m_imgTraversal = readImg(IMG_FLODER + "6_T.png");
     imwrite(IMG_FLODER + "S/" + ROUND + "_6_T.png", m_imgTraversal);
     
+    if(m_vstrCropDir.size()==0){    //  遍历后无交叉点
+        flagCropClassReady = 1;
+        return;
+    }
+
     for(int c=0; c<m_vstrCropDir.size(); ++c)
     {
       string crossnum = m_vstrCropDir[c].substr(m_vstrCropDir[c].length()-6, 2); // 文件名中的交叉点序号 -- yolo网络决定

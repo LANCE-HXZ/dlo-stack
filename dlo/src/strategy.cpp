@@ -79,6 +79,8 @@ SOperation CStrategy::strategy(){
 	oprt_rt.strOperationType = "N";		//	标记操作类型, 初始为 N 表示 None
 	bool bMoveLeft = 0, bMoveRight = 0;
 
+	// === 无交叉点时将线缆拉出视野　===
+
 	// === 检测最上层的独立线缆 I型 ===
     for(int i = 0; i < start.size(); i+=2){
 		/*	检查start[i]开始的线缆上的交叉点类型是否都为1
@@ -92,8 +94,8 @@ SOperation CStrategy::strategy(){
         if(mul){
             end_strategy = 1;		oprt_rt.strOperationType = "I";
 			
-			int opt1_index = ept[i]+20;
-			int opt2_index = ept[i+1]-20;
+			int opt1_index = ept[i]+10;
+			int opt2_index = ept[i+1]-10;
 			while(abs(pt[opt1_index].x - pt[opt2_index].x) < 150 && abs(pt[opt1_index].y - pt[opt2_index].y) < 150){
 				opt1_index+=10;				opt2_index-=10;
 				if(abs(opt1_index - opt2_index) < 20){
@@ -102,8 +104,7 @@ SOperation CStrategy::strategy(){
 					break;
 				}
 			}
-			int rightindex = pt[opt1_index].x < pt[opt2_index].x ? opt1_index : opt2_index;
-			int leftindex = pt[opt1_index].x < pt[opt2_index].x ? opt2_index : opt1_index;
+			int rightindex, leftindex;
 			if(pt[opt1_index].x < pt[opt2_index].x){	//	遍历先经过的点在右手工作区域
 				rightindex = opt1_index;	leftindex = opt2_index;
 				oprt_rt.vdAddInfo.push_back((pt[leftindex+1].x >= pt[leftindex].x) ? 0 : 1);
