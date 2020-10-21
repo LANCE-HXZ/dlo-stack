@@ -77,7 +77,7 @@ SOperation CStrategy::strategy(){
 	oprt_rt.strOperationType = "N";		//	标记操作类型, 初始为 N 表示 None
 	bool bGetLRindexOfOptionI = 0;
 	int opt1_index, opt2_index;
-	if(checklist()){
+	if(checklist() == 2){
 		oprt_rt.strOperationType = "E";		//	Error
 		return oprt_rt;
 	}
@@ -89,8 +89,9 @@ SOperation CStrategy::strategy(){
 		for(int i = 0; i < start.size(); i+=2){		//	先找出两个端点至少有一个不在视野边缘的一根线缆, 排除掉已经挑出的线缆
 			Point ptEnd1 = pt[ept[i]+1], ptEnd2 = pt[ept[i+1]-1];
 			if(IsPointInMatrix(ptEnd1) || IsPointInMatrix(ptEnd2)){
-				opt1_index = ept[i]+10;
-				opt2_index = ept[i+1]-10;
+				cout << "=======================================" << ept[i+1] - ept[i] << endl;
+				opt1_index = ept[i]+13;
+				opt2_index = ept[i+1]-13;
 				bGetLRindexOfOptionI = 1;
 				break;
 			}
@@ -109,14 +110,19 @@ SOperation CStrategy::strategy(){
 			bool mul = 1;
 			for(int j = start[i]; j <= start[i+1]; ++j){
 				mul *= g_vnClassList[j];
-				if(!mul) 	break;
+				if(!mul){
+					if(c1[g_vnCrossList[j]] >= start[i] && c1[g_vnCrossList[j]] <= start[i+1])
+						mul = 1;
+					else
+				 		break;
+				}
 			}
 			if(start[i] > start[i+1])	break;		//	表示为全程无交叉的独立线缆
 			if(mul){
 				oprt_rt.strOperationType = "I";
-				
-				opt1_index = ept[i]+10;
-				opt2_index = ept[i+1]-10;
+				cout << "=======================================" << ept[i+1] - ept[i] << endl;
+				opt1_index = ept[i]+20;
+				opt2_index = ept[i+1]-20;
 				bGetLRindexOfOptionI = 1;
 				break;
 			}

@@ -169,7 +169,7 @@ void CIiwaServo::MoveLeftJointIncrease(double dDJoint1,double dDJoint2,double dD
     msg.joint4=m_vdLeftjoint[3]+dDJoint4;
     msg.joint5=m_vdLeftjoint[4]+dDJoint5;
     msg.joint6=m_vdLeftjoint[5]+dDJoint6;
-    msg.joint7=m_vdLeftjoint[6]+dDJoint6;
+    msg.joint7=m_vdLeftjoint[6]+dDJoint7;
     LeftJoint.publish(msg);
 }
 
@@ -317,7 +317,7 @@ vector<double> CIiwaServo::PointPixel2CameraFrame(Point ptPixel){
     输入: cSide左夹爪或右夹爪（‘L'为左，其余任意值为右），dBiggerAngle两个目标角度的较大值，nAxis旋转轴（0 = X，1 = Y，2 = Z，默认为绕Z轴旋转的角度，
     dIfFar是否选择更近的角度，为０则选近角，为１则选远角）
     输出: 末端欧拉角位姿所应到达的nAxis轴所对应的相对于参考坐标系的角度 */
-double CIiwaServo::CloserAngle(char cSide, double dBiggerAngle, int nAxis, double dIfFar){
+double CIiwaServo::CloserAngle(char cSide, double dBiggerAngle, double dIfFar, int nAxis){
     if(nAxis < 0 || nAxis > 2){
         cout << "\n\n===== 【ERROR AXIS IN CloserAngle()】 nAxis: " << nAxis << " =====\n\n\n";
         return 0;
@@ -393,7 +393,7 @@ double CIiwaServo::UniformTime(char cSide, vector<double> vdTargetPos, double dS
 
 /*  封装一层, 增加cSide参数以减少左右臂的重复代码, 将一些重复步骤封装进函数内, 简化代码
     输入: cSide左夹爪或右夹爪（‘L'为左，'R'为右），ptOprt像素坐标系的操作点，dOprtZ夹取高度 */
-void CIiwaServo::DloMoveEuler(char cSide, Point ptOprt, double dGripperDir, double dMoveDuration, double dOprtZ, double dIfFar){
+void CIiwaServo::DloMoveEuler(char cSide, Point ptOprt, double dGripperDir, double dIfFar, double dMoveDuration, double dOprtZ){
     if(cSide == 'L')
         dMoveDuration = MoveLeftEulerXYZ(ptOprt-PTEDGE, dOprtZ-L_DZ, CloserAngle(cSide, dGripperDir, dIfFar), dMoveDuration);
     else if(cSide == 'R')
@@ -405,9 +405,9 @@ void CIiwaServo::DloMoveEuler(char cSide, Point ptOprt, double dGripperDir, doub
     ros::Duration(dMoveDuration + 0.1).sleep();
 }
 /*  函数重载, 用在当左右臂需要同时进行移动而移动参数不一样时   */
-void CIiwaServo::DloMoveEuler(Point ptOprtL, double dOprtZL, double dGripperDirL, Point ptOprtR, double dOprtZR, double dGripperDirR, double dMoveDuration){
-    double dTime1 = MoveLeftEulerXYZ(ptOprtL-PTEDGE, dOprtZL-L_DZ, CloserAngle('L', dGripperDirL), dMoveDuration);
-    double dTime2 = MoveRightEulerXYZ(ptOprtR-PTEDGE, dOprtZR-R_DZ, CloserAngle('R', dGripperDirR), dMoveDuration);
+void CIiwaServo::DloMoveEuler(Point ptOprtL, double dOprtZL, double dGripperDirL, double dIsFarL, Point ptOprtR, double dOprtZR, double dGripperDirR, double dIsFarR, double dMoveDuration){
+    double dTime1 = MoveLeftEulerXYZ(ptOprtL-PTEDGE, dOprtZL-L_DZ, CloserAngle('L', dGripperDirL, dIsFarL), dMoveDuration);
+    double dTime2 = MoveRightEulerXYZ(ptOprtR-PTEDGE, dOprtZR-R_DZ, CloserAngle('R', dGripperDirR, dIsFarR), dMoveDuration);
     dMoveDuration = max(dTime1, dTime2);
     ros::Duration(dMoveDuration + 0.1).sleep();
 }

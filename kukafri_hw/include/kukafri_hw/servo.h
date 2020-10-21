@@ -138,7 +138,7 @@ class CIiwaServo{
             输入: cSide左夹爪或右夹爪（‘L'为左，其余任意值为右），dBiggerAngle两个目标角度的较大值，nAxis旋转轴（0 = X，1 = Y，2 = Z，默认为绕Z轴旋转的角度，
                 dIfCloser是否选择更近的角度，为０则选近角，为１则选远角）
             输出: 末端欧拉角位姿所应到达的nAxis轴所对应的相对于参考坐标系的角度 */
-        double CloserAngle(char cSide, double dBiggerAngle, int nAxis = 2, double dIfFar = 0);
+        double CloserAngle(char cSide, double dBiggerAngle, double dIfFar = 0, int nAxis = 2);
 
         /*  计算等速运动所需的时间, 根据当前位置xyz和目标xyz计算距离后除以速度得到所需运动周期
             输入: cSide左夹爪或右夹爪（‘L'为左，'R'为右），ptOprt目标位置的像素坐标x和y，z2目标位置的z(m), 运动速度(m/s)
@@ -147,9 +147,9 @@ class CIiwaServo{
 
         /*  封装一层, 增加cSide参数以减少左右臂的重复代码, 将一些重复步骤封装进函数内, 简化代码
             输入: cSide左夹爪或右夹爪（‘L'为左，'R'为右），ptOprt像素坐标系的操作点，dOprtZ夹取高度 */
-        void DloMoveEuler(char cSide, Point ptOprt, double dGripperDir, double dMoveDuration=10.01, double dOprtZ = OPRTZ, double dIfFar = 0);
+        void DloMoveEuler(char cSide, Point ptOprt, double dGripperDir, double dIfFar = 0, double dMoveDuration=10.01, double dOprtZ = OPRTZ);
         /*  函数重载, 用在当左右臂需要同时进行移动而移动参数不一样时   */
-        void DloMoveEuler(Point ptOprtL, double dOprtZL, double dGripperDirL, Point ptOprtR, double dOprtZR, double dGripperDirR, double dMoveDuration=10.01);
+        void DloMoveEuler(Point ptOprtL, double dOprtZL, double dGripperDirL, double dIsFarL, Point ptOprtR, double dOprtZR, double dGripperDirR, double dIsFarR, double dMoveDuration=10.01);
         /*  封装一层, 增加cSide参数以减少左右臂的重复代码, 将一些重复步骤封装进函数内, 简化代码
             输入: cSide左夹爪或右夹爪（‘L'为左，'R'为右, 'D'为双臂同时），其余参数同MoveLeftEulerIncrease() */
         void DloMoveEulerIncrease(char cSide, double dDZ=0,double dDX=0,double dDY=0,double dDOx=0,double dDOy=0,double dDOz=0,double dMoveDuration=10.01,int nPathMode=0);
