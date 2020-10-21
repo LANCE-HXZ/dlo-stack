@@ -75,19 +75,22 @@ SOperation CStrategy::strategy(){
 	int opt_index, ref_index;
 	vector<bool> is_end;
 	oprt_rt.strOperationType = "N";		//	标记操作类型, 初始为 N 表示 None
-	bool bMoveLeft = 0, bMoveRight = 0;
+	bool bGetLRindexOfOptionI = 0;
+	int opt1_index, opt2_index;
 
-	// === 无交叉点时将线缆拉出视野 NC型　===
+	// === 无交叉点时将线缆拉出视野 I型　===
 	if(cross.size() == 0){
-		oprt_rt.strOperationType = "NC";
-		for(int i = 0; i < start.size(); i+=2){
+		oprt_rt.strOperationType = "I";
+		for(int i = 0; i < start.size(); i+=2){		//	先找出两个端点至少有一个不在视野边缘的一根线缆, 排除掉已经挑出的线缆
 			Point ptEnd1 = pt[ept[i]+1], ptEnd2 = pt[ept[i+1]-1];
 			if(IsPointInMatrix(ptEnd1) || IsPointInMatrix(ptEnd2)){
-				int opt1_index = ept[i]+10;
-				int opt2_index = ept[i+1]-10;
+				opt1_index = ept[i]+10;
+				opt2_index = ept[i+1]-10;
+				bGetLRindexOfOptionI = 1;
+				break;
 			}
 		}
-	}
+}
 
 	// === 检测最上层的独立线缆 I型 ===
 	if(oprt_rt.strOperationType == "N"){
@@ -103,51 +106,43 @@ SOperation CStrategy::strategy(){
 			if(mul){
 				oprt_rt.strOperationType = "I";
 				
-				int opt1_index = ept[i]+10;
-				int opt2_index = ept[i+1]-10;
-				while(abs(pt[opt1_index].x - pt[opt2_index].x) < 150 && abs(pt[opt1_index].y - pt[opt2_index].y) < 150){
-					opt1_index+=10;				opt2_index-=10;
-					if(abs(opt1_index - opt2_index) < 20){
-						cout << "\n\n===== 【NO OPRATION POINT CAN USE IN TYPE I】 " << " =====\n";
-						oprt_rt.strOperationType = "N";
-						break;
-					}
-				}
-				int rightindex, leftindex;
-				if(pt[opt1_index].x < pt[opt2_index].x){	//	遍历先经过的点在右手工作区域
-					rightindex = opt1_index;	leftindex = opt2_index;
-					oprt_rt.vdAddInfo.push_back((pt[leftindex+1].x >= pt[leftindex].x) ? 0 : 1);
-					oprt_rt.vdAddInfo.push_back((pt[rightindex+1].x >= pt[rightindex].x) ? 0 : 1);
-				}
-				else{										//	遍历先经过的点在左手工作区域
-					rightindex = opt2_index;	leftindex = opt1_index;
-					oprt_rt.vdAddInfo.push_back((pt[leftindex+1].x < pt[leftindex].x) ? 0 : 1);
-					oprt_rt.vdAddInfo.push_back((pt[rightindex+1].x < pt[rightindex].x) ? 0 : 1);
-				}
-				oprt_rt.vptPoint.push_back(pt[leftindex]);
-				oprt_rt.vptPoint.push_back(pt[rightindex]);
-
-				draw_point(pt[leftindex], "OPT_L", red);
-				draw_point(pt[rightindex], "OPT_R", red);
-				oprt_rt.vdGripperDir.push_back(draw_grip_direction(leftindex));
-				oprt_rt.vdGripperDir.push_back(draw_grip_direction(rightindex));
-
-				// int target_y = PIC_WIDTH + 1.5/2 * EDGE; 			//	目标位置为图像下边缘
-				// int nStepLength = abs(rightindex - leftindex);		// 	两个抓取点中间的遍历步数
-				// Point target_left = Point(600, target_y);
-				// Point target_right = Point(200, target_y);
-				// oprt_rt.vptPoint.push_back(target_left);
-				// oprt_rt.vptPoint.push_back(target_right);
-
-				// Point target_dir = Point(10, 0.000001);				//	移动到目标位置的抓取方向
-				// draw_point(target_left, "target_left", yellow);
-				// draw_point(target_right, "target_right", yellow);
-				// oprt_rt.vdGripperDir.push_back(draw_grip_direction(target_left, target_dir));
-				// oprt_rt.vdGripperDir.push_back(draw_grip_direction(target_right, target_dir));
-
+				opt1_index = ept[i]+10;
+				opt2_index = ept[i+1]-10;
+				bGetLRindexOfOptionI = 1;
 				break;
 			}
 		}
+	}
+
+	//	===	I型返回值计算	===
+	if(bGetLRindexOfOptionI){
+		//	检查左右目标点是否距离过近
+		while(abs(pt[opt1_index].x - pt[opt2_index].x) < 150 && abs(pt[opt1_index].y - pt[opt2_index].y) < 150){
+			opt1_index+=10;				opt2_index-=10;
+			if(abs(opt1_index - opt2_index) < 20){
+				cout << "\n\n===== 【NO OPRATION POINT CAN USE IN TYPE I】 " << " =====\n";
+				oprt_rt.strOperationType = "N";
+				break;
+			}
+		}
+		int rightindex, leftindex;
+		if(pt[opt1_index].x < pt[opt2_index].x){	//	遍历先经过的点在右手工作区域
+			rightindex = opt1_index;	leftindex = opt2_index;
+			oprt_rt.vdAddInfo.push_back((pt[leftindex+1].x >= pt[leftindex].x) ? 0 : 1);
+			oprt_rt.vdAddInfo.push_back((pt[rightindex+1].x >= pt[rightindex].x) ? 0 : 1);
+		}
+		else{										//	遍历先经过的点在左手工作区域
+			rightindex = opt2_index;	leftindex = opt1_index;
+			oprt_rt.vdAddInfo.push_back((pt[leftindex+1].x < pt[leftindex].x) ? 0 : 1);
+			oprt_rt.vdAddInfo.push_back((pt[rightindex+1].x < pt[rightindex].x) ? 0 : 1);
+		}
+		oprt_rt.vptPoint.push_back(pt[leftindex]);
+		oprt_rt.vptPoint.push_back(pt[rightindex]);
+
+		draw_point(pt[leftindex], "OPT_L", red);
+		draw_point(pt[rightindex], "OPT_R", red);
+		oprt_rt.vdGripperDir.push_back(draw_grip_direction(leftindex));
+		oprt_rt.vdGripperDir.push_back(draw_grip_direction(rightindex));
 	}
     
 
@@ -198,6 +193,41 @@ SOperation CStrategy::strategy(){
 
 					break;
                 }
+			}
+		}
+	}
+
+	// === 检测T类交叉 ===
+	if(oprt_rt.strOperationType == "N"){
+		for(int i = 0; i < start.size(); ++i){
+			// int nEptX = pt[ept[i]].x, nEptY = pt[ept[i]].y;
+			// if(nEptX > 160 && nEptX < 640 && nEptY > 160 && nEptY < 480){	//	端点不在图像边缘, 即悬空端点, 可拖动
+			if(IsPointInMatrix(pt[ept[i]])){
+				oprt_rt.strOperationType = "T";
+
+				/*	打印交叉信息	*/
+				cout << endl << "CLASS-T:" << endl;
+				cout << '\t' << "INDEX" << '\t' << "CROSS" << '\t' << "CLASS" << endl;
+				cout << '\t' << start[i] << '\t' << g_vnCrossList[start[i]] << '\t' << g_vnClassList[start[i]] << endl;
+				int j = g_vnClassList[start[i]] ? c0[g_vnCrossList[start[i]]] : c1[g_vnCrossList[start[i]]];
+				cout << '\t' << j << '\t' << g_vnCrossList[j] << '\t' << g_vnClassList[j] << endl;
+
+				int ept_opt = i;
+				opt_index = cpt[start[i]]>ept[ept_opt]?cpt[start[i]]+1:cpt[start[i]]-1;		//	夹取点取相对于交叉点与端点不同边的一端
+				Point cross_t = cross[g_vnCrossList[j]];
+				// int fix_index = cpt[j]+2; // 固定点
+			
+				oprt_rt.vptPoint.push_back(pt[opt_index]);
+				oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
+				draw_point(pt[opt_index], "opt", blue);
+				draw_point(cross_t, "ref", green);
+				Point ptTarget = pt[opt_index] + 10*(pt[opt_index] - cross_t);
+				oprt_rt.vptPoint.push_back(ptTarget);
+				oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
+				draw_point(ptTarget, "tar", yellow);
+				// draw_point(pt[fix_index], "fix", purple);
+
+				break;
 			}
 		}
 	}
@@ -308,8 +338,8 @@ SOperation CStrategy::strategy(){
 
 					opt_index = (cpt[i]+cpt[i+1])/2;
 					// ref_index = cpt[ref_i];
-					oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
 					oprt_rt.vptPoint.push_back(pt[opt_index]);
+					oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
 					draw_point(pt[opt_index], "opt", blue);
 					draw_point(cross_y, "ref", green);
 					Point ptTarget = cross_y + per_dir(pt[opt_index], cross_y, 75);
@@ -322,38 +352,6 @@ SOperation CStrategy::strategy(){
 		}
 	}
 
-	// === 检测T类交叉 ===
-	if(oprt_rt.strOperationType == "N"){
-		for(int i = 0; i < start.size(); ++i){
-			int nEptX = pt[ept[i]].x, nEptY = pt[ept[i]].y;
-			if(nEptX > 160 && nEptX < 640 && nEptY > 160 && nEptY < 480){	//	端点不在图像边缘, 即悬空端点, 可拖动
-				oprt_rt.strOperationType = "T";
-
-				/*	打印交叉信息	*/
-				cout << endl << "CLASS-T:" << endl;
-				cout << '\t' << "INDEX" << '\t' << "CROSS" << '\t' << "CLASS" << endl;
-				cout << '\t' << start[i] << '\t' << g_vnCrossList[start[i]] << '\t' << g_vnClassList[start[i]] << endl;
-				int j = g_vnClassList[start[i]] ? c0[g_vnCrossList[start[i]]] : c1[g_vnCrossList[start[i]]];
-				cout << '\t' << j << '\t' << g_vnCrossList[j] << '\t' << g_vnClassList[j] << endl;
-
-				int ept_opt = i;
-				opt_index = cpt[start[i]]>ept[ept_opt]?cpt[start[i]]+1:cpt[start[i]]-1;		//	夹取点取相对于交叉点与端点不同边的一端
-				Point cross_t = cross[g_vnCrossList[j]];
-				// int fix_index = cpt[j]+2; // 固定点
-			
-				oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
-				oprt_rt.vptPoint.push_back(pt[opt_index]);
-				draw_point(pt[opt_index], "opt", blue);
-				draw_point(cross_t, "ref", green);
-				Point ptTarget = pt[opt_index] + 5*(pt[opt_index] - cross_t);
-				oprt_rt.vptPoint.push_back(ptTarget);
-				draw_point(ptTarget, "tar", yellow);
-				// draw_point(pt[fix_index], "fix", purple);
-
-				break;
-			}
-		}
-	}
 
 
 	cout << "======= " << oprt_rt.strOperationType << " ========" << endl;

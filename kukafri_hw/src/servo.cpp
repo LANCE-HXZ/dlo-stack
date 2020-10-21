@@ -127,6 +127,7 @@ void CIiwaServo::MoveLeftToJoint(vector<double> vdJoint,double dMoveDuration,int
     msg.joint6=vdJoint[5];
     msg.joint7=vdJoint[6];
     LeftJoint.publish(msg);
+    ros::Duration(dMoveDuration+0.1).sleep();
 }
 
 double CIiwaServo::MoveLeftEulerIncrease(double dDX,double dDY,double dDZ,double dDOx,double dDOy,double dDOz,double dMoveDuration,int nPathMode){
@@ -245,6 +246,7 @@ void CIiwaServo::MoveRightToJoint(vector<double> vdJoint,double dMoveDuration,in
     msg.joint6=vdJoint[5];
     msg.joint7=vdJoint[6];
     RightJoint.publish(msg);
+    ros::Duration(dMoveDuration+0.1).sleep();
 }
 
 double CIiwaServo::MoveRightEulerIncrease(double dDX,double dDY,double dDZ,double dDOx,double dDOy,double dDOz,double dMoveDuration,int nPathMode){
