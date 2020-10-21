@@ -113,7 +113,7 @@ void CImageConverter::ProcessStrategy(){
     imwrite(IMG_FLODER + "S/" + ROUND + "_8_Result.png", imgResult);
     Mat imgVisualization = readImg(IMG_FLODER + "7_V.png");
     imwrite(IMG_FLODER + "S/" + ROUND + "_7_V.png", imgVisualization);
-    imshow("result", imgResult);
+    // imshow("result", imgResult);
     // waitKey();
     manipulation(oprt);
 

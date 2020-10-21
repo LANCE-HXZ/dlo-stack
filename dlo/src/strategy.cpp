@@ -81,15 +81,10 @@ SOperation CStrategy::strategy(){
 	if(cross.size() == 0){
 		oprt_rt.strOperationType = "NC";
 		for(int i = 0; i < start.size(); i+=2){
-			cout << "11" << endl;
 			Point ptEnd1 = pt[ept[i]+1], ptEnd2 = pt[ept[i+1]-1];
-			if(IsPointInMatrix(ptEnd1)){
-				cout << "22" << endl;
-				circle(result_img, ptEnd1, 10, 0, -1);
-			}
-			if(IsPointInMatrix(ptEnd2)){
-				cout << "33" << endl;
-				circle(result_img, ptEnd2, 10, 0, -1);
+			if(IsPointInMatrix(ptEnd1) || IsPointInMatrix(ptEnd2)){
+				int opt1_index = ept[i]+10;
+				int opt2_index = ept[i+1]-10;
 			}
 		}
 	}
@@ -137,18 +132,18 @@ SOperation CStrategy::strategy(){
 				oprt_rt.vdGripperDir.push_back(draw_grip_direction(leftindex));
 				oprt_rt.vdGripperDir.push_back(draw_grip_direction(rightindex));
 
-				int target_y = PIC_WIDTH + 1.5/2 * EDGE; 			//	目标位置为图像下边缘
-				int nStepLength = abs(rightindex - leftindex);		// 	两个抓取点中间的遍历步数
-				Point target_left = Point(600, target_y);
-				Point target_right = Point(200, target_y);
-				oprt_rt.vptPoint.push_back(target_left);
-				oprt_rt.vptPoint.push_back(target_right);
+				// int target_y = PIC_WIDTH + 1.5/2 * EDGE; 			//	目标位置为图像下边缘
+				// int nStepLength = abs(rightindex - leftindex);		// 	两个抓取点中间的遍历步数
+				// Point target_left = Point(600, target_y);
+				// Point target_right = Point(200, target_y);
+				// oprt_rt.vptPoint.push_back(target_left);
+				// oprt_rt.vptPoint.push_back(target_right);
 
-				Point target_dir = Point(10, 0.000001);				//	移动到目标位置的抓取方向
-				draw_point(target_left, "target_left", yellow);
-				draw_point(target_right, "target_right", yellow);
-				oprt_rt.vdGripperDir.push_back(draw_grip_direction(target_left, target_dir));
-				oprt_rt.vdGripperDir.push_back(draw_grip_direction(target_right, target_dir));
+				// Point target_dir = Point(10, 0.000001);				//	移动到目标位置的抓取方向
+				// draw_point(target_left, "target_left", yellow);
+				// draw_point(target_right, "target_right", yellow);
+				// oprt_rt.vdGripperDir.push_back(draw_grip_direction(target_left, target_dir));
+				// oprt_rt.vdGripperDir.push_back(draw_grip_direction(target_right, target_dir));
 
 				break;
 			}

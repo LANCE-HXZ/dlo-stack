@@ -1,27 +1,31 @@
 #include "manipulation.h"
 
 Point ptEdge = Point(EDGE, EDGE);   //  相机视野四周添加了宽度为EDGE的边界, 控制机器人时给的坐标需要将添加的边界去除
-vector<vector<double>> g_vvdEndTarget = {{0, -20, 0, -20, 0, 0, 0},
-                                        {0, -20, 0, -20, 0, 0, 0}};
+vector<vector<double>>  g_vvdEndLeft = {{4.46, -3.36, -12, -47.24, -12.83, 19.58, 44.41}, 
+                                        {17.59, -10.72, -16.05, -61.49, -17.53, 20.19, 39.88}, 
+                                        {6.08, -8.82, -11.81, -83.11, 29.45, 65, -5.4}},
+                        g_vvdEndRight = {{3, -1.56, 1.05, -39.47, 7.61, 26.85, -29.16}, 
+                                        {3, -8.87, -5.36, -50.96, 7.61, 33.94, -29.16}, 
+                                        {1.39, -6.7, -17.5, -82.63, -10.33, 56.24, -28.64}};
 
 void manipulation(SOperation oprt){
     CIiwaServo msv;
     CGripperControl mgc;
     mgc.Dual_Gripper_anypose(OPN, OPN);
-    if(oprt.strOperationType == "I")
-        optionI(oprt, msv, mgc);
-    else if(oprt.strOperationType == "D")
-        optionD(oprt, msv, mgc);
-    // else if(oprt.strOperationType == "Q")
-    //     optionQ(oprt, msv, mgc);
-    else if(oprt.strOperationType == "IX")
-        optionIX(oprt, msv, mgc);
+    // if(oprt.strOperationType == "I")
+    //     optionI(oprt, msv, mgc);
+    // else if(oprt.strOperationType == "D")
+    //     optionD(oprt, msv, mgc);
+    // // else if(oprt.strOperationType == "Q")
+    // //     optionQ(oprt, msv, mgc);
+    // else if(oprt.strOperationType == "IX")
+    //     optionIX(oprt, msv, mgc);
     // else if(oprt.strOperationType == "T")
     //     optionT(oprt, msv, mgc);
-    else{
-        cout << "\n\n===== 【ERROR OPERATION TYPE】 " << " =====\n\n\n";
-        return;
-    }
+    // else{
+    //     cout << "\n\n===== 【ERROR OPERATION TYPE】 " << " =====\n\n\n";
+    //     return;
+    // }
     mgc.Dual_Gripper_anypose(OPN, OPN);
     double dTime1 = msv.MoveLeftEulerXYZ();
     double dTime2 = msv.MoveRightEulerXYZ();
@@ -30,11 +34,35 @@ void manipulation(SOperation oprt){
 
 //  左臂抓取点, 右臂抓取点, 左臂目标点, 右臂目标点
 void optionI(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
-    cout << "====== Now In I ======\n";
-    if(oprt.vptPoint.size()!=4){
-        cout << "\n\n===== 【ERROR oprt.vptPoint.size() IN optionI】 SIZE: " << oprt.vptPoint.size() << " =====\n\n\n";
+    if(oprt.vptPoint[0].x >= 400 && oprt.vptPoint[1].x >= 400){     //  两个操作点都在左手工作区域
+        //  左臂移动到右臂操作点上方，下移，夹取，移动到右臂工作区的范围内, 下移，松开，上移，回家
+        msv.DloMoveEuler('L', oprt.vptPoint[1], oprt.vdGripperDir[1]);
+        msv.DloMoveEulerIncrease('L', 0.1);
+        mgc.Gripper_anypose('L', CLS);
+        msv.DloMoveEulerIncrease('L', -0.1);
+        msv.DloMoveEuler('L', Point(350, 100), 90);
+        msv.DloMoveEulerIncrease('L', 0.1);
+        mgc.Gripper_anypose('L', OPN);
+        msv.DloMoveEulerIncrease('L', -0.15);
+        double dTime = msv.MoveLeftEulerXYZ();
+        ros::Duration(dTime+0.1).sleep();
         return;
     }
+    else if(oprt.vptPoint[0].x < 400 && oprt.vptPoint[1].x < 400){     //  两个操作点都在右手工作区域
+        //  右臂移动到左臂操作点上方，下移，夹取，移动到左臂工作区的范围内, 下移，松开，上移，回家
+        msv.DloMoveEuler('R', oprt.vptPoint[0], oprt.vdGripperDir[0]);
+        msv.DloMoveEulerIncrease('R', 0.1);
+        mgc.Gripper_anypose('R', CLS);
+        msv.DloMoveEulerIncrease('R', -0.1);
+        msv.DloMoveEuler('R', Point(450, 100), 90);
+        msv.DloMoveEulerIncrease('R', 0.1);
+        mgc.Gripper_anypose('R', OPN);
+        msv.DloMoveEulerIncrease('R', -0.15);
+        double dTime = msv.MoveRightEulerXYZ();
+        ros::Duration(dTime+0.1).sleep();
+        return;
+    }
+
     cout << oprt.vdGripperDir[0] << '\t' << oprt.vdGripperDir[1] << endl;
     //	左右臂移动到抓取位置上方
     msv.DloMoveEuler(oprt.vptPoint[0], OPRTZ, oprt.vdGripperDir[0], oprt.vptPoint[1], OPRTZ, oprt.vdGripperDir[1]);
@@ -47,11 +75,8 @@ void optionI(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
     msv.DloMoveEulerIncrease('L', -0.15);
     double dTime1 = msv.MoveLeftEulerXYZ();
     ros::Duration(dTime1+0.1).sleep();
-    msv.MoveLeftToJoint(g_vvdEndTarget[g_nEndTarget++]);
+    msv.MoveLeftToJoint(g_vvdEndLeft[g_nEndLeft++]);
     ros::Duration(10.1).sleep();
-    // msv.DloMoveEuler('L', oprt.vptPoint[2], oprt.vdGripperDir[2], oprt.vdAddInfo[0]);
-    // msv.DloMoveEulerIncrease('L', 0.1);
-
     //  松左夹爪松开
     mgc.Gripper_anypose('L', OPN);
     
@@ -60,10 +85,8 @@ void optionI(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
     msv.DloMoveEulerIncrease('R', -0.15);
     dTime1 = msv.MoveRightEulerXYZ();
     ros::Duration(dTime1+0.1).sleep();
-    msv.MoveRightToJoint(g_vvdEndTarget[g_nEndTarget++]);   //  操作结束后移动至下一个端点放置点
+    msv.MoveRightToJoint(g_vvdEndRight[g_nEndRight++]);   //  操作结束后移动至下一个端点放置点
     ros::Duration(10.1).sleep();
-    // msv.DloMoveEuler('R', oprt.vptPoint[3], oprt.vdGripperDir[3], oprt.vdAddInfo[1]);
-    // msv.DloMoveEulerIncrease('R', 0.1);
     //  松右夹爪
     mgc.Gripper_anypose('R', OPN);
 

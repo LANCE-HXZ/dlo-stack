@@ -329,7 +329,7 @@ double CIiwaServo::CloserAngle(char cSide, double dBiggerAngle, int nAxis, doubl
     double dCurAngle = (cSide == 'L') ? m_vdLeftEuler[nAxis] : m_vdRightEuler[nAxis];
     double dAbsToBigger = abs(dBiggerAngle - dCurAngle);
     double dAbsToSmaller = abs(dSmallerAngle - dCurAngle);
-    if(dIfFar == 1)
+    if(dIfFar)
         return dAbsToSmaller < dAbsToBigger ? dBiggerAngle : dSmallerAngle;
     return dAbsToSmaller < dAbsToBigger ? dSmallerAngle : dBiggerAngle;
 }
