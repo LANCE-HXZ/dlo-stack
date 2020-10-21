@@ -108,7 +108,6 @@ void CImageConverter::ProcessTraversal(){
 void CImageConverter::ProcessStrategy(){
     visualization();  // === 可视化 ===
     SOperation oprt = sttg.strategy();
-    cout << "3" << endl;
     Mat imgResult = readImg(IMG_FLODER + "8_Result.png");
     imwrite(IMG_FLODER + "S/" + ROUND + "_8_Result.png", imgResult);
     Mat imgVisualization = readImg(IMG_FLODER + "7_V.png");

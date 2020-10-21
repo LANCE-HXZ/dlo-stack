@@ -70,13 +70,18 @@ SOperation CStrategy::strategy(){
 		else 					c0[g_vnCrossList[i]] = i;
 	}
 
-	nCheckReturn = checklist();
+	
 	Point front_dir, back_dir, target;
 	int opt_index, ref_index;
 	vector<bool> is_end;
 	oprt_rt.strOperationType = "N";		//	标记操作类型, 初始为 N 表示 None
 	bool bGetLRindexOfOptionI = 0;
 	int opt1_index, opt2_index;
+	if(checklist()){
+		oprt_rt.strOperationType = "E";		//	Error
+		return oprt_rt;
+	}
+	
 
 	// === 无交叉点时将线缆拉出视野 I型　===
 	if(cross.size() == 0){
@@ -90,7 +95,11 @@ SOperation CStrategy::strategy(){
 				break;
 			}
 		}
-}
+		if(bGetLRindexOfOptionI == 0){
+			cout << "\n\n\t\t=====  【END】  =====\n\n\n";
+			exit(0);
+		}
+	}
 
 	// === 检测最上层的独立线缆 I型 ===
 	if(oprt_rt.strOperationType == "N"){

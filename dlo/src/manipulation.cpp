@@ -18,8 +18,10 @@ void manipulation(SOperation oprt){
         optionD(oprt, msv, mgc);
     // else if(oprt.strOperationType == "Q")
     //     optionQ(oprt, msv, mgc);
+    else if(oprt.strOperationType == "E")
+        return;
     else{
-        cout << "\n\n===== 【END】 " << " =====\n\n\n";
+        cout << "\n\n\t\t=====  【END】  =====\n\n\n";
         exit(0);
     }
     mgc.Dual_Gripper_anypose(OPN, OPN);
@@ -30,6 +32,7 @@ void manipulation(SOperation oprt){
 
 //  左臂抓取点, 右臂抓取点
 void optionI(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
+    cout << "optionI\n" << oprt.vptPoint.size() << endl;
     if(oprt.vptPoint[0].x >= MDLEGE && oprt.vptPoint[1].x >= MDLEGE){     //  两个操作点都在左手工作区域
         //  左臂移动到右臂操作点上方，下移，夹取，移动到右臂工作区的范围内, 下移，松开，上移，回家
         msv.DloMoveEuler('L', oprt.vptPoint[1], oprt.vdGripperDir[1]);
@@ -133,6 +136,11 @@ void optionD(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
     msv.DloMoveEulerIncrease(cSide, 0.1);
     mgc.Gripper_anypose(cSide, OPN);
     msv.DloMoveEulerIncrease(cSide, -0.15);
+
+    //  回家
+    double dTime1 = msv.MoveLeftEulerXYZ();
+    double dTime2 = msv.MoveRightEulerXYZ();
+    ros::Duration(max(dTime1, dTime2)+0.1).sleep();
 }
 
 //  抓取点, 旋转参考点; 抓取角度, 旋转参考角度
@@ -199,75 +207,5 @@ void optionQ(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
         mgc.Gripper_anypose('R', OPN);
         msv.MoveRightEulerIncrease(0, 0, -0.1);
         ros::Duration(10.1).sleep();
-    }
-}
-
-//  抓取点, 目标点; 抓取角度*2
-void optionIX(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
-    char cSide;
-    if(oprt.vptPoint[0].x >= MDLEGE && oprt.vptPoint[1].x >= MDLEGE)
-        cSide = 'L';
-    else if(oprt.vptPoint[0].x < MDLEGE && oprt.vptPoint[1].x < MDLEGE)
-        cSide = 'R';
-    else{
-        ////////////跨左右区的操作/////////////
-        cout << "ACROSS MIDDLE\n";
-    }
-
-    //  单臂移动到目标点上方, 向下到夹取高度, 夹取, 上移
-    msv.DloMoveEuler(cSide, oprt.vptPoint[0], oprt.vdGripperDir[0]);
-    msv.DloMoveEulerIncrease(cSide, 0.1);
-    mgc.Gripper_anypose(cSide, CLS);
-    msv.DloMoveEulerIncrease(cSide, -0.1);
-
-    //  移动到目标位置上方, 下移, 松开
-    msv.DloMoveEuler(cSide, oprt.vptPoint[1], oprt.vdGripperDir[1]);
-    msv.DloMoveEulerIncrease(cSide, 0.1);
-}
-
-//  找去点, 目标点; 抓取角度
-void optionT(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
-    if(oprt.vptPoint.size()!=2){
-        cout << "\n\n===== 【ERROR oprt.vptPoint.size() IN optionI】 SIZE: " << oprt.vptPoint.size() << " =====\n\n\n";
-        return;
-    }
-    if(oprt.vdGripperDir.size()!=1){
-        cout << "\n\n===== 【ERROR oprt.vdGripperDir.size() IN optionI】 SIZE: " << oprt.vdGripperDir.size() << " =====\n\n\n";
-        return;
-    }
-
-    if(oprt.vptPoint[0].x >= MDLEGE && oprt.vptPoint[1].x >= MDLEGE){  //  L
-        //  左臂移动到目标点上方, 向下到夹取高度, 夹取, 上移
-        msv.MoveLeftEulerXYZ(oprt.vptPoint[0]-ptEdge, OPRTZ, oprt.vdGripperDir[0]);
-        ros::Duration(10.1).sleep();
-        msv.MoveLeftEulerIncrease(0, 0, 0.1);
-        ros::Duration(10.1).sleep();
-        mgc.Gripper_anypose('L', CLS);
-        msv.MoveLeftEulerIncrease(0, 0, -0.1);
-        ros::Duration(10.1).sleep();
-
-        //  移动到目标位置上方, 下移, 松开
-        msv.MoveLeftEulerXYZ(oprt.vptPoint[1]-ptEdge, OPRTZ, oprt.vdGripperDir[1]);
-        ros::Duration(10.1).sleep();
-        msv.MoveLeftEulerIncrease(0, 0, 0.1);
-        ros::Duration(10.1).sleep();
-        mgc.Gripper_anypose('L', OPN);
-    }
-    else if(oprt.vptPoint[0].x < MDLEGE && oprt.vptPoint[1].x < MDLEGE){  //  R
-        //  右臂移动到目标点上方, 向下到夹取高度, 夹取, 上移
-        msv.MoveRightEulerXYZ(oprt.vptPoint[0]-ptEdge, OPRTZ, oprt.vdGripperDir[0]);
-        ros::Duration(10.1).sleep();
-        msv.MoveRightEulerIncrease(0, 0, 0.1);
-        ros::Duration(10.1).sleep();
-        mgc.Gripper_anypose('R', CLS);
-        msv.MoveRightEulerIncrease(0, 0, -0.1);
-        ros::Duration(10.1).sleep();
-
-        //  移动到目标位置上方, 下移, 松开
-        msv.MoveRightEulerXYZ(oprt.vptPoint[1]-ptEdge, OPRTZ, oprt.vdGripperDir[1]);
-        ros::Duration(10.1).sleep();
-        msv.MoveRightEulerIncrease(0, 0, 0.1);
-        ros::Duration(10.1).sleep();
-        mgc.Gripper_anypose('R', OPN);
     }
 }
