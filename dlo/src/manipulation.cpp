@@ -71,42 +71,28 @@ void optionI(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
 
     mgc.Dual_Gripper_anypose(CLS, CLS);
     msv.DloMoveEulerIncrease('D', -0.15);
-    msv.MoveLeftToHome(10);
-    msv.MoveRightToHome(10);
-    ros::Duration(10.1).sleep();
+    msv.MoveDualToHome(10);
     if(g_nEndLeft == 0 && g_nEndRight == 0){
-        msv.MoveLeftJointIncrease(0, 0, 0, 0, 0, -45, 0, 10);
-        msv.MoveRightJointIncrease(0, 0, 0, 0, 0, -45, 0, 10);
+        msv.MoveLeftJointIncrease(0, 0, 0, 0, 0, -40, 0, 10);
+        msv.MoveRightJointIncrease(0, 0, 0, 0, 0, -40, 0, 10);
         ros::Duration(10.1).sleep();
     }
-    // double dTime1 = msv.MoveLeftEulerXYZ();
-    // double dTime2 = msv.MoveRightEulerXYZ();
-    // ros::Duration(max(dTime1, dTime2)+0.1).sleep();
-    
-    //  左夹爪夹紧, 右夹爪限位
-    // mgc.Dual_Gripper_anypose(MDL, CLS);
-    // //  左臂上移, 然后移动到左臂目标点上方, 回家, 关节角控制至释放点
-    // msv.DloMoveEulerIncrease('L', -0.15);
-    // double dTime1 = msv.MoveLeftEulerXYZ();
-    // ros::Duration(dTime1+0.1).sleep();
-    if(g_nEndLeft < g_vvdEndLeft.size())
-        msv.MoveLeftToJoint(g_vvdEndLeft[g_nEndLeft++], 10);
+    // if(g_nEndLeft < g_vvdEndLeft.size())
+    //     msv.MoveLeftToJoint(g_vvdEndLeft[g_nEndLeft++], 10);
+    // else{
+    //     double dTime = msv.MoveLeftEulerXYZ();
+    //     ros::Duration(dTime+0.1).sleep();
+    // }
+    // if(g_nEndRight < g_vvdEndRight.size())
+    //     msv.MoveRightToJoint(g_vvdEndRight[g_nEndRight++], 10);   //  操作结束后移动至下一个端点放置点
+    // else{
+    //     double dTime = msv.MoveRightEulerXYZ();
+    //     ros::Duration(dTime+0.1).sleep();
+    // }
+    if(g_nEndLeft < g_vvdEndLeft.size()&&g_nEndRight < g_vvdEndRight.size())
+        msv.MoveDualToJoint(g_vvdEndLeft[g_nEndLeft++], g_vvdEndRight[g_nEndRight++], 10);
     else{
-        double dTime = msv.MoveLeftEulerXYZ();
-        ros::Duration(dTime+0.1).sleep();
-    }
-    // //  松左夹爪松开
-    // mgc.Gripper_anypose('L', OPN);
-    
-    // //  右夹爪夹紧, 右臂上移, 回家, 关节角控制至释放点
-    // mgc.Gripper_anypose('R', CLS);
-    // msv.DloMoveEulerIncrease('R', -0.15);
-    // dTime1 = msv.MoveRightEulerXYZ();
-    // ros::Duration(dTime1+0.1).sleep();
-    if(g_nEndRight < g_vvdEndRight.size())
-        msv.MoveRightToJoint(g_vvdEndRight[g_nEndRight++], 10);   //  操作结束后移动至下一个端点放置点
-    else{
-        double dTime = msv.MoveRightEulerXYZ();
+        double dTime = max(msv.MoveLeftEulerXYZ(), msv.MoveRightEulerXYZ());
         ros::Duration(dTime+0.1).sleep();
     }
     
@@ -154,9 +140,8 @@ void optionD(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
     msv.DloMoveEulerIncrease(cSide, -0.15);
 
     //  回家
-    double dTime1 = msv.MoveLeftEulerXYZ();
-    double dTime2 = msv.MoveRightEulerXYZ();
-    ros::Duration(max(dTime1, dTime2)+0.1).sleep();
+    double dTime = max(msv.MoveLeftEulerXYZ(), msv.MoveRightEulerXYZ());
+    ros::Duration(dTime+0.1).sleep();
 }
 
 //  抓取点, 旋转参考点; 抓取角度, 旋转参考角度

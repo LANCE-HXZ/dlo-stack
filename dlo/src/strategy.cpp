@@ -95,6 +95,12 @@ SOperation CStrategy::strategy(){
 				bGetLRindexOfOptionI = 1;
 				break;
 			}
+			else if(ept[i+1] - ept[i] > 150){
+				opt1_index = ept[i]+15;
+				opt2_index = ept[i+1]-15;
+				bGetLRindexOfOptionI = 1;
+				break;
+			}
 		}
 		if(bGetLRindexOfOptionI == 0){
 			cout << "\n\n\t\t=====  【END】  =====\n\n\n";

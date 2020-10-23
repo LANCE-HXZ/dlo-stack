@@ -300,6 +300,29 @@ void CIiwaServo::MoveDualToHome(double dMoveDuration){
     SetRightMoveMode(0,0,dMoveDuration);
     RightHomeClient.call(homeSrv);
     LeftHomeClient.call(homeSrv);
+    ros::Duration(dMoveDuration + 0.1).sleep();
+}
+void CIiwaServo::MoveDualToJoint(vector<double> vdJointL,vector<double> vdJointR,double dMoveDuration,int nPathMode){
+    SetLeftMoveMode(0,nPathMode,dMoveDuration);
+    SetRightMoveMode(0,nPathMode,dMoveDuration);
+    kukafri_hw::kukaCmdJoint msg;
+    msg.joint1=vdJointL[0];
+    msg.joint2=vdJointL[1];
+    msg.joint3=vdJointL[2];
+    msg.joint4=vdJointL[3];
+    msg.joint5=vdJointL[4];
+    msg.joint6=vdJointL[5];
+    msg.joint7=vdJointL[6];
+    LeftJoint.publish(msg);
+    msg.joint1=vdJointR[0];
+    msg.joint2=vdJointR[1];
+    msg.joint3=vdJointR[2];
+    msg.joint4=vdJointR[3];
+    msg.joint5=vdJointR[4];
+    msg.joint6=vdJointR[5];
+    msg.joint7=vdJointR[6];
+    RightJoint.publish(msg);
+    ros::Duration(dMoveDuration+0.1).sleep();
 }
 
 /******************************************************************************************************/

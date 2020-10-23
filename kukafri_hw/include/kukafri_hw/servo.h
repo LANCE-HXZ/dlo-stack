@@ -127,6 +127,7 @@ class CIiwaServo{
 
         /*返回Dualhome位置*/
         void MoveDualToHome(double dMoveDuration=10.01);
+        void MoveDualToJoint(vector<double> vdJointL,vector<double> vdJointR,double dMoveDuration = 10.01,int nPathMode=0);
         /*以相机坐标系为准，移动机械臂以指定位姿移动到指定点       alpha为沿X轴旋转到的目标角度    beta为沿Y轴旋转到的目标角度   gamma为沿Z轴旋转到的目标角度*/
         void MoveDualEulerXYZ(double dX=-0.6,double dY=0.225,double dZ=0.7,double dOx=0,double dOy=0,double dOz=-90,double dMoveDuration=10.01,int nPathMode=0);
 
