@@ -1,12 +1,16 @@
 #include "manipulation.h"
 
 Point ptEdge = Point(EDGE, EDGE);   //  相机视野四周添加了宽度为EDGE的边界, 控制机器人时给的坐标需要将添加的边界去除
-vector<vector<double>>  g_vvdEndLeft = {{17.59, -10.72, -16.05, -61.49, -17.53, 20.19, 39.88}},
-                                        //  {4.46, -3.36, -12, -47.24, -12.83, 19.58, 44.41} 
-                                        // {6.08, -8.82, -11.81, -83.11, 29.45, 65, -5.4}},
-                            g_vvdEndRight = {{3, -8.87, -5.36, -50.96, 7.61, 33.94, -29.16}};
-                                        //  {3, -1.56, 1.05, -39.47, 7.61, 26.85, -29.16},
-                                        // {1.39, -6.7, -17.5, -82.63, -10.33, 56.24, -28.64}};
+vector<vector<double>>  g_vvdEndLeft = {{5.93, -43.6, -6.95, -76.65, 3.17, 57.03, 21.04}, 
+                                        {11.54, -6.65, -3.59, -52.66, -19.09, 15.08, 37.05}, 
+                                        {11.54, -11.57, -3.59, -60.19, -19.09, 25.98, 37.05}, 
+                                        {11.54, -22.44, -3.59, -88.24, -19.09, 15.08, 37.05}, 
+                                        {11.54, -21.32, -3.59, -50.56, -19.09, 3.99, 37.05}},
+                        g_vvdEndRight = {{6.29, -43.89, 9.04, -77.96, -13.47, 58.72, -10.03}, 
+                                        {3.12, -5.64, -5.59, -52.92, 7.61, 14.77, -29.16}, 
+                                        {3.12, -8.84, -5.59, -50.64, 7.61, 36.96, -29.16}, 
+                                        {3.12, -21.48, -5.59, -87.73, 7.61, 14.77, -29.16}, 
+                                        {3.12, -21.40, -5.59, -55.98, 7.61, -1.12, -29.16}};
 
 void manipulation(SOperation oprt){
     CIiwaServo msv;
@@ -72,36 +76,26 @@ void optionI(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
 
     mgc.Dual_Gripper_anypose(CLS, CLS);
     msv.DloMoveEulerIncrease('D', -0.15);
-    msv.MoveDualToHome(10);
-    if(g_nEndLeft == 0 && g_nEndRight == 0){
-        msv.MoveLeftJointIncrease(0, 0, 0, 0, 0, -35, 0, 5);
-        msv.MoveRightJointIncrease(0, 0, 0, 0, 0, -35, 0, 5);
-        ros::Duration(5.1).sleep();
-    }
-    // if(g_nEndLeft < g_vvdEndLeft.size())
-    //     msv.MoveLeftToJoint(g_vvdEndLeft[g_nEndLeft++], 10);
-    // else{
-    //     double dTime = msv.MoveLeftEulerXYZ();
-    //     ros::Duration(dTime+0.1).sleep();
-    // }
-    // if(g_nEndRight < g_vvdEndRight.size())
-    //     msv.MoveRightToJoint(g_vvdEndRight[g_nEndRight++], 10);   //  操作结束后移动至下一个端点放置点
-    // else{
-    //     double dTime = msv.MoveRightEulerXYZ();
-    //     ros::Duration(dTime+0.1).sleep();
-    // }
+    msv.MoveDualToHome(5);
+        
+    // msv.MoveLeftJointIncrease(0, 0, 0, 0, 0, -35, 0, 5);
+    // msv.MoveRightJointIncrease(0, 0, 0, 0, 0, -35, 0, 5);
+    // ros::Duration(5.1).sleep();
+    msv.MoveDualToJoint(g_vvdEndLeft[0], g_vvdEndRight[0], 5);
+
     if(g_nEndLeft < g_vvdEndLeft.size() && g_nEndRight < g_vvdEndRight.size())
         msv.MoveDualToJoint(g_vvdEndLeft[g_nEndLeft++], g_vvdEndRight[g_nEndRight++], 5);
     else{
-        double dTime = max(msv.MoveLeftEulerXYZ(), msv.MoveRightEulerXYZ());
-        ros::Duration(dTime+0.1).sleep();
+        // double dTime = max(msv.MoveLeftEulerXYZ(), msv.MoveRightEulerXYZ());
+        // ros::Duration(dTime+0.1).sleep();
+        msv.MoveDualToJoint(g_vvdEndLeft[g_vvdEndLeft.size()-1], g_vvdEndRight[g_vvdEndRight.size()-1], 5);
     }
     
     //  松夹爪
     mgc.Dual_Gripper_anypose(OPN, OPN);
 
     //  关节角控制模式回家
-    msv.MoveDualToHome(10);
+    msv.MoveDualToHome(5);
 }
 
 //  抓取点, 目标点

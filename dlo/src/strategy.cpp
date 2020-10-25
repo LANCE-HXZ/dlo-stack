@@ -123,7 +123,7 @@ SOperation CStrategy::strategy(){
 				 		break;
 				}
 			}
-			if(start[i] > start[i+1])	break;		//	表示为全程无交叉的独立线缆
+			if(start[i] > start[i+1])	continue;		//	表示为全程无交叉的独立线缆
 			if(mul){
 				oprt_rt.strOperationType = "I";
 				cout << "=======================================" << ept[i+1] - ept[i] << endl;

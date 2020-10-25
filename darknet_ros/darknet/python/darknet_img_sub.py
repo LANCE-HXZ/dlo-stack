@@ -52,7 +52,7 @@ class image_converter:
     # print("===")
     img = cv2.imread("pic_buffer/1_R.png")
     c_index = 0
-    # e_index = 65  # 'A'
+    e_index = 65  # 'A'
     for item in r:   #画方框和文字
         ileft = int(item[2][0]-item[2][2]*0.5)##矩形点坐标##item[2][0]交点x轴坐标
         iup = int(item[2][1]-item[2][3]*0.5)
@@ -63,16 +63,16 @@ class image_converter:
         text = persent
         loca = str(int(item[2][0]))+" "+str(int(item[2][1]))+"\n"+str(int(item[2][2]))+" "+str(int(item[2][3]))+"\n"
         if 'endpoint' == item[0].decode('utf-8'):
-            # text = chr(e_index)
-            # e_index+=1
-            # text = "E-" + persent
+            text1 = chr(e_index)
+            e_index+=1
+            text = "Endpoint " + text1
             cv2.rectangle (img, (ileft, iup), (iright, ibtm), (0, 0, 255), 2)
             cv2.circle(img, (int(item[2][0]), int(item[2][1])), 3, (0, 0, 255), -1)
             cv2.putText(img, text, (ileft, iup-8), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
         else:
-            text = str(c_index)
+            text1 = str(c_index)
             c_index+=1
-            # text = "C-" + persent
+            text = "Cross " + text1
             cv2.rectangle (img, (ileft, iup), (iright, ibtm), (255, 0, 0), 2)
             cv2.circle(img, (int(item[2][0]), int(item[2][1])), 3, (255, 0, 0), -1)
             cv2.putText(img, text, (ileft, iup-8), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
