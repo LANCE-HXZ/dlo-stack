@@ -26,6 +26,10 @@ void visualization()
 	int color_size = 7; int end_count = 0, cross_count = 0;
 	cout << '\t' << "LINE" << '\t' << "INDEX" << '\t' << "CROSS" << '\t' << "CLASS" << endl;
 	// cout << '\t' << end_count << '\t' << line_index << '\t' << cross.size()+end_count++ << '\t' << "E" << endl;
+	for(int i = 0; i < ept_num; ++i){
+		cout << ept[i] << "\t";
+	}
+	cout << endl;
 	for(int n = 1; n < point_num; ++n){
 		int ept_index = 2*line_index-1;
 		Scalar color_value = getcolor(n, ept_index, line_index);
@@ -68,7 +72,8 @@ void visualization()
 			}
 		}
 		else{
-			line(visual_img, pt[n], pt[n-1], color_value, color_size);
+			if(n != ept[ept_index-1])
+				line(visual_img, pt[n], pt[n-1], color_value, color_size);
 		}
 		// if(cpt_index == cpt_num)	break;
 		if(n == ept[ept_index]){

@@ -62,10 +62,11 @@ void optionI(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
         return;
     }
 
-    cout << oprt.vdGripperDir[0] << '\t' << oprt.vdGripperDir[1] << endl;
     //	左右臂移动到抓取位置上方
     msv.DloMoveEuler(oprt.vptPoint[0], OPRTZ, oprt.vdGripperDir[0], oprt.vdAddInfo[0], oprt.vptPoint[1], OPRTZ, oprt.vdGripperDir[1], oprt.vdAddInfo[1]);
-
+    cout << oprt.vptPoint[0] << '\t' << oprt.vptPoint[1] << endl;
+    cout << oprt.vdGripperDir[0] << '\t' << oprt.vdGripperDir[1] << endl;
+    cout << oprt.vdAddInfo[0] << '\t' << oprt.vdAddInfo[1] << endl;
     //  左右臂向下到夹取高度
     msv.DloMoveEulerIncrease('D', 0.1);
 
@@ -73,9 +74,9 @@ void optionI(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
     msv.DloMoveEulerIncrease('D', -0.15);
     msv.MoveDualToHome(10);
     if(g_nEndLeft == 0 && g_nEndRight == 0){
-        msv.MoveLeftJointIncrease(0, 0, 0, 0, 0, -40, 0, 10);
-        msv.MoveRightJointIncrease(0, 0, 0, 0, 0, -40, 0, 10);
-        ros::Duration(10.1).sleep();
+        msv.MoveLeftJointIncrease(0, 0, 0, 0, 0, -35, 0, 5);
+        msv.MoveRightJointIncrease(0, 0, 0, 0, 0, -35, 0, 5);
+        ros::Duration(5.1).sleep();
     }
     // if(g_nEndLeft < g_vvdEndLeft.size())
     //     msv.MoveLeftToJoint(g_vvdEndLeft[g_nEndLeft++], 10);
@@ -89,21 +90,18 @@ void optionI(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
     //     double dTime = msv.MoveRightEulerXYZ();
     //     ros::Duration(dTime+0.1).sleep();
     // }
-    if(g_nEndLeft < g_vvdEndLeft.size()&&g_nEndRight < g_vvdEndRight.size())
-        msv.MoveDualToJoint(g_vvdEndLeft[g_nEndLeft++], g_vvdEndRight[g_nEndRight++], 10);
+    if(g_nEndLeft < g_vvdEndLeft.size() && g_nEndRight < g_vvdEndRight.size())
+        msv.MoveDualToJoint(g_vvdEndLeft[g_nEndLeft++], g_vvdEndRight[g_nEndRight++], 5);
     else{
         double dTime = max(msv.MoveLeftEulerXYZ(), msv.MoveRightEulerXYZ());
         ros::Duration(dTime+0.1).sleep();
     }
     
-    //  松右夹爪
-    mgc.Gripper_anypose('L', OPN);
-    mgc.Gripper_anypose('R', OPN);
+    //  松夹爪
+    mgc.Dual_Gripper_anypose(OPN, OPN);
 
     //  关节角控制模式回家
-    msv.MoveLeftToHome(10);
-    msv.MoveRightToHome(10);
-    ros::Duration(10.1).sleep();
+    msv.MoveDualToHome(10);
 }
 
 //  抓取点, 目标点

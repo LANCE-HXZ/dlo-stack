@@ -58,20 +58,20 @@ void CGripperControl::Gripper_Open(char which){
     switch (which){
     case 'R':
         pub.publish(msg);
-        ros::Duration(2).sleep();
+        ros::Duration(0.5).sleep();
         break;
     case 'L':
         pub_.publish(msg);
-        ros::Duration(2).sleep();
+        ros::Duration(0.5).sleep();
         break;
     case 'D':
         pub.publish(msg);
         pub_.publish(msg);
-        ros::Duration(2).sleep();
+        ros::Duration(0.5).sleep();
         break;
     default:
         pub.publish(msg);
-        ros::Duration(2).sleep();
+        ros::Duration(0.5).sleep();
         break;
     }
 }
@@ -81,20 +81,20 @@ void CGripperControl::Gripper_Close(char which){
     switch (which){
     case 'R':
         pub.publish(msg);
-        ros::Duration(2).sleep();
+        ros::Duration(0.5).sleep();
         break;
     case 'L':
         pub_.publish(msg);
-        ros::Duration(2).sleep();
+        ros::Duration(0.5).sleep();
         break;
     case 'D':
         pub.publish(msg);
         pub_.publish(msg);
-        ros::Duration(2).sleep();
+        ros::Duration(0.5).sleep();
         break;
     default:
         pub.publish(msg);
-        ros::Duration(2).sleep();
+        ros::Duration(0.5).sleep();
         break;
     }
 }
@@ -104,17 +104,17 @@ void CGripperControl::Gripper_anypose(char which, string pose){
     case 'R':
         genCommand(pose);
         pub.publish(msg);
-        ros::Duration(2).sleep();
+        ros::Duration(0.5).sleep();
         break;
     case 'L':
         genCommand(pose);
         pub_.publish(msg);
-        ros::Duration(2).sleep();
+        ros::Duration(0.5).sleep();
         break;
     default:
         genCommand(pose);
         pub.publish(msg);
-        ros::Duration(2).sleep();
+        ros::Duration(0.5).sleep();
         break;
     }
 }
@@ -124,7 +124,7 @@ void CGripperControl::Dual_Gripper_anypose(string pose1,string pose2){
     pub.publish(msg);
     genCommand(pose2);
     pub_.publish(msg);
-    ros::Duration(2).sleep();
+    ros::Duration(0.5).sleep();
 }
 
 void CGripperControl::SetClose(string input){
@@ -144,7 +144,7 @@ void CGripperControl::NewOpen(char which){
 }
 
 void CGripperControl::Gripper_Reset(){
-    ros::Duration(1).sleep();
+    ros::Duration(0.5).sleep();
     genCommand("r");
     pub.publish(msg);
     pub_.publish(msg);
@@ -152,5 +152,5 @@ void CGripperControl::Gripper_Reset(){
     genCommand("a");
     pub.publish(msg);
     pub_.publish(msg);
-    ros::Duration(3.5).sleep();
+    ros::Duration(0.5).sleep();
 }

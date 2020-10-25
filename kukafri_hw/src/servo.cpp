@@ -296,7 +296,7 @@ void CIiwaServo::MoveRightJointIncrease(double dDJoint1,double dDJoint2,double d
 
 /****************************************双臂相关函数****************************************************/
 void CIiwaServo::MoveDualToHome(double dMoveDuration){
-    SetRightMoveMode(0,0,dMoveDuration);
+    SetLeftMoveMode(0,0,dMoveDuration);
     SetRightMoveMode(0,0,dMoveDuration);
     RightHomeClient.call(homeSrv);
     LeftHomeClient.call(homeSrv);

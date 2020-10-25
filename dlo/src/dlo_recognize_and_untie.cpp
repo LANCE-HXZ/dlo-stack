@@ -15,12 +15,9 @@ int main(int argc, char *argv[])
   // CIiwaServo sv;
   /*  KukaMoveit test */
   // CKukaMoveit km_main;
-  // ros::AsyncSpinner spinner(4);
-  // spinner.start();
   // sv.MoveRightToJoint({17.59, -10.72, -16.05, -61.49, -17.53, 20.19, 39.88}, 20);
   // ros::Duration(10).sleep();
   // km_main.GoHome(D_GROUP);
-
   /*  IiwaServo test  */
   // sv.MoveLeftToHome(10);
   // sv.MoveRightToHome(10);
@@ -31,20 +28,19 @@ int main(int argc, char *argv[])
   // exit(0);
   cout << "\n\n\t\t===== 【START】 =====\n\n\n";
 
+  ros::AsyncSpinner spinner(4);
+  spinner.start();
   ros::Subscriber camera_sub = nh.subscribe("/camera/color/image_raw", 1, &CImageConverter::CallbackCameraImgGet, &ic);  // 持续订阅相机rgb图像
   ros::Subscriber bw_sub = nh.subscribe("bw_topic", 1, &CImageConverter::CallbackBinaryImgGet, &ic);  // 订阅vgg16网络返回的轮廓图
   ros::Subscriber boxes_sub = nh.subscribe("boxes_topic", 1000, &CImageConverter::CallbackBoxesGet, &ic);  // 订阅yolo v3网络返回的端点交叉点识别结果boxes信息
   ros::Subscriber crop_class_sub = nh.subscribe("crop_class_topic", 1000, &CImageConverter::CallbackCropClassGet, &ic);  // 订阅二分类网络返回的交叉点分类结果
   
+  
   ros::Rate loop_rate(10);
   while(ros::ok()){
     // ROS_INFO_STREAM("Main thread [" << boost::this_thread::get_id() << "]");
-    // namedWindow("m_imgCamera");
-    // imshow("m_imgCamera", ic.m_imgCamera);
-    // startWindowThread();
-    // waitKey();
     if(ic.flagCameraImgReady){
-      ic.ProcessShowCameraView();
+      // ic.ProcessShowCameraView();
       ic.flagCameraImgReady = 0;
       if(ic.flagReady4Next)
         ic.Init();
@@ -74,6 +70,9 @@ void CImageConverter::CallbackCameraImgGet(const sensor_msgs::ImageConstPtr& msg
   {
     // ROS_INFO_STREAM("CallbackCameraImgGet thread [" << boost::this_thread::get_id() << "]");
     SensorMsgs2CvMat(msg, m_imgCamera);
+    // imshow("cam", m_imgCamera);
+    // waitKey(1);
+    // cv::destroyWindow("cam");
     flagCameraImgReady = 1;
   }
 

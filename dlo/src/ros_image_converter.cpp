@@ -13,7 +13,7 @@ CImageConverter::CImageConverter()
     m_nCropNum = 0;
     m_pubCrop = m_nh.advertise<std_msgs::String>("crop_topic", 1000);  // 发布旋转裁剪图信号
     m_pubSrc = m_nh.advertise<std_msgs::String>("rgb_topic", 1000);  // 发布已经获取到的rgb图像信号
-    m_imgBinary = m_imgSkeleton = m_imgYolo = m_imgTraversal = m_imgCamera;      //  图片变量初始化
+    m_imgBinary = m_imgSkeleton = m_imgYolo = m_imgTraversal = m_imgCamera = cv::Mat::zeros(640, 800, CV_8UC3);      //  图片变量初始化
     flagCameraImgReady = flagBinaryImgReady = flagBoxesReady = flagCropClassReady = flagSkeletonReady = 0;
     flagReady4Next = 1;       //  是否准备好处理下一张图片
 }
@@ -162,6 +162,10 @@ void CImageConverter::ShowImg(String strWindowName, Mat &imgShow, bool x255){
         imgShow *= 255;
     namedWindow(strWindowName, WINDOW_AUTOSIZE);
     imshow(strWindowName, imgShow);
+}
+
+void CImageConverter::ShowAll(Mat &imgD, Mat &imgB, Mat &imgS, Mat &imgT, Mat &imgV, Mat &imgRS, Mat &imgC1, Mat &imgC2){
+    
 }
 
 /*  移动显示窗口的位置  */
