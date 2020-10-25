@@ -34,7 +34,7 @@ class CImageConverter
     bool flagCameraImgReady, flagBinaryImgReady, flagBoxesReady, flagCropClassReady, flagSkeletonReady;
     
     vector<string> m_vstrCropDir;
-    Mat m_imgSrc, m_imgBinary, m_imgBinaryO, m_imgSkeleton, m_imgCamera, m_imgTraversal, m_imgYolo;
+    Mat m_imgSrc, m_imgYolo, m_imgBinary, m_imgBinaryO, m_imgSkeleton, m_imgCamera, m_imgTraversal, m_imgVisualization, m_imgResult, m_imgAll;
     dlo::BoundingBoxes::ConstPtr m_boxes, m_boxesCopy;
 
     CImageConverter();
@@ -43,7 +43,7 @@ class CImageConverter
     void SensorMsgs2CvMat(const sensor_msgs::ImageConstPtr& msg, Mat& dst);
     void MakeConstantBorder(Mat& imgSrc, Mat& imgDst, int nEdge, Scalar color = Scalar(85, 120, 68));
     void ShowImg(String strWindowName, Mat &imgShow, bool x255 = 0);
-    void ShowAll(Mat &imgD, Mat &imgB, Mat &imgS, Mat &imgT, Mat &imgV, Mat &imgRS, Mat &imgC1, Mat &imgC2);
+    void ShowAll(Mat imgIn, int n);
     void MoveWindows();
 
     void CallbackCameraImgGet(const sensor_msgs::ImageConstPtr& msg);

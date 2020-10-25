@@ -1,5 +1,6 @@
 <launch>
   <arg name="serial_no"           default="819312071878"/>
+  <!-- <arg name="serial_no"           default="817612070676"/> -->
   <arg name="json_file_path"      default=""/>
   <arg name="camera"              default="camera"/>
   <arg name="tf_prefix"           default="$(arg camera)"/>

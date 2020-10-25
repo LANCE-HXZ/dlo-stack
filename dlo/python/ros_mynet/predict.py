@@ -81,6 +81,7 @@ def predict(img):
     print('out gradient save done')
     img_name = path + '3_Y.png'
     # imgY.save(img_name)
+    imgY = cv2.copyMakeBorder(imgY, 80, 80, 80, 80, cv2.BORDER_CONSTANT, value=[0, 0, 255])
     cv2.imwrite(img_name, imgY)
     print('out Y save done')
     return imgg, imgo, imgY
