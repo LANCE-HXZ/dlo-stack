@@ -13,7 +13,7 @@ CImageConverter::CImageConverter()
     m_nCropNum = 0;
     m_pubCrop = m_nh.advertise<std_msgs::String>("crop_topic", 1000);  // 发布旋转裁剪图信号
     m_pubSrc = m_nh.advertise<std_msgs::String>("rgb_topic", 1000);  // 发布已经获取到的rgb图像信号
-    m_imgBinary = m_imgSkeleton = m_imgYolo = m_imgTraversal = m_imgCamera = cv::Mat::zeros(640, 800, CV_8UC3);      //  图片变量初始化
+    m_imgCamera = cv::Mat::zeros(640, 800, CV_8UC3);      //  图片变量初始化
     flagCameraImgReady = flagBinaryImgReady = flagBoxesReady = flagCropClassReady = flagSkeletonReady = 0;
     flagReady4Next = 1;       //  是否准备好处理下一张图片
     m_imgAll = Mat::zeros(1440, 2560, CV_8UC3);
@@ -35,9 +35,6 @@ void CImageConverter::Init()
     MakeConstantBorder(m_imgSrc, m_imgSrc, EDGE);
     imwrite(IMG_FLODER + "1_R.png", m_imgSrc);
     ShowAll(m_imgSrc, 0);
-    // imwrite(IMG_FLODER + "S/" + ROUND + "_1_R.png", m_imgSrc);
-    // imshow("R", m_imgSrc);
-    // waitKey();
     std_msgs::String signal;
     signal.data = "1";
     m_pubSrc.publish(signal);
@@ -52,49 +49,40 @@ void CImageConverter::ProcessShowCameraView(){
 
 /*  在二值轮廓图准备好后进入细化流程  */
 void CImageConverter::ProcessSkeleton(){
-    m_imgBinary = readImg(IMG_FLODER + "3_O.png");
-    ShowAll(m_imgBinary, 8);
+    Mat imgBinary = readImg(IMG_FLODER + "3_O.png");
+    ShowAll(imgBinary, 8);
     Mat imgY = readImg(IMG_FLODER + "3_Y.png");
     ShowAll(imgY, 4);
-    // imwrite(IMG_FLODER + "S/" + ROUND + "_3_O.png", m_imgBinary);
-    rgb2binary(m_imgBinary, m_imgBinary);
-    imwrite(IMG_FLODER + "4_B.png", m_imgBinary);
-    // imwrite(IMG_FLODER + "S/" + ROUND + "_4_B.png", m_imgBinary);
-    ShowAll(m_imgBinary, 2);
-    pre_dilate(m_imgBinary, 3, 2); // 膨胀去除黑离群点
-    imwrite(IMG_FLODER + "4_B2_dilate.png", m_imgBinary);
-    // imwrite(IMG_FLODER + "S/" + ROUND + "_4_B2_dilate.png", m_imgBinary);
-    ShowAll(m_imgBinary, 1);
-    pre_erode(m_imgBinary, 3, 5); // 腐蚀去除白离群点
-    imwrite(IMG_FLODER + "4_B3_erode.png", m_imgBinary);
-    // imwrite(IMG_FLODER + "S/" + ROUND + "_4_B3_erode.png", m_imgBinary);
-    ShowAll(m_imgBinary, 5);
-    skeleton(m_imgBinary, IMG_FLODER + "5_S.png", 3);
-    m_imgSkeleton = readImg(IMG_FLODER + "5_S.png");
-    ShowAll(m_imgSkeleton, 9);
-    m_imgSkeleton = removeSinglePoint(m_imgSkeleton, 30, 30);
-    m_imgSkeleton = removeSinglePoint(m_imgSkeleton, 60, 60);
-    m_imgSkeleton = removeSinglePoint(m_imgSkeleton, 40, 60);
-    m_imgSkeleton = removeSinglePoint(m_imgSkeleton, 90, 90);
-    m_imgSkeleton = removeSinglePoint(m_imgSkeleton, 10, 10);
-    imwrite(IMG_FLODER+"5_S2.png", m_imgSkeleton);
-    // imwrite(IMG_FLODER + "S/" + ROUND + "_5_S.png", m_imgSkeleton);
-    ShowAll(m_imgSkeleton, 6);
+    rgb2binary(imgBinary, imgBinary);
+    imwrite(IMG_FLODER + "4_B.png", imgBinary);
+    ShowAll(imgBinary, 2);
+    pre_dilate(imgBinary, 3, 2); // 膨胀去除黑离群点
+    imwrite(IMG_FLODER + "4_B2_dilate.png", imgBinary);
+    ShowAll(imgBinary, 1);
+    pre_erode(imgBinary, 3, 5); // 腐蚀去除白离群点
+    imwrite(IMG_FLODER + "4_B3_erode.png", imgBinary);
+    ShowAll(imgBinary, 5);
+    skeleton(imgBinary, IMG_FLODER + "5_S.png", 3);
+    Mat imgSkeleton = readImg(IMG_FLODER + "5_S.png");
+    ShowAll(imgSkeleton, 9);
+    imgSkeleton = removeSinglePoint(imgSkeleton, 30, 30);
+    imgSkeleton = removeSinglePoint(imgSkeleton, 60, 60);
+    imgSkeleton = removeSinglePoint(imgSkeleton, 40, 60);
+    imgSkeleton = removeSinglePoint(imgSkeleton, 90, 90);
+    imgSkeleton = removeSinglePoint(imgSkeleton, 10, 10);
+    imwrite(IMG_FLODER+"5_S2.png", imgSkeleton);
+    ShowAll(imgSkeleton, 6);
 }
 
 /*  在细化图和目标识别boxes准备好后进入遍历流程  */
 void CImageConverter::ProcessTraversal(){
     m_boxesCopy = m_boxes;
-    // Mat imgO = readImg(IMG_FLODER + "3_O.png");
-    // imwrite(IMG_FLODER + "S/" + ROUND + "_3_O.png", imgO);
-    m_imgYolo = readImg(IMG_FLODER + "2_D.png");
-    // imwrite(IMG_FLODER + "S/" + ROUND + "_2_D.png", m_imgYolo);
-    ShowAll(m_imgYolo, 10);
+    Mat imgYolo = readImg(IMG_FLODER + "2_D.png");
+    ShowAll(imgYolo, 10);
     
     m_vstrCropDir = traversal(IMG_FLODER + "5_S2.png", m_imgSrc, m_boxes); // 裁剪图路径列表 -- 按遍历顺序
-    m_imgTraversal = readImg(IMG_FLODER + "6_T.png");
-    // imwrite(IMG_FLODER + "S/" + ROUND + "_6_T.png", m_imgTraversal);
-    ShowAll(m_imgTraversal, 3);
+    Mat imgTraversal = readImg(IMG_FLODER + "6_T.png");
+    ShowAll(imgTraversal, 3);
     if(m_vstrCropDir.size()==0){    //  遍历后无交叉点
         flagCropClassReady = 1;
         return;
@@ -114,14 +102,10 @@ void CImageConverter::ProcessTraversal(){
 void CImageConverter::ProcessStrategy(){
     visualization();  // === 可视化 ===
     SOperation oprt = sttg.strategy();
-    m_imgResult = readImg(IMG_FLODER + "8_Result.png");
-    ShowAll(m_imgResult, 11);
-    // imwrite(IMG_FLODER + "S/" + ROUND + "_8_Result.png", imgResult);
-    m_imgVisualization = readImg(IMG_FLODER + "7_V.png");
-    ShowAll(m_imgVisualization, 7);
-    // imwrite(IMG_FLODER + "S/" + ROUND + "_7_V.png", imgVisualization);
-    // imshow("result", imgResult);
-    // waitKey();
+    Mat imgVisualization = readImg(IMG_FLODER + "7_V.png");
+    ShowAll(imgVisualization, 7);
+    Mat imgResult = readImg(IMG_FLODER + "8_Result.png");
+    ShowAll(imgResult, 11);
     manipulation(oprt);
 
     /*  将对应交叉点识别结果成对相反出现的交叉点框分别保存到0/和1/训练集文件夹  */
@@ -134,11 +118,6 @@ void CImageConverter::ProcessStrategy(){
         imwrite(IMG_FLODER+"0/"+to_string(rand())+".png", imgTrainCross0);
         imwrite(IMG_FLODER+"1/"+to_string(rand())+".png", imgTrainCross1);
     }
-    // ShowImg("m_imgBinary", m_imgBinary);
-    // ShowImg("m_imgSkeleton", m_imgSkeleton);
-    // ShowImg("m_imgYolo", m_imgYolo);
-    // ShowImg("Traversal", m_imgTraversal);
-    // MoveWindows();
 }
 
 /*  ros订阅者通过cv_bridge接收的图片话题消息需要转换为cv格式
@@ -179,15 +158,3 @@ void CImageConverter::ShowAll(Mat imgIn, int n){
     imwrite(IMG_FLODER + "0_All.png", m_imgAll);
     imwrite(IMG_FLODER + "S/" + ROUND + ".png", m_imgAll);
 }
-
-/*  移动显示窗口的位置  */
-void CImageConverter::MoveWindows(){
-    moveWindow("m_imgCamera", 2000, 400);
-    moveWindow("m_imgBinary", 2000, 1000);
-    moveWindow("Darknet", 0, 320);
-    moveWindow("Traversal", 855, 320);
-    moveWindow("visual_img", 0, 880);
-    moveWindow("Result", 855, 880);
-    waitKey();
-}
-
