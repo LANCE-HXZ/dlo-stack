@@ -28,8 +28,8 @@ for i in range(256):
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 # modelname = 'bwnet600'
 # modelname = 'dangenmynet600'
-# modelname = 'mynet380'
-modelname = 'mynet600'
+modelname = 'mynet380'
+# modelname = 'mynet600'
 cudnn.benchmark = True
 model = torch.nn.DataParallel(UNet16(num_filters=32, pretrained='vgg')).cuda()
 # model = torch.nn.DataParallel(UNet16(num_filters=32, pretrained='vgg')).cpu()

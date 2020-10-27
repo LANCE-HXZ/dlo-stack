@@ -119,8 +119,16 @@ SOperation CStrategy::strategy(){
 			for(int j = start[i]; j <= start[i+1]; ++j){
 				mul *= g_vnClassList[j];
 				if(!mul){
-					if(c1[g_vnCrossList[j]] >= start[i] && c1[g_vnCrossList[j]] <= start[i+1])
-						mul = 1;
+					if(c1[g_vnCrossList[j]] >= start[i] && c1[g_vnCrossList[j]] <= start[i+1]){
+						bool mul2 = 1;
+						for(int k = j+1; k < c1[g_vnCrossList[j]]; ++k){
+							mul2 *= g_vnClassList[k];
+						}
+						if(mul2)
+							mul = 1;
+						else
+							break;
+					}
 					else
 				 		break;
 				}
@@ -236,15 +244,18 @@ SOperation CStrategy::strategy(){
 				cout << '\t' << j << '\t' << g_vnCrossList[j] << '\t' << g_vnClassList[j] << endl;
 
 				int ept_opt = i;
-				opt_index = cpt[start[i]]>ept[ept_opt]?cpt[start[i]]+1:cpt[start[i]]-1;		//	夹取点取相对于交叉点与端点不同边的一端
-				Point cross_t = cross[g_vnCrossList[j]];
+				int k = start[i];
+				int add = cpt[k]>ept[ept_opt]?1:-1;
+				while(g_vnClassList[k])	k+=add;
+				opt_index = cpt[k]>ept[ept_opt]?cpt[k]+1:cpt[k]-1;		//	夹取点取相对于交叉点与端点不同边的一端
+				Point cross_t = cross[g_vnCrossList[k]];
 				// int fix_index = cpt[j]+2; // 固定点
 			
 				oprt_rt.vptPoint.push_back(pt[opt_index]);
 				oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
 				draw_point(pt[opt_index], "opt", blue);
 				draw_point(cross_t, "ref", green);
-				Point ptTarget = pt[opt_index] + 3*(pt[opt_index] - cross_t);
+				Point ptTarget = pt[opt_index] + (pt[opt_index] - cross_t);
 				oprt_rt.vptPoint.push_back(ptTarget);
 				oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
 				draw_point(ptTarget, "tar", yellow);

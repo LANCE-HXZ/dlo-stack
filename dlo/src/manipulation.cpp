@@ -18,11 +18,13 @@ void manipulation(SOperation oprt){
     mgc.Dual_Gripper_anypose(OPN, OPN);
     if(oprt.strOperationType == "I")
         optionI(oprt, msv, mgc);
-    else if(oprt.strOperationType == "D" || oprt.strOperationType == "IX" || oprt.strOperationType == "T")
+    else if(oprt.strOperationType == "D" || oprt.strOperationType == "IX")
         optionD(oprt, msv, mgc);
     else if(oprt.strOperationType == "Q")
         // cout << "Q\n";
         optionQ(oprt, msv, mgc);
+    else if(oprt.strOperationType == "T")
+        optionT(oprt, msv, mgc);
     else if(oprt.strOperationType == "E")
         return;
     else{
@@ -177,6 +179,52 @@ void optionQ(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
     msv.DloMoveEulerIncrease(cSide, 0.1, vdDxy1[0]-vdDxy2[0], vdDxy1[1]-vdDxy2[1]);
     msv.DloMoveEulerIncrease(cSide, 0.1);
     mgc.Gripper_anypose(cSide, OPN);
+    msv.DloMoveEulerIncrease(cSide, -0.15);
+
+    //  回家
+    if(cSide == 'L')
+        msv.MoveLeftToHome(5);
+    else
+        msv.MoveRightToHome(5);
+}
+
+//  抓取点, 目标点
+void optionT(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
+    char cSide;
+    if(oprt.vptPoint[0].x >= MDLEGE && oprt.vptPoint[1].x >= MDLEGE)
+        cSide = 'L';
+    else if(oprt.vptPoint[0].x < MDLEGE && oprt.vptPoint[1].x < MDLEGE)
+        cSide = 'R';
+    else{
+        ////////////跨左右区的操作/////////////
+        if(oprt.vptPoint[0].x >= MDLEGE){    //  夹取点在左手工作区域
+            cSide = 'L';
+            oprt.vptPoint[1].x = 350;
+        }
+        else{
+            cSide = 'R';
+            oprt.vptPoint[1].x = 450;
+        }
+        cout << "ACROSS MIDDLE\n";
+    }
+    cout << "Side: " << cSide << endl;
+
+    //  单臂移动到目标点上方, 向下到夹取高度, 夹取, 上移
+    msv.DloMoveEuler(cSide, oprt.vptPoint[0], oprt.vdGripperDir[0]);
+    msv.DloMoveEulerIncrease(cSide, 0.1);
+    mgc.Gripper_anypose(cSide, CLS);
+
+    for(int i = 0; i < 6; ++i){
+        msv.DloMoveEuler(cSide, oprt.vptPoint[1], oprt.vdGripperDir[1], 0, 1, OPRTZ+0.099);
+        mgc.Gripper_anypose(cSide, OPN);
+        msv.DloMoveEuler(cSide, oprt.vptPoint[0], oprt.vdGripperDir[0], 0, 1, OPRTZ+0.099);
+        mgc.Gripper_anypose(cSide, CLS);
+    }
+
+    //  移动到目标位置上方, 下移, 松开
+    msv.DloMoveEuler(cSide, oprt.vptPoint[1], oprt.vdGripperDir[1], 0, 1, OPRTZ+0.099);
+    mgc.Gripper_anypose(cSide, OPN);
+
     msv.DloMoveEulerIncrease(cSide, -0.15);
 
     //  回家
