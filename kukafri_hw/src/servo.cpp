@@ -60,6 +60,8 @@ void CIiwaServo::SetRightMoveMode(int nMoveMode,int nPathMode,double dMoveDurati
 void CIiwaServo::MoveLeftToHome(double dMoveDuration){
     SetLeftMoveMode(0,0,dMoveDuration);
     LeftHomeClient.call(homeSrv);
+    ros::Duration(dMoveDuration+0.1).sleep();
+
 }
 
 double CIiwaServo::MoveLeftEulerXYZ(double dX,double dY,double dZ,double dOx,double dOy,double dOz,double dMoveDuration,int nPathMode){
@@ -179,6 +181,7 @@ void CIiwaServo::MoveLeftJointIncrease(double dDJoint1,double dDJoint2,double dD
 void CIiwaServo::MoveRightToHome(double dMoveDuration){
     SetRightMoveMode(0,0,dMoveDuration);
     RightHomeClient.call(homeSrv);
+    ros::Duration(dMoveDuration+0.1).sleep();
 }
 
 double CIiwaServo::MoveRightEulerXYZ(double dX,double dY,double dZ,double dOx,double dOy,double dOz,double dMoveDuration,int nPathMode){
@@ -432,7 +435,7 @@ void CIiwaServo::DloMoveEuler(Point ptOprtL, double dOprtZL, double dGripperDirL
     double dTime1 = MoveLeftEulerXYZ(ptOprtL-PTEDGE, dOprtZL-L_DZ, CloserAngle('L', dGripperDirL, dIsFarL), dMoveDuration);
     double dTime2 = MoveRightEulerXYZ(ptOprtR-PTEDGE, dOprtZR-R_DZ, CloserAngle('R', dGripperDirR, dIsFarR), dMoveDuration);
     dMoveDuration = max(dTime1, dTime2);
-    ros::Duration(dMoveDuration + 0.1).sleep();
+    ros::Duration(dMoveDuration).sleep();
 }
 
 /*  封装一层, 增加cSide参数以减少左右臂的重复代码, 将一些重复步骤封装进函数内, 简化代码

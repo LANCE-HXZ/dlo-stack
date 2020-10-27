@@ -20,8 +20,9 @@ void manipulation(SOperation oprt){
         optionI(oprt, msv, mgc);
     else if(oprt.strOperationType == "D" || oprt.strOperationType == "IX" || oprt.strOperationType == "T")
         optionD(oprt, msv, mgc);
-    // else if(oprt.strOperationType == "Q")
-    //     optionQ(oprt, msv, mgc);
+    else if(oprt.strOperationType == "Q")
+        // cout << "Q\n";
+        optionQ(oprt, msv, mgc);
     else if(oprt.strOperationType == "E")
         return;
     else{
@@ -76,12 +77,12 @@ void optionI(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
 
     mgc.Dual_Gripper_anypose(CLS, CLS);
     msv.DloMoveEulerIncrease('D', -0.15);
-    msv.MoveDualToHome(5);
+    msv.MoveDualToHome(8);
         
     // msv.MoveLeftJointIncrease(0, 0, 0, 0, 0, -35, 0, 5);
     // msv.MoveRightJointIncrease(0, 0, 0, 0, 0, -35, 0, 5);
     // ros::Duration(5.1).sleep();
-    msv.MoveDualToJoint(g_vvdEndLeft[0], g_vvdEndRight[0], 5);
+    // msv.MoveDualToJoint(g_vvdEndLeft[0], g_vvdEndRight[0], 5);
 
     if(g_nEndLeft < g_vvdEndLeft.size() && g_nEndRight < g_vvdEndRight.size())
         msv.MoveDualToJoint(g_vvdEndLeft[g_nEndLeft++], g_vvdEndRight[g_nEndRight++], 5);
@@ -132,73 +133,55 @@ void optionD(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
     msv.DloMoveEulerIncrease(cSide, -0.15);
 
     //  回家
-    double dTime = max(msv.MoveLeftEulerXYZ(), msv.MoveRightEulerXYZ());
-    ros::Duration(dTime+0.1).sleep();
+    if(cSide == 'L')
+        msv.MoveLeftToHome(5);
+    else
+        msv.MoveRightToHome(5);
 }
 
 //  抓取点, 旋转参考点; 抓取角度, 旋转参考角度
 void optionQ(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
-    if(oprt.vptPoint.size()!=1){
-        cout << "\n\n===== 【ERROR oprt.vptPoint.size() IN optionI】 SIZE: " << oprt.vptPoint.size() << " =====\n\n\n";
-        return;
-    }
-    if(oprt.vdGripperDir.size()!=2){
-        cout << "\n\n===== 【ERROR oprt.vdGripperDir.size() IN optionI】 SIZE: " << oprt.vdGripperDir.size() << " =====\n\n\n";
-        return;
-    }
+    char cSide;
+    if(oprt.vptPoint[0].x >= MDLEGE && oprt.vptPoint[1].x >= MDLEGE)
+        cSide = 'L';
+    else
+        cSide = 'R';
+    cout << "Side: " << cSide << endl;
 
-    if(oprt.vptPoint[0].x >= MDLEGE && oprt.vptPoint[1].x >= MDLEGE){  //  L
-        //  左臂移动到目标点上方, 向下到夹取高度, 夹取, 上移
-        msv.MoveLeftEulerXYZ(oprt.vptPoint[0]-ptEdge, OPRTZ, oprt.vdGripperDir[0]);
-        ros::Duration(10.1).sleep();
-        msv.MoveLeftEulerIncrease(0, 0, 0.1);
-        ros::Duration(10.1).sleep();
-        mgc.Gripper_anypose('L', CLS);
-        msv.MoveLeftEulerIncrease(0, 0, -0.1);
-        ros::Duration(10.1).sleep();
+    // 移动到目标点上方, 向下到夹取高度, 夹取, 上移
+    msv.DloMoveEuler(cSide, oprt.vptPoint[0], oprt.vdGripperDir[0]);
+    msv.DloMoveEulerIncrease(cSide, 0.1);
+    mgc.Gripper_anypose(cSide, CLS);
+    msv.DloMoveEulerIncrease(cSide, -0.1);
 
-        //  确定旋转方向
-        int nRotationDir = (oprt.vdGripperDir[0]-90)/(abs(oprt.vdGripperDir[0]-90)+1e-10);      //  1或-1
-        //  移动到旋转参考点上方, 旋转解耦
-        msv.MoveLeftEulerXYZ(oprt.vptPoint[1]-ptEdge, OPRTZ, oprt.vdGripperDir[1]);
-        ros::Duration(10.1).sleep();
-        msv.MoveLeftJointIncrease(0,0,0,0,0, nRotationDir*3.14);
-        ros::Duration(10.1).sleep();
+    //  确定旋转方向
+    double nRotationDir = -(oprt.vdGripperDir[1])/(abs(oprt.vdGripperDir[1])+1e-10);      //  1或-1
+    cout << "nRotationDir: " << nRotationDir << endl;
+    //  移动到旋转参考点上方, 旋转解耦
+    msv.DloMoveEuler(cSide, oprt.vptPoint[1], oprt.vdGripperDir[0], 0, 5, 0.625);
+    msv.DloMoveEulerIncrease(cSide, 0, 0, 0, 0, 0, nRotationDir*45, 1);
+    msv.DloMoveEulerIncrease(cSide, 0, 0, 0, 0, 0, nRotationDir*45, 1);
+    msv.DloMoveEulerIncrease(cSide, 0, 0, 0, 0, 0, nRotationDir*45, 1);
+    msv.DloMoveEulerIncrease(cSide, 0, 0, 0, 0, 0, nRotationDir*45, 1);
+    msv.DloMoveEulerIncrease(cSide, 0, 0, 0, 0, 0, nRotationDir*45, 1);
+    // if(cSide == 'L')
+    //     msv.MoveLeftJointIncrease(0, 0, 0, 0, 0, 0, nRotationDir*180, 5);
+    // else
+    //     msv.MoveRightJointIncrease(0, 0, 0, 0, 0, 0, nRotationDir*180, 5);
+    // ros::Duration(5.1).sleep();
+    
+    // 移动到目标位置上方, 下移, 松开, 上移
+    vector<double> vdDxy1 = msv.PointPixel2CameraFrame(oprt.vptPoint[0]);
+    vector<double> vdDxy2 = msv.PointPixel2CameraFrame(oprt.vptPoint[1]);
+    cout << "dx: " << vdDxy1[0]-vdDxy2[0] << "     dy: " << vdDxy1[1]-vdDxy2[1] << endl;
+    msv.DloMoveEulerIncrease(cSide, 0.1, vdDxy1[0]-vdDxy2[0], vdDxy1[1]-vdDxy2[1]);
+    msv.DloMoveEulerIncrease(cSide, 0.1);
+    mgc.Gripper_anypose(cSide, OPN);
+    msv.DloMoveEulerIncrease(cSide, -0.15);
 
-        //  移动到目标位置上方, 下移, 松开, 上移
-        msv.MoveLeftEulerXYZ(oprt.vptPoint[0]-ptEdge, OPRTZ, oprt.vdGripperDir[0]);
-        ros::Duration(10.1).sleep();
-        msv.MoveLeftEulerIncrease(0, 0, 0.1);
-        ros::Duration(10.1).sleep();
-        mgc.Gripper_anypose('L', OPN);
-        msv.MoveLeftEulerIncrease(0, 0, -0.1);
-        ros::Duration(10.1).sleep();
-    }
-    else if(oprt.vptPoint[0].x < MDLEGE && oprt.vptPoint[1].x < MDLEGE){  //  R
-        //  右臂移动到目标点上方, 向下到夹取高度, 夹取, 上移
-        msv.MoveRightEulerXYZ(oprt.vptPoint[0]-ptEdge, OPRTZ, oprt.vdGripperDir[0]);
-        ros::Duration(10.1).sleep();
-        msv.MoveRightEulerIncrease(0, 0, 0.1);
-        ros::Duration(10.1).sleep();
-        mgc.Gripper_anypose('R', CLS);
-        msv.MoveRightEulerIncrease(0, 0, -0.1);
-        ros::Duration(10.1).sleep();
-
-        //  确定旋转方向
-        int nRotationDir = (oprt.vdGripperDir[0]-90)/(abs(oprt.vdGripperDir[0]-90)+1e-10);      //  1或-1
-        //  移动到旋转参考点上方, 旋转解耦
-        msv.MoveRightEulerXYZ(oprt.vptPoint[1]-ptEdge, OPRTZ, oprt.vdGripperDir[1]);
-        ros::Duration(10.1).sleep();
-        msv.MoveRightJointIncrease(0,0,0,0,0, nRotationDir*3.14);
-        ros::Duration(10.1).sleep();
-
-        //  移动到目标位置上方, 下移, 松开, 上移
-        msv.MoveRightEulerXYZ(oprt.vptPoint[0]-ptEdge, OPRTZ, oprt.vdGripperDir[0]);
-        ros::Duration(10.1).sleep();
-        msv.MoveRightEulerIncrease(0, 0, 0.1);
-        ros::Duration(10.1).sleep();
-        mgc.Gripper_anypose('R', OPN);
-        msv.MoveRightEulerIncrease(0, 0, -0.1);
-        ros::Duration(10.1).sleep();
-    }
+    //  回家
+    if(cSide == 'L')
+        msv.MoveLeftToHome(5);
+    else
+        msv.MoveRightToHome(5);
 }

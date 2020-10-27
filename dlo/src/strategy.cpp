@@ -96,9 +96,11 @@ SOperation CStrategy::strategy(){
 				break;
 			}
 			else if(ept[i+1] - ept[i] > 150){
-				opt1_index = ept[i]+15;
-				opt2_index = ept[i+1]-15;
+				opt1_index = ept[i]+20;
+				opt2_index = ept[i+1]-20;
 				bGetLRindexOfOptionI = 1;
+				g_nEndLeft--;
+				g_nEndRight--;
 				break;
 			}
 		}
