@@ -154,8 +154,8 @@ void CImageConverter::ShowImg(String strWindowName, Mat &imgShow, bool x255){
 
 void CImageConverter::ShowAll(Mat imgIn, int n){
     int c = n%4, r = n/4, x = c*640, y = r*480;
-    CvRect rect = cvRect(x, y, 640, 480);
-    imgIn.colRange(80, 720).rowRange(80, 560).copyTo(m_imgAll(rect));
+    CvRect rect = cvRect(x, y, imgIn.cols-2*EDGE, imgIn.rows-2*EDGE);
+    imgIn.colRange(EDGE, imgIn.cols-EDGE).rowRange(EDGE, imgIn.rows-EDGE).copyTo(m_imgAll(rect));
     imwrite(IMG_FLODER + "0_All.png", m_imgAll);
     imwrite(IMG_FLODER + "S/" + ROUND + ".png", m_imgAll);
 }

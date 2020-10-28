@@ -19,7 +19,7 @@ class image_converter:
     # cv_image = cv2.imread("/home/lance/Data/0-RGBimg/455.png") #D 单根5交叉
     # cv_image = cv2.imread("/home/lance/Data/0-RGBimg/D1235.png") #D 双根5交叉
     # cv_image = cv2.imread("/home/lance/Data/0-RGBimg/D1119.png") #D 双根奇数端点
-    cv_image = cv2.imread("/home/lance/Data/0-RGBimg/T054.png") #D 三根9交叉
+    # cv_image = cv2.imread("/home/lance/Data/0-RGBimg/T054.png") #D 三根9交叉
     # cv_image = cv2.imread("/home/lance/Data/0-RGBimg/69.png") #T
     # cv_image = cv2.imread("/home/lance/Data/0-RGBimg/T0726.png") #I (已解决)遍历终点找不到端点, 轮廓提取的问题
     # cv_image = cv2.imread("/home/lance/Data/0-RGBimg/467.png") #IX 单根6交叉  // 浮点数例外???
@@ -28,6 +28,7 @@ class image_converter:
     # cv_image = cv2.imread("/home/lance/Data/0-RGBimg/T0782.png") #D
     # cv_image = cv2.imread("/home/lance/Data/0-RGBimg/1930.png") #D
     # cv_image = cv2.imread("/home/lance/Data/0-RGBimg/D0684.png") #Q
+    cv_image = cv2.imread("/home/hxz/Workspaces/dlo_stack/src/kuka_ws/pic_buffer/89.bmp")
 
     
 

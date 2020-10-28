@@ -26,9 +26,9 @@ for i in range(256):
     else:
         table.append(0)
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
-# modelname = 'bwnet600'
+modelname = 'bwnet600'
 # modelname = 'dangenmynet600'
-modelname = 'mynet380'
+# modelname = 'mynet380'
 # modelname = 'mynet600'
 cudnn.benchmark = True
 model = torch.nn.DataParallel(UNet16(num_filters=32, pretrained='vgg')).cuda()
@@ -127,7 +127,9 @@ class image_converter:
     #   print(e)
     # print('\n', 'Predicting') 
     cv_image = cv2.imread(path + "1_R.png")
-    cv_image = cv_image[80:80+480, 80:80+640]
+    sp = cv_image.shape
+    # print(sp)
+    cv_image = cv_image[80:sp[0]-80, 80:sp[1]-80]
     # (rows,cols,channels) = cv_image.shape
     pil_img = PIL.Image.fromarray(cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB))
 
