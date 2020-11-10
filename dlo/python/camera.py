@@ -28,9 +28,17 @@ class image_converter:
     # cv_image = cv2.imread("/home/lance/Data/0-RGBimg/T0782.png") #D
     # cv_image = cv2.imread("/home/lance/Data/0-RGBimg/1930.png") #D
     # cv_image = cv2.imread("/home/lance/Data/0-RGBimg/D0684.png") #Q
-    cv_image = cv2.imread("/home/hxz/Workspaces/dlo_stack/src/kuka_ws/pic_buffer/89.bmp")
 
-    
+    # cv_image = cv2.imread("/home/hxz/Workspaces/dlo_stack/src/kuka_ws/pic_buffer/89.bmp")
+    # cv_image = cv2.imread("/home/hxz/Workspaces/dlo_stack/src/kuka_ws/pic_buffer/125.bmp")
+    # cv_image = cv2.imread("/home/hxz/Workspaces/dlo_stack/src/kuka_ws/pic_buffer/700.bmp")
+    # cv_image = cv2.imread("/home/hxz/Workspaces/dlo_stack/src/kuka_ws/pic_buffer/1238.bmp")
+    cv_image = cv2.imread("/home/hxz/Workspaces/dlo_stack/src/kuka_ws/pic_buffer/1589.bmp")
+    # cv_image = cv2.imread("/home/hxz/Workspaces/dlo_stack/src/kuka_ws/pic_buffer/D3_image_235.png")
+    # cv_image = cv2.imread("/home/hxz/Workspaces/dlo_stack/src/kuka_ws/pic_buffer/T3_image_466.png")
+    # cv_image = cv2.imread("/home/hxz/Workspaces/dlo_stack/src/kuka_ws/pic_buffer/T7_image_936.png")
+    # cv_image = cv2.imread("/home/hxz/Workspaces/dlo_stack/src/kuka_ws/pic_buffer/T9_image_1175.png")
+
 
     # cv_image = cv2.imread("/home/lance/Data/0-RGBimg/D0736.png") #Q 遍历路径错误, 图像细化问题
     # cv_image = cv2.imread("/home/lance/Data/0-RGBimg/T0920.png") #D 交叉点距离过近

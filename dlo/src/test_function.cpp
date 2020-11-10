@@ -417,10 +417,16 @@ int d(Point opt, Point dir){
 }
 
 
-void endPointAndintersectionPointDetection(Mat & src, vector<Point> &endpoint)
+void endPointAndintersectionPointDetection(Mat src, vector<Point> &endpoint)
 {
+	// //若输入为三通道图像, 则分离通道
+	std::vector<cv::Mat>SrcMatpart(src.channels());
+	cv::split(src,SrcMatpart);
+	src = SrcMatpart[0];
+
     int width = src.cols;
     int height = src.rows;
+	cout << width << height << endl;
     // vector<CvPoint> endpoint;
     vector<CvPoint> intersectionPoint;
     //遍历骨骼化后的图像，找到端点和交叉点，分别放入容器中
@@ -431,7 +437,7 @@ void endPointAndintersectionPointDetection(Mat & src, vector<Point> &endpoint)
         {
             //获得九个点对象，注意边界问题
             uchar p1 = p[j];
-            if (p1 != 1) continue;
+            if (p1 != 255) continue;
             uchar p2 = (i == 0) ? 0 : *(p - src.step + j);
             uchar p3 = (i == 0 || j == width - 1) ? 0 : *(p - src.step + j + 1);
             uchar p4 = (j == width - 1) ? 0 : *(p + j + 1);
@@ -456,39 +462,52 @@ void endPointAndintersectionPointDetection(Mat & src, vector<Point> &endpoint)
 			// 		endpoint.push_back(cvPoint(j, i));
 			// 	}
             // }
-			if ((p2 + p3 + p4 + p5 + p6 + p7 + p8 + p9) == 1)//端点判断
-            {
-				printf("端点：%d %d\n", j, i);
-				endpoint.push_back(Point(j, i));
-            }
-            else //交叉点判断
-            {
-                int ap = 0;
-                if (p2 == 0 && p3 == 1) ++ap;
-                if (p3 == 0 && p4 == 1) ++ap;
-                if (p4 == 0 && p5 == 1) ++ap;
-                if (p5 == 0 && p6 == 1) ++ap;
-                if (p6 == 0 && p7 == 1) ++ap;
-                if (p7 == 0 && p8 == 1) ++ap;
-                if (p8 == 0 && p9 == 1) ++ap;
-                if (p9 == 0 && p2 == 1) ++ap;
-                if (ap > 3)
-                {
-                    printf("交叉点：%d %d\n", j, i);
-                    intersectionPoint.push_back(cvPoint(j, i));
-                }
-				if (p2 && p3 && p4){
-					printf("交叉点：%d %d\n", j, i);
-                    intersectionPoint.push_back(cvPoint(j, i));
+			// if ((p2 + p3 + p4 + p5 + p6 + p7 + p8 + p9) == 255)//端点判断
+            // {
+			// 	printf("端点：%d %d\n", j, i);
+			// 	endpoint.push_back(Point(j, i));
+            // }
+			                int ap = 0;
+                if (p2 == 0 && p3 == 255) ++ap;
+                if (p3 == 0 && p4 == 255) ++ap;
+                if (p4 == 0 && p5 == 255) ++ap;
+                if (p5 == 0 && p6 == 255) ++ap;
+                if (p6 == 0 && p7 == 255) ++ap;
+                if (p7 == 0 && p8 == 255) ++ap;
+                if (p8 == 0 && p9 == 255) ++ap;
+                if (p9 == 0 && p2 == 255) ++ap;
+				if(ap==1){
+					printf("端点：%d %d\n", j, i);
+					endpoint.push_back(Point(j, i));
 				}
-            }
+            // else //交叉点判断
+            // {
+            //     int ap = 0;
+            //     if (p2 == 0 && p3 == 1) ++ap;
+            //     if (p3 == 0 && p4 == 1) ++ap;
+            //     if (p4 == 0 && p5 == 1) ++ap;
+            //     if (p5 == 0 && p6 == 1) ++ap;
+            //     if (p6 == 0 && p7 == 1) ++ap;
+            //     if (p7 == 0 && p8 == 1) ++ap;
+            //     if (p8 == 0 && p9 == 1) ++ap;
+            //     if (p9 == 0 && p2 == 1) ++ap;
+            //     if (ap > 3)
+            //     {
+            //         printf("交叉点：%d %d\n", j, i);
+            //         intersectionPoint.push_back(cvPoint(j, i));
+            //     }
+			// 	if (p2 && p3 && p4){
+			// 		printf("交叉点：%d %d\n", j, i);
+            //         intersectionPoint.push_back(cvPoint(j, i));
+			// 	}
+            // }
         }
     }
-    // //画出端点
-    // for (vector<Point>::iterator i = endpoint.begin(); i != endpoint.end(); ++i)
-    // {
-    //     circle(src, Point(i->x, i->y), 5, Scalar(255), -1);
-    // }
+    //画出端点
+    for (vector<Point>::iterator i = endpoint.begin(); i != endpoint.end(); ++i)
+    {
+        circle(src, Point(i->x, i->y), 5, Scalar(255), -1);
+    }
     // //画出交叉点
     // for (vector<CvPoint>::iterator i = intersectionPoint.begin(); i != intersectionPoint.end(); ++i)
     // {

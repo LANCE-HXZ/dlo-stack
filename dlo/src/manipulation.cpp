@@ -199,11 +199,11 @@ void optionT(SOperation oprt, CIiwaServo& msv, CGripperControl& mgc){
         ////////////跨左右区的操作/////////////
         if(oprt.vptPoint[0].x >= MDLEGE){    //  夹取点在左手工作区域
             cSide = 'L';
-            oprt.vptPoint[1].x = 350;
+            oprt.vptPoint[1].x = MDLEGE;
         }
         else{
             cSide = 'R';
-            oprt.vptPoint[1].x = 450;
+            oprt.vptPoint[1].x = MDLEGE;
         }
         cout << "ACROSS MIDDLE\n";
     }

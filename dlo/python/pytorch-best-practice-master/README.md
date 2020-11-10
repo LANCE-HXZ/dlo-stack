@@ -6,7 +6,7 @@
 
 ## 本部分内容属于 《深度学习框架PyTorch：入门与实践》一部分, 关于该书的源码，以及更多案例，请查看[github](https://github.com/chenyuntc/pytorch-book)
 
-## 数据下载
+## 数据下载;
 - 从[kaggle比赛官网](https://www.kaggle.com/c/dogs-vs-cats/data) 下载所需的数据
 - 解压并把训练集和测试集分别放在一个文件夹中
 

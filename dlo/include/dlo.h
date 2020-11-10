@@ -25,7 +25,7 @@ using namespace std;
 int test();
 int* test(int input);
 void thinImage(cv::Mat & src, cv::Mat & dst);
-void endPointAndintersectionPointDetection(cv::Mat & src, vector<cv::Point> &endpoint);
+void endPointAndintersectionPointDetection(cv::Mat src, vector<cv::Point> &endpoint);
 void fix_cross_error(cv::Mat & src);
 // int glo_xy(int x, int y);
 int d(cv::Point opt, cv::Point dir);
@@ -47,7 +47,7 @@ cv::Mat ImgSkeletonization_V(cv::Mat &input_src, int *search_arr);
 // traversal
 // void traversal(cv::Mat thin_img, cv::Mat RGBimg);
 void traversal(string thin_img_address, cv::Mat rgb_img);
-vector<string> traversal(string s_img_address, cv::Mat rgb_img, dlo::BoundingBoxes::ConstPtr boxes);
+vector<string> traversal(string s_img_address, cv::Mat rgb_img, dlo::BoundingBoxes::ConstPtr boxes, vector<cv::Point> endpoints);
 // void traversal(cv::Mat src, string imgnum);
 void traversal(cv::Mat src);
 void traversal_callback(int event, int x, int y, int flags, void* ustc);

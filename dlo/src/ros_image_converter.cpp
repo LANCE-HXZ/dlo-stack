@@ -62,6 +62,7 @@ void CImageConverter::ProcessSkeleton(){
     pre_erode(imgBinary, 3, 5); // 腐蚀去除白离群点
     imwrite(IMG_FLODER + "4_B3_erode.png", imgBinary);
     ShowAll(imgBinary, 5);
+    // imgBinary = readImg(IMG_FLODER + "T/89.bmp");    //  直接测试图像细化
     skeleton(imgBinary, IMG_FLODER + "5_S.png", 3);
     Mat imgSkeleton = readImg(IMG_FLODER + "5_S.png");
     ShowAll(imgSkeleton, 9);
@@ -71,16 +72,29 @@ void CImageConverter::ProcessSkeleton(){
     imgSkeleton = removeSinglePoint(imgSkeleton, 90, 90);
     imgSkeleton = removeSinglePoint(imgSkeleton, 10, 10);
     imwrite(IMG_FLODER+"5_S2.png", imgSkeleton);
-    ShowAll(imgSkeleton, 6);
+    // ShowAll(imgSkeleton, 6);
 }
 
 /*  在细化图和目标识别boxes准备好后进入遍历流程  */
 void CImageConverter::ProcessTraversal(){
+    //  新的端点检测
+    Mat imgSkeleton = readImg(IMG_FLODER + "5_S2.png");
+    //  端点检测
+    vector<Point> endpoints;
+    endPointAndintersectionPointDetection(imgSkeleton, endpoints);
+    cout << endpoints.size() << "=============\n";
+    //画出端点
+    for (vector<Point>::iterator i = endpoints.begin(); i != endpoints.end(); ++i)
+    {
+        circle(imgSkeleton, Point(i->x, i->y), 5, Scalar(0, 255, 0), -1);
+    }
+    ShowAll(imgSkeleton, 6);
+
     m_boxesCopy = m_boxes;
     Mat imgYolo = readImg(IMG_FLODER + "2_D.png");
     ShowAll(imgYolo, 10);
     
-    m_vstrCropDir = traversal(IMG_FLODER + "5_S2.png", m_imgSrc, m_boxes); // 裁剪图路径列表 -- 按遍历顺序
+    m_vstrCropDir = traversal(IMG_FLODER + "5_S2.png", m_imgSrc, m_boxes, endpoints); // 裁剪图路径列表 -- 按遍历顺序
     Mat imgTraversal = readImg(IMG_FLODER + "6_T.png");
     ShowAll(imgTraversal, 3);
     if(m_vstrCropDir.size()==0){    //  遍历后无交叉点
