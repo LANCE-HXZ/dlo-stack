@@ -144,13 +144,13 @@ void CGripperControl::NewOpen(char which){
 }
 
 void CGripperControl::Gripper_Reset(){
-    ros::Duration(0.5).sleep();
+    ros::Duration(0.05).sleep();
     genCommand("r");
     pub.publish(msg);
     pub_.publish(msg);
-    ros::Duration(0.5).sleep();
+    ros::Duration(0.05).sleep();
     genCommand("a");
     pub.publish(msg);
     pub_.publish(msg);
-    ros::Duration(0.5).sleep();
+    ros::Duration(0.05).sleep();
 }

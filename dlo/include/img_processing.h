@@ -22,4 +22,6 @@ double angle(cv::Point pt1, cv::Point pt2, cv::Point pt0);
 float GetCross(cv::Point& p1, cv::Point& p2,cv::Point& p);
 bool IsPointInMatrix(cv::Point& p, vector<cv::Point> vptMatrix = {cv::Point(120, 520), cv::Point(120, 120), cv::Point(680, 120), cv::Point(680, 520)});
 
+string nameWithTime();
+
 #endif

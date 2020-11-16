@@ -28,7 +28,8 @@ CImageConverter::~CImageConverter()
 void CImageConverter::Init()
   {
     cout << "NOW IN Init()" << endl;
-    ROUND = to_string(rand());
+    ROUND = nameWithTime();
+    cout << ROUND << endl;
     g_vnClassList = g_vnCrossList = {}; m_vstrCropDir = {};
     m_nCropNum = 0; flagBinaryImgReady = flagReady4Next = 0;
     m_imgSrc = m_imgCamera;
@@ -56,19 +57,20 @@ void CImageConverter::ProcessSkeleton(){
     rgb2binary(imgBinary, imgBinary);
     imwrite(IMG_FLODER + "4_B.png", imgBinary);
     ShowAll(imgBinary, 2);
-    pre_dilate(imgBinary, 3, 2); // 膨胀去除黑离群点
+    // imgBinary = readImg(IMG_FLODER + "t.png");    //  直接测试图像细化
+    // resize(imgBinary, imgBinary, Size(640,320));
+    pre_dilate(imgBinary, 3, 1); // 膨胀去除黑离群点
     imwrite(IMG_FLODER + "4_B2_dilate.png", imgBinary);
     ShowAll(imgBinary, 1);
     pre_erode(imgBinary, 3, 5); // 腐蚀去除白离群点
     imwrite(IMG_FLODER + "4_B3_erode.png", imgBinary);
     ShowAll(imgBinary, 5);
-    // imgBinary = readImg(IMG_FLODER + "T/89.bmp");    //  直接测试图像细化
     skeleton(imgBinary, IMG_FLODER + "5_S.png", 3);
     Mat imgSkeleton = readImg(IMG_FLODER + "5_S.png");
     ShowAll(imgSkeleton, 9);
     imgSkeleton = removeSinglePoint(imgSkeleton, 30, 30);
     imgSkeleton = removeSinglePoint(imgSkeleton, 60, 60);
-    imgSkeleton = removeSinglePoint(imgSkeleton, 40, 60);
+    imgSkeleton = removeSinglePoint(imgSkeleton, 40, 40);
     imgSkeleton = removeSinglePoint(imgSkeleton, 90, 90);
     imgSkeleton = removeSinglePoint(imgSkeleton, 10, 10);
     imwrite(IMG_FLODER+"5_S2.png", imgSkeleton);
@@ -79,16 +81,26 @@ void CImageConverter::ProcessSkeleton(){
 void CImageConverter::ProcessTraversal(){
     //  新的端点检测
     Mat imgSkeleton = readImg(IMG_FLODER + "5_S2.png");
+    // fix_cross_error(imgSkeleton);
+    // imgSkeleton*=255;
+    // imshow("imgSkeleton", imgSkeleton);
+    // waitKey();
     //  端点检测
-    vector<Point> endpoints;
-    endPointAndintersectionPointDetection(imgSkeleton, endpoints);
-    cout << endpoints.size() << "=============\n";
+    vector<Point> endpoints, crossings;
+    endPointAndintersectionPointDetection(imgSkeleton, endpoints, crossings);
     //画出端点
     for (vector<Point>::iterator i = endpoints.begin(); i != endpoints.end(); ++i)
     {
-        circle(imgSkeleton, Point(i->x, i->y), 5, Scalar(0, 255, 0), -1);
+        circle(imgSkeleton, Point(i->x, i->y), 3, Scalar(0, 255, 0), 0);
     }
+    // imwrite(IMG_FLODER+"5_Se.png", imgSkeleton);
+    // for (vector<Point>::iterator i = crossings.begin(); i != crossings.end(); ++i)
+    // {
+    //     circle(imgSkeleton, Point(i->x, i->y), 5, Scalar(0, 255, 255), -1);
+    // }
+    // cout << "11111111111\n";
     ShowAll(imgSkeleton, 6);
+    // cout << "222222222222\n";
 
     m_boxesCopy = m_boxes;
     Mat imgYolo = readImg(IMG_FLODER + "2_D.png");
@@ -116,7 +128,6 @@ void CImageConverter::ProcessTraversal(){
 void CImageConverter::ProcessStrategy(){
     visualization();  // === 可视化 ===
     SOperation oprt = sttg.strategy();
-    cout << "\n\t\tROUND: " << ROUND << "\n\n";
     Mat imgVisualization = readImg(IMG_FLODER + "7_V.png");
     ShowAll(imgVisualization, 7);
     Mat imgResult = readImg(IMG_FLODER + "8_Result.png");
@@ -124,15 +135,26 @@ void CImageConverter::ProcessStrategy(){
     manipulation(oprt);
 
     /*  将对应交叉点识别结果成对相反出现的交叉点框分别保存到0/和1/训练集文件夹  */
-    cout << "SAVING CROSS: \n";
+    cout << "\nSAVING CROSS: \n";
+    vector<bool> vbSave(cross.size()*2, 1);
     for(int i = 0; i < cross.size(); ++i){
 		if(c0[i] == -1 || c1[i] == -1)	continue;
-        cout << i << "\t";
+        cout << i << "-" << c0[i] << "-" << c1[i] << "\t\t";
 		Mat imgTrainCross0 = imread(m_vstrCropDir[c0[i]]);
         Mat imgTrainCross1 = imread(m_vstrCropDir[c1[i]]);
-        imwrite(IMG_FLODER+"0/"+to_string(rand())+".png", imgTrainCross0);
-        imwrite(IMG_FLODER+"1/"+to_string(rand())+".png", imgTrainCross1);
+        imwrite(IMG_FLODER+"0/"+ROUND+"_"+to_string(i)+".png", imgTrainCross0);
+        imwrite(IMG_FLODER+"1/"+ROUND+"_"+to_string(i)+".png", imgTrainCross1);
+        vbSave[c0[i]] = vbSave[c1[i]] = 0;
     }
+    cout << endl << endl;
+    for(int j = 0; j < vbSave.size(); ++j){
+        if(vbSave[j]){
+            cout << g_vnCrossList[j] << "_" << g_vnClassList[j] << "\t\t";
+            Mat imgTrainCross = imread(m_vstrCropDir[j]);
+            imwrite(IMG_FLODER+"2/"+ROUND+"_"+to_string(g_vnCrossList[j])+"_"+to_string(g_vnClassList[j])+"_"+to_string(j)+".png", imgTrainCross);
+        }
+    }
+    exit(0);
 }
 
 /*  ros订阅者通过cv_bridge接收的图片话题消息需要转换为cv格式

@@ -77,7 +77,8 @@ SOperation CStrategy::strategy(){
 	oprt_rt.strOperationType = "N";		//	标记操作类型, 初始为 N 表示 None
 	bool bGetLRindexOfOptionI = 0;
 	int opt1_index, opt2_index;
-	if(checklist() == 2){
+	if(checklist()==1){
+		exit(0);
 		oprt_rt.strOperationType = "E";		//	Error
 		return oprt_rt;
 	}
@@ -177,56 +178,56 @@ SOperation CStrategy::strategy(){
 	}
     
 
-	// // === 检测D类交叉 ===
-	// if(oprt_rt.strOperationType == "N"){
-	// 	for(int i = 0; i < g_vnClassList.size()-1; ++i){
-	// 		if (g_vnClassList[i] * g_vnClassList[i+1]) {
-	// 			/*	检查当前交叉D型是否为跨端点的错误识别类型	
-	// 				若结束循环时 is_end=1, 则表示跨端点, 应跳过	*/
-	// 			bool is_end = 0;
-	// 			for(int k = 0; k < start.size(); ++k){
-	// 				if(i == start[k] || i+1 == start[k]){
-	// 					is_end = 1;
-	// 					break;
-	// 				}
-	// 			}
+	// === 检测D类交叉 ===
+	if(oprt_rt.strOperationType == "N"){
+		for(int i = 0; i < g_vnClassList.size()-1; ++i){
+			if (g_vnClassList[i] * g_vnClassList[i+1]) {
+				/*	检查当前交叉D型是否为跨端点的错误识别类型	
+					若结束循环时 is_end=1, 则表示跨端点, 应跳过	*/
+				bool is_end = 0;
+				for(int k = 0; k < start.size(); ++k){
+					if(i == start[k] || i+1 == start[k]){
+						is_end = 1;
+						break;
+					}
+				}
 				
-	// 			// if (!is_end && abs(c0[g_vnCrossList[i]] - c0[g_vnCrossList[i + 1]]) == 1) {
-	// 			if (abs(c0[g_vnCrossList[i]] - c0[g_vnCrossList[i + 1]]) == 1) {
-	// 				oprt_rt.strOperationType = "D";
+				// if (!is_end && abs(c0[g_vnCrossList[i]] - c0[g_vnCrossList[i + 1]]) == 1) {
+				if (abs(c0[g_vnCrossList[i]] - c0[g_vnCrossList[i + 1]]) == 1) {
+					oprt_rt.strOperationType = "D";
 					
-	// 				/*	打印交叉信息	*/
-	// 				cout << endl << "OPT-D:" << endl;
-	// 				cout << '\t' << '\t' << "INDEX" << '\t' << "CROSS" << '\t' << "CLASS" << endl;
-	// 				cout << '\t' << '\t' << i << '\t' << g_vnCrossList[i] << '\t' << g_vnClassList[i] << endl;
-	// 				cout << '\t' << '\t' << i + 1 << '\t' << g_vnCrossList[i + 1] << '\t' << g_vnClassList[i + 1] << endl;
-	// 				if (c0[g_vnCrossList[i]] < c0[g_vnCrossList[i + 1]]) {
-	// 					cout << '\t' << '\t' << c0[g_vnCrossList[i]] << '\t' << g_vnCrossList[c0[g_vnCrossList[i]]] << '\t' << g_vnClassList[c0[g_vnCrossList[i]]] << endl;
-	// 					cout << '\t' << '\t' << c0[g_vnCrossList[i + 1]] << '\t' << g_vnCrossList[c0[g_vnCrossList[i + 1]]] << '\t' << g_vnClassList[c0[g_vnCrossList[i + 1]]] << endl;
-	// 				}
-	// 				else {
-	// 					cout << '\t' << '\t' << c0[g_vnCrossList[i + 1]] << '\t' << g_vnCrossList[c0[g_vnCrossList[i + 1]]] << '\t' << g_vnClassList[c0[g_vnCrossList[i + 1]]] << endl;
-	// 					cout << '\t' << '\t' << c0[g_vnCrossList[i]] << '\t' << g_vnCrossList[c0[g_vnCrossList[i]]] << '\t' << g_vnClassList[c0[g_vnCrossList[i]]] << endl;
-	// 				}
+					/*	打印交叉信息	*/
+					cout << endl << "OPT-D:" << endl;
+					cout << '\t' << '\t' << "INDEX" << '\t' << "CROSS" << '\t' << "CLASS" << endl;
+					cout << '\t' << '\t' << i << '\t' << g_vnCrossList[i] << '\t' << g_vnClassList[i] << endl;
+					cout << '\t' << '\t' << i + 1 << '\t' << g_vnCrossList[i + 1] << '\t' << g_vnClassList[i + 1] << endl;
+					if (c0[g_vnCrossList[i]] < c0[g_vnCrossList[i + 1]]) {
+						cout << '\t' << '\t' << c0[g_vnCrossList[i]] << '\t' << g_vnCrossList[c0[g_vnCrossList[i]]] << '\t' << g_vnClassList[c0[g_vnCrossList[i]]] << endl;
+						cout << '\t' << '\t' << c0[g_vnCrossList[i + 1]] << '\t' << g_vnCrossList[c0[g_vnCrossList[i + 1]]] << '\t' << g_vnClassList[c0[g_vnCrossList[i + 1]]] << endl;
+					}
+					else {
+						cout << '\t' << '\t' << c0[g_vnCrossList[i + 1]] << '\t' << g_vnCrossList[c0[g_vnCrossList[i + 1]]] << '\t' << g_vnClassList[c0[g_vnCrossList[i + 1]]] << endl;
+						cout << '\t' << '\t' << c0[g_vnCrossList[i]] << '\t' << g_vnCrossList[c0[g_vnCrossList[i]]] << '\t' << g_vnClassList[c0[g_vnCrossList[i]]] << endl;
+					}
 
-	// 				opt_index = (cpt[i] + cpt[i+1])/2;
-	// 				oprt_rt.vptPoint.push_back(pt[opt_index]);
-	// 				oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
-	// 				draw_point(pt[opt_index], "opt", blue);
+					opt_index = (cpt[i] + cpt[i+1])/2;
+					oprt_rt.vptPoint.push_back(pt[opt_index]);
+					oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
+					draw_point(pt[opt_index], "opt", blue);
 
-	// 				ref_index = (cpt[c0[g_vnCrossList[i]]] + cpt[c0[g_vnCrossList[i + 1]]])/2;
-	// 				draw_point(pt[ref_index], "ref", green);
-	// 				target = pt[ref_index] + per_dir(pt[opt_index], pt[ref_index], 30);
-	// 				draw_point(target, "target", yellow);
+					ref_index = (cpt[c0[g_vnCrossList[i]]] + cpt[c0[g_vnCrossList[i + 1]]])/2;
+					draw_point(pt[ref_index], "ref", green);
+					target = pt[ref_index] + per_dir(pt[opt_index], pt[ref_index], 30);
+					draw_point(target, "target", yellow);
 
-	// 				oprt_rt.vptPoint.push_back(target);
-	// 				oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
+					oprt_rt.vptPoint.push_back(target);
+					oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
 
-	// 				break;
-    //             }
-	// 		}
-	// 	}
-	// }
+					break;
+                }
+			}
+		}
+	}
 
 	// === 检测T类交叉 ===
 	if(oprt_rt.strOperationType == "N"){

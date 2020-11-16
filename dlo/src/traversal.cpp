@@ -13,7 +13,7 @@ vector<string> traversal(string thin_img_address, Mat rgb_img, dlo::BoundingBoxe
 	vector<string> crop_file_name;
 	int expand = 0, save_index = 0; // 图像边缘扩大尺寸/保存时的序号按遍历顺序
 	int end_num = 0, cross_num = 0; // 端点和交叉点计数
-	bool end_used[10] = {0}, incross[20] = {0}, crossing[20] = {0}; // 一些判断条件(端点已用/进入交叉点/在交叉点内)
+	bool end_used[20] = {0}, incross[50] = {0}, crossing[50] = {0}; // 一些判断条件(端点已用/进入交叉点/在交叉点内)
 	point_num = 0; cpt_num = 0; ept_num = 0; line_num = 0;
 	// for(int i=0; i<boxes->bounding_boxes.size(); ++i)
 	// {
@@ -280,7 +280,7 @@ void traversal(Mat src)
 void traversal_callback(int event, int x, int y, int flags, void* ustc)
 {
 	static int center_num = 0, L_down_num = 0;
-	static Point center[20];
+	static Point center[30];
 	if (event == CV_EVENT_RBUTTONDOWN)
 	{
 		center[center_num] = Point(x+100, y+100);
@@ -304,8 +304,8 @@ void traversal_callback(int event, int x, int y, int flags, void* ustc)
 		int crop_size = 50; int dir_size = 20; 
 		int point_num = 1;
 		int ddx, ddy; float d;
-		bool incross[20] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-		bool crossing[20] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		bool incross[30] = {0};
+		bool crossing[30] = {0};
 		curr_pt = get_first_current_point(src, pre_pt, per_step, 5);
 		pt[point_num] = curr_pt;
 		for (int i = 0; i < 250; i++){

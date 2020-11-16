@@ -138,3 +138,17 @@ bool IsPointInMatrix(Point& p, vector<Point> vptMatrix)
     Point p4 = vptMatrix[3];
     return GetCross(p1,p2,p) * GetCross(p3,p4,p) >= 0 && GetCross(p2,p3,p) * GetCross(p4,p1,p) >= 0;
 }
+
+string nameWithTime(){
+	time_t timep;
+    struct tm *p;
+    time(&timep); //获取从1970至今过了多少秒，存入time_t类型的timep
+    p = localtime(&timep);//用localtime将秒数转化为struct tm结构体
+	string y = to_string(1900 + p->tm_year);
+	string m = (1+ p->tm_mon) < 10 ? "0" + to_string(1+ p->tm_mon) : to_string(1+ p->tm_mon);
+	string d = (p->tm_mday) < 10 ? "0" + to_string(p->tm_mday) : to_string(p->tm_mday);
+	string h = (p->tm_hour) < 10 ? "0" + to_string(p->tm_hour) : to_string(p->tm_hour);
+	string min = (p->tm_min) < 10 ? "0" + to_string(p->tm_min) : to_string(p->tm_min);
+	string s = (p->tm_sec) < 10 ? "0" + to_string(p->tm_sec) : to_string(p->tm_sec);
+	return y+m+d+h+min+s;
+}

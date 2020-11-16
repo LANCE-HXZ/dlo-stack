@@ -25,7 +25,7 @@ using namespace std;
 int test();
 int* test(int input);
 void thinImage(cv::Mat & src, cv::Mat & dst);
-void endPointAndintersectionPointDetection(cv::Mat src, vector<cv::Point> &endpoint);
+void endPointAndintersectionPointDetection(cv::Mat src, vector<cv::Point> &endpoint, vector<cv::Point> &intersectionPoint);
 void fix_cross_error(cv::Mat & src);
 // int glo_xy(int x, int y);
 int d(cv::Point opt, cv::Point dir);

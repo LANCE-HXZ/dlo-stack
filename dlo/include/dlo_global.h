@@ -2,6 +2,7 @@
 #define DLO_GLOBAL
 
 #include <iostream>
+#include <stdio.h>
 #include <string>
 #include <opencv2/opencv.hpp>
 

@@ -15,23 +15,23 @@ vector<vector<double>>  g_vvdEndLeft = {{5.93, -43.6, -6.95, -76.65, 3.17, 57.03
 void manipulation(SOperation oprt){
     CIiwaServo msv;
     CGripperControl mgc;
-    mgc.Dual_Gripper_anypose(OPN, OPN);
-    if(oprt.strOperationType == "I")
-        optionI(oprt, msv, mgc);
-    else if(oprt.strOperationType == "D" || oprt.strOperationType == "IX")
-        optionD(oprt, msv, mgc);
-    else if(oprt.strOperationType == "Q")
-        // cout << "Q\n";
-        optionQ(oprt, msv, mgc);
-    else if(oprt.strOperationType == "T")
-        optionT(oprt, msv, mgc);
-    else if(oprt.strOperationType == "E")
-        return;
-    else{
-        cout << "\n\n\t\t=====  【END】  =====\n\n\n";
-        exit(0);
-    }
-    mgc.Dual_Gripper_anypose(OPN, OPN);
+    // mgc.Dual_Gripper_anypose(OPN, OPN);
+    // if(oprt.strOperationType == "I")
+    //     optionI(oprt, msv, mgc);
+    // else if(oprt.strOperationType == "D" || oprt.strOperationType == "IX")
+    //     optionD(oprt, msv, mgc);
+    // else if(oprt.strOperationType == "Q")
+    //     // cout << "Q\n";
+    //     optionQ(oprt, msv, mgc);
+    // else if(oprt.strOperationType == "T")
+    //     optionT(oprt, msv, mgc);
+    // else if(oprt.strOperationType == "E")
+    //     return;
+    // else{
+    //     cout << "\n\n\t\t=====  【END】  =====\n\n\n";
+    //     exit(0);
+    // }
+    // mgc.Dual_Gripper_anypose(OPN, OPN);
     // double dTime1 = msv.MoveLeftEulerXYZ();
     // double dTime2 = msv.MoveRightEulerXYZ();
     // ros::Duration(max(dTime1, dTime2)+0.1).sleep();

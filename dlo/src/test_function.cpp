@@ -137,6 +137,11 @@ void thinImage(Mat & src, Mat & dst)
 
 void fix_cross_error(Mat & src)
 {
+		// //若输入为三通道图像, 则分离通道
+	std::vector<cv::Mat>SrcMatpart(src.channels());
+	cv::split(src,SrcMatpart);
+	src = SrcMatpart[0];
+
     int width = src.cols;
     int height = src.rows;
 	src.copyTo(glo);
@@ -201,6 +206,8 @@ void fix_cross_error(Mat & src)
 			if(ni != -1)	break;//////////////////////ni=-1error
 			else	++opt_index;
 		}
+		if(error_cross[opt_index].x > 1000 || error_cross[opt_index].y > 1000)
+			break;
 		cout << "error_cross: " << error_cross[opt_index] << "  -  " << error_cross[ni] << endl;
 		Point fixdir = (error_cross[ni] - error_cross[opt_index]);
 		cout << "fixdir: " << fixdir << endl;
@@ -337,7 +344,7 @@ void fix_cross_error(Mat & src)
 		circle(src, error_cross[ni], 5, Scalar(255));
 		src*=255;
 		imshow("src", src);
-		moveWindow("src", 840, 740);
+		moveWindow("src", 400, 400);
 		glo *= 255;
 		// imshow("glo", glo);
 		glo /= 255;
@@ -354,7 +361,7 @@ void fix_cross_error(Mat & src)
 	// imshow("glo", glo);
 	glo /= 255;
 	// moveWindow("glo", 800, 840);
-	waitKey();
+	// waitKey();
 }
 
 void move(Point opt_p, Point opt, int step, uchar *pointer, Point dirflag, int xdir, int ydir){
@@ -417,9 +424,9 @@ int d(Point opt, Point dir){
 }
 
 
-void endPointAndintersectionPointDetection(Mat src, vector<Point> &endpoint)
+void endPointAndintersectionPointDetection(Mat src, vector<Point> &endpoint, vector<Point> &intersectionPoint)
 {
-	// //若输入为三通道图像, 则分离通道
+	//若输入为三通道图像, 则分离通道
 	std::vector<cv::Mat>SrcMatpart(src.channels());
 	cv::split(src,SrcMatpart);
 	src = SrcMatpart[0];
@@ -428,7 +435,7 @@ void endPointAndintersectionPointDetection(Mat src, vector<Point> &endpoint)
     int height = src.rows;
 	cout << width << height << endl;
     // vector<CvPoint> endpoint;
-    vector<CvPoint> intersectionPoint;
+    // vector<CvPoint> intersectionPoint;
     //遍历骨骼化后的图像，找到端点和交叉点，分别放入容器中
     for (int i = 0; i < height; ++i)
     {
@@ -467,7 +474,7 @@ void endPointAndintersectionPointDetection(Mat src, vector<Point> &endpoint)
 			// 	printf("端点：%d %d\n", j, i);
 			// 	endpoint.push_back(Point(j, i));
             // }
-			                int ap = 0;
+			    int ap = 0;
                 if (p2 == 0 && p3 == 255) ++ap;
                 if (p3 == 0 && p4 == 255) ++ap;
                 if (p4 == 0 && p5 == 255) ++ap;
@@ -482,39 +489,39 @@ void endPointAndintersectionPointDetection(Mat src, vector<Point> &endpoint)
 				}
             // else //交叉点判断
             // {
-            //     int ap = 0;
-            //     if (p2 == 0 && p3 == 1) ++ap;
-            //     if (p3 == 0 && p4 == 1) ++ap;
-            //     if (p4 == 0 && p5 == 1) ++ap;
-            //     if (p5 == 0 && p6 == 1) ++ap;
-            //     if (p6 == 0 && p7 == 1) ++ap;
-            //     if (p7 == 0 && p8 == 1) ++ap;
-            //     if (p8 == 0 && p9 == 1) ++ap;
-            //     if (p9 == 0 && p2 == 1) ++ap;
-            //     if (ap > 3)
-            //     {
-            //         printf("交叉点：%d %d\n", j, i);
-            //         intersectionPoint.push_back(cvPoint(j, i));
-            //     }
-			// 	if (p2 && p3 && p4){
-			// 		printf("交叉点：%d %d\n", j, i);
-            //         intersectionPoint.push_back(cvPoint(j, i));
-			// 	}
+                // int ap = 0;
+                // if (p2 == 0 && p3 == 255) ++ap;
+                // if (p3 == 0 && p4 == 255) ++ap;
+                // if (p4 == 0 && p5 == 255) ++ap;
+                // if (p5 == 0 && p6 == 255) ++ap;
+                // if (p6 == 0 && p7 == 255) ++ap;
+                // if (p7 == 0 && p8 == 255) ++ap;
+                // if (p8 == 0 && p9 == 255) ++ap;
+                // if (p9 == 0 && p2 == 255) ++ap;
+                // else if (ap > 3)
+                // {
+                //     printf("交叉点：%d %d\n", j, i);
+                //     intersectionPoint.push_back(cvPoint(j, i));
+                // }
+				// else if (p2 && p3 && p4){
+				// 	printf("交叉点：%d %d\n", j, i);
+                //     intersectionPoint.push_back(cvPoint(j, i));
+				// }
             // }
         }
     }
-    //画出端点
-    for (vector<Point>::iterator i = endpoint.begin(); i != endpoint.end(); ++i)
-    {
-        circle(src, Point(i->x, i->y), 5, Scalar(255), -1);
-    }
+    // //画出端点
+    // for (vector<Point>::iterator i = endpoint.begin(); i != endpoint.end(); ++i)
+    // {
+    //     circle(src, Point(i->x, i->y), 5, Scalar(255), -1);
+    // }
     // //画出交叉点
     // for (vector<CvPoint>::iterator i = intersectionPoint.begin(); i != intersectionPoint.end(); ++i)
     // {
     //     circle(src, cvPoint(i->x, i->y), 5, Scalar(255));
     // }
     // endpoint.clear();//数据回收 
-    intersectionPoint.clear();   
+    // intersectionPoint.clear();   
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 

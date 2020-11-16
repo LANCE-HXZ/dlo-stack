@@ -129,7 +129,7 @@ class image_converter:
     cv_image = cv2.imread(path + "1_R.png")
     sp = cv_image.shape
     # print(sp)
-    # cv_image = cv_image[80:sp[0]-80-40, 80:sp[1]-80]
+    
     cv_image = cv_image[80:sp[0]-80, 80:sp[1]-80]
     # (rows,cols,channels) = cv_image.shape
     pil_img = PIL.Image.fromarray(cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB))

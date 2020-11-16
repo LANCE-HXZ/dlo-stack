@@ -102,9 +102,21 @@ Scalar getcolor(int n, int ept_index, int line_index)
 		return Scalar(color_v, 128, 255);
 	}
 	else if(4 == line_index){
-		return Scalar(255, 0, color_v);
+		return Scalar(0, color_v, 255);
 	}
 	else if(5 == line_index){
-		return Scalar(64, 64, color_v);
+		return Scalar(128, color_v, 128);
+	}
+	else if(6 == line_index){
+		return Scalar(128, 128, color_v);
+	}
+	else if(7 == line_index){
+		return Scalar(255, color_v, 128);
+	}
+	else if(8 == line_index){
+		return Scalar(255, 0, color_v);
+	}
+	else if(9 == line_index){
+		return Scalar(color_v, color_v, 128);
 	}
 }
