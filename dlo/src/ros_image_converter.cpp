@@ -63,12 +63,12 @@ void CImageConverter::ProcessSkeleton(){
     ShowAll(imgBinary, 2);
     // imgBinary = readImg(IMG_FLODER + "t.png");    //  直接测试图像细化
     // resize(imgBinary, imgBinary, Size(640,320));
-    pre_erode(imgBinary, 3, 1); // 腐蚀去除白离群点
-    pre_dilate(imgBinary, 3, 4); // 膨胀去除黑离群点
+    pre_erode(imgBinary, 3, 2); // 腐蚀去除白离群点
+    pre_dilate(imgBinary, 3, 5); // 膨胀去除黑离群点
     imwrite(IMG_FLODER + "4_B2_dilate.png", imgBinary);
     ShowAll(imgBinary, 1);
     // ShowImg("test", imgBinary);
-    pre_erode(imgBinary, 3, 7); // 腐蚀去除白离群点
+    pre_erode(imgBinary, 3, 6); // 腐蚀去除白离群点
     imwrite(IMG_FLODER + "4_B3_erode.png", imgBinary);
     ShowAll(imgBinary, 5);
     // ShowImg("test", imgBinary);
@@ -94,26 +94,50 @@ void CImageConverter::ProcessSkeleton(){
 void CImageConverter::ProcessTraversal(){
     //  新的端点检测
     Mat imgSkeleton = readImg(IMG_FLODER + "5_S2.png");
+    vector<Point> endpoints, crossings;
+
+    Mat imgS = readImg(IMG_FLODER + "5_S.png");
+    endPointAndintersectionPointDetection(imgSkeleton, endpoints, crossings);
+    for (vector<Point>::iterator i = endpoints.begin(); i != endpoints.end(); ++i)
+    {
+        circle(imgS, Point(i->x, i->y), 3, Scalar(0, 255, 0), 0);
+    }
+    ShowAll(imgS, 9);
+    endpoints.clear(); crossings.clear();
     // fix_cross_error(imgSkeleton);
     // imgSkeleton*=255;
     // imshow("imgSkeleton", imgSkeleton);
     // waitKey();
     //  端点检测
-    vector<Point> endpoints, crossings;
     endPointAndintersectionPointDetection(imgSkeleton, endpoints, crossings);
     //画出端点
     for (vector<Point>::iterator i = endpoints.begin(); i != endpoints.end(); ++i)
     {
-        // for(Point ptJ:endpoints){
-        //     if(ptJ == Point(i->x, i->y))    continue;
-        //     int cnt = 0;
-        //     if (sqrt(pow(ptJ.x - i->x,2) + pow(ptJ.y - i->y,2)) <= 20)
-		// 	{
-		// 		cnt++;
-        // }
-        circle(imgSkeleton, Point(i->x, i->y), 3, Scalar(0, 255, 0), 0);
+        int cnt = 0;
+        vector<Point>::iterator j, j_;
+        for(j = i+1; j != endpoints.end(); ++j){
+            if (sqrt(pow(j->x - i->x,2) + pow(j->y - i->y,2)) <= 20)
+			{
+				cnt++;
+                if(cnt > 1){
+                    endpoints.erase(j);
+                    endpoints.erase(j_);
+                    endpoints.erase(i);
+                    break;
+                }
+                j_ = j;
+            }
+        }
+        if(cnt==1){
+            line(imgSkeleton, Point(j_->x, j_->y), Point(i->x, i->y), Scalar(255, 255, 255));
+            endpoints.erase(j_);
+            endpoints.erase(i);
+            continue;
+        }
     }
-
+    imwrite(IMG_FLODER+"5_S2.png", imgSkeleton);
+    for (vector<Point>::iterator i = endpoints.begin(); i != endpoints.end(); ++i)
+        circle(imgSkeleton, Point(i->x, i->y), 3, Scalar(0, 255, 0), 0);
     // imwrite(IMG_FLODER+"5_Se.png", imgSkeleton);
     // for (vector<Point>::iterator i = crossings.begin(); i != crossings.end(); ++i)
     // {
