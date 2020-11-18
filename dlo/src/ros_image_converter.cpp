@@ -59,7 +59,7 @@ void CImageConverter::ProcessSkeleton(){
     ShowAll(imgBinary, 2);
     // imgBinary = readImg(IMG_FLODER + "t.png");    //  直接测试图像细化
     // resize(imgBinary, imgBinary, Size(640,320));
-    pre_dilate(imgBinary, 3, 1); // 膨胀去除黑离群点
+    pre_dilate(imgBinary, 4, 1); // 膨胀去除黑离群点
     imwrite(IMG_FLODER + "4_B2_dilate.png", imgBinary);
     ShowAll(imgBinary, 1);
     pre_erode(imgBinary, 3, 5); // 腐蚀去除白离群点
@@ -135,7 +135,7 @@ void CImageConverter::ProcessStrategy(){
     manipulation(oprt);
 
     /*  将对应交叉点识别结果成对相反出现的交叉点框分别保存到0/和1/训练集文件夹  */
-    cout << "\nSAVING CROSS: \n";
+    cout << "\n\nSAVING CORRECT CROSSINGS: \n";
     vector<bool> vbSave(cross.size()*2, 1);
     for(int i = 0; i < cross.size(); ++i){
 		if(c0[i] == -1 || c1[i] == -1)	continue;
@@ -146,7 +146,7 @@ void CImageConverter::ProcessStrategy(){
         imwrite(IMG_FLODER+"1/"+ROUND+"_"+to_string(i)+".png", imgTrainCross1);
         vbSave[c0[i]] = vbSave[c1[i]] = 0;
     }
-    cout << endl << endl;
+    cout << "\nSAVING ERROR CROSSINGS: \n";
     for(int j = 0; j < vbSave.size(); ++j){
         if(vbSave[j]){
             cout << g_vnCrossList[j] << "_" << g_vnClassList[j] << "\t\t";
@@ -154,6 +154,7 @@ void CImageConverter::ProcessStrategy(){
             imwrite(IMG_FLODER+"2/"+ROUND+"_"+to_string(g_vnCrossList[j])+"_"+to_string(g_vnClassList[j])+"_"+to_string(j)+".png", imgTrainCross);
         }
     }
+    cout << endl;
     exit(0);
 }
 
