@@ -93,7 +93,7 @@ void removeOutlier(vector<Point> inData, int radius, int k, vector<Point> &outDa
 	输入: 原图src, 搜索半径nRadius, 阈值nMin
 	输出: 去除离群点后的图	*/
 Mat removeSinglePoint(cv::Mat &src, int nRadius, int nMin){
-	Mat dst = cv::Mat::zeros(640, 800, CV_8UC3);
+	Mat dst = cv::Mat::zeros(src.rows, src.cols, CV_8UC3);
 	vector<Point> ptWhite, ptOutlier;
 	for(int ir = 0; ir < src.rows; ++ir){
 		for(int ic = 0; ic < src.cols; ++ic){

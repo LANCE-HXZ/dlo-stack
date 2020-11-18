@@ -27,14 +27,18 @@ CImageConverter::~CImageConverter()
 /*  每次执行完整流程之前进行参数初始化  */
 void CImageConverter::Init()
   {
-    cout << "NOW IN Init()" << endl;
+    m_bRunWithSaving = 0;
+    if(m_bRunWithSaving)  cout << "Runing with saving\n";
+    else                cout << "Runing without saving\n";
     ROUND = nameWithTime();
     cout << ROUND << endl;
     g_vnClassList = g_vnCrossList = {}; m_vstrCropDir = {};
     m_nCropNum = 0; flagBinaryImgReady = flagReady4Next = 0;
     m_imgSrc = m_imgCamera;
+
     MakeConstantBorder(m_imgSrc, m_imgSrc, EDGE);
     imwrite(IMG_FLODER + "1_R.png", m_imgSrc);
+    if(m_bRunWithSaving)    imwrite(IMG_FLODER + "R/ROUND.png", m_imgSrc);
     ShowAll(m_imgSrc, 0);
     std_msgs::String signal;
     signal.data = "1";
@@ -59,20 +63,29 @@ void CImageConverter::ProcessSkeleton(){
     ShowAll(imgBinary, 2);
     // imgBinary = readImg(IMG_FLODER + "t.png");    //  直接测试图像细化
     // resize(imgBinary, imgBinary, Size(640,320));
-    pre_dilate(imgBinary, 4, 1); // 膨胀去除黑离群点
+    pre_erode(imgBinary, 3, 1); // 腐蚀去除白离群点
+    pre_dilate(imgBinary, 3, 4); // 膨胀去除黑离群点
     imwrite(IMG_FLODER + "4_B2_dilate.png", imgBinary);
     ShowAll(imgBinary, 1);
-    pre_erode(imgBinary, 3, 5); // 腐蚀去除白离群点
+    // ShowImg("test", imgBinary);
+    pre_erode(imgBinary, 3, 7); // 腐蚀去除白离群点
     imwrite(IMG_FLODER + "4_B3_erode.png", imgBinary);
     ShowAll(imgBinary, 5);
+    // ShowImg("test", imgBinary);
     skeleton(imgBinary, IMG_FLODER + "5_S.png", 3);
     Mat imgSkeleton = readImg(IMG_FLODER + "5_S.png");
     ShowAll(imgSkeleton, 9);
+    int nCut = 15;
+    CvRect rect = cvRect(EDGE+nCut, EDGE+nCut, imgSkeleton.cols-2*(nCut+EDGE), imgSkeleton.rows-2*(nCut+EDGE));
+    imgSkeleton = imgSkeleton(rect);
+    // MakeConstantBorder(imgSkeleton, imgSkeleton, EDGE+nCut, Scalar(0, 0, 0));
+    imwrite(IMG_FLODER + "5_S1.png", imgSkeleton);
     imgSkeleton = removeSinglePoint(imgSkeleton, 30, 30);
     imgSkeleton = removeSinglePoint(imgSkeleton, 60, 60);
     imgSkeleton = removeSinglePoint(imgSkeleton, 40, 40);
     imgSkeleton = removeSinglePoint(imgSkeleton, 90, 90);
     imgSkeleton = removeSinglePoint(imgSkeleton, 10, 10);
+    MakeConstantBorder(imgSkeleton, imgSkeleton, EDGE+nCut, Scalar(0, 0, 0));
     imwrite(IMG_FLODER+"5_S2.png", imgSkeleton);
     // ShowAll(imgSkeleton, 6);
 }
@@ -91,8 +104,16 @@ void CImageConverter::ProcessTraversal(){
     //画出端点
     for (vector<Point>::iterator i = endpoints.begin(); i != endpoints.end(); ++i)
     {
+        // for(Point ptJ:endpoints){
+        //     if(ptJ == Point(i->x, i->y))    continue;
+        //     int cnt = 0;
+        //     if (sqrt(pow(ptJ.x - i->x,2) + pow(ptJ.y - i->y,2)) <= 20)
+		// 	{
+		// 		cnt++;
+        // }
         circle(imgSkeleton, Point(i->x, i->y), 3, Scalar(0, 255, 0), 0);
     }
+
     // imwrite(IMG_FLODER+"5_Se.png", imgSkeleton);
     // for (vector<Point>::iterator i = crossings.begin(); i != crossings.end(); ++i)
     // {
@@ -135,23 +156,25 @@ void CImageConverter::ProcessStrategy(){
     manipulation(oprt);
 
     /*  将对应交叉点识别结果成对相反出现的交叉点框分别保存到0/和1/训练集文件夹  */
-    cout << "\n\nSAVING CORRECT CROSSINGS: \n";
     vector<bool> vbSave(cross.size()*2, 1);
-    for(int i = 0; i < cross.size(); ++i){
-		if(c0[i] == -1 || c1[i] == -1)	continue;
-        cout << i << "-" << c0[i] << "-" << c1[i] << "\t\t";
-		Mat imgTrainCross0 = imread(m_vstrCropDir[c0[i]]);
-        Mat imgTrainCross1 = imread(m_vstrCropDir[c1[i]]);
-        imwrite(IMG_FLODER+"0/"+ROUND+"_"+to_string(i)+".png", imgTrainCross0);
-        imwrite(IMG_FLODER+"1/"+ROUND+"_"+to_string(i)+".png", imgTrainCross1);
-        vbSave[c0[i]] = vbSave[c1[i]] = 0;
-    }
-    cout << "\nSAVING ERROR CROSSINGS: \n";
-    for(int j = 0; j < vbSave.size(); ++j){
-        if(vbSave[j]){
-            cout << g_vnCrossList[j] << "_" << g_vnClassList[j] << "\t\t";
-            Mat imgTrainCross = imread(m_vstrCropDir[j]);
-            imwrite(IMG_FLODER+"2/"+ROUND+"_"+to_string(g_vnCrossList[j])+"_"+to_string(g_vnClassList[j])+"_"+to_string(j)+".png", imgTrainCross);
+    if(m_bRunWithSaving){
+        cout << "\n\nSAVING CORRECT CROSSINGS: \n";
+        for(int i = 0; i < cross.size(); ++i){
+            if(c0[i] == -1 || c1[i] == -1)	continue;
+            cout << i << "-" << c0[i] << "-" << c1[i] << "\t\t";
+            Mat imgTrainCross0 = imread(m_vstrCropDir[c0[i]]);
+            Mat imgTrainCross1 = imread(m_vstrCropDir[c1[i]]);
+            imwrite(IMG_FLODER+"0/"+ROUND+"_"+to_string(i)+".png", imgTrainCross0);
+            imwrite(IMG_FLODER+"1/"+ROUND+"_"+to_string(i)+".png", imgTrainCross1);
+            vbSave[c0[i]] = vbSave[c1[i]] = 0;
+        }
+        cout << "\nSAVING ERROR CROSSINGS: \n";
+        for(int j = 0; j < vbSave.size(); ++j){
+            if(vbSave[j]){
+                cout << g_vnCrossList[j] << "_" << g_vnClassList[j] << "\t\t";
+                Mat imgTrainCross = imread(m_vstrCropDir[j]);
+                imwrite(IMG_FLODER+"2/"+ROUND+"_"+to_string(g_vnCrossList[j])+"_"+to_string(g_vnClassList[j])+"_"+to_string(j)+".png", imgTrainCross);
+            }
         }
     }
     cout << endl;
@@ -187,12 +210,15 @@ void CImageConverter::ShowImg(String strWindowName, Mat &imgShow, bool x255){
         imgShow *= 255;
     namedWindow(strWindowName, WINDOW_AUTOSIZE);
     imshow(strWindowName, imgShow);
+    waitKey();
 }
 
 void CImageConverter::ShowAll(Mat imgIn, int n){
-    int c = n%4, r = n/4, x = c*640, y = r*480;
-    CvRect rect = cvRect(x, y, imgIn.cols-2*EDGE, imgIn.rows-2*EDGE);
-    imgIn.colRange(EDGE, imgIn.cols-EDGE).rowRange(EDGE, imgIn.rows-EDGE).copyTo(m_imgAll(rect));
-    imwrite(IMG_FLODER + "0_All.png", m_imgAll);
-    imwrite(IMG_FLODER + "S/" + ROUND + ".png", m_imgAll);
+    // if(m_bRunWithSaving){
+        int c = n%4, r = n/4, x = c*640, y = r*480;
+        CvRect rect = cvRect(x, y, imgIn.cols-2*EDGE, imgIn.rows-2*EDGE);
+        imgIn.colRange(EDGE, imgIn.cols-EDGE).rowRange(EDGE, imgIn.rows-EDGE).copyTo(m_imgAll(rect));
+        imwrite(IMG_FLODER + "0_All.png", m_imgAll);
+        imwrite(IMG_FLODER + "S/" + ROUND + ".png", m_imgAll);
+    // }
 }
