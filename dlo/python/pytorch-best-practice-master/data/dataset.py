@@ -13,6 +13,7 @@ class DogCat(data.Dataset):
         主要目标： 获取所有图片的地址，并根据训练，验证，测试划分数据
         '''
         self.test = test
+        self.train = train
         imgs = [os.path.join(root, img) for img in os.listdir(root)]  # 图片的文件名列表
 
         # test1: data/test1/8973.jpg
@@ -61,7 +62,7 @@ class DogCat(data.Dataset):
         一次返回一张图片的数据
         '''
         img_path = self.imgs[index]
-        if self.test:
+        if self.test and not self.train:
             label = int(self.imgs[index].split('.')[-2].split('/')[-1])
         else:  # 训练和验证集
             label = 1 if 'up' in img_path.split('/')[-1] else 0

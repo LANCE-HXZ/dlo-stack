@@ -9,6 +9,7 @@ from torchnet import meter
 from utils.visualize import Visualizer
 from tqdm import tqdm
 import numpy as np
+import time
 
 # cpu运行修改了此处
 # pytorch-best-practice-master/models/BasicModule.py", line 19, in load
@@ -24,21 +25,23 @@ def test(**kwargs):
     if opt.use_gpu: model.cuda()
 
     # data
-    train_data = DogCat(opt.test_data_root, test=True)
+    train_data = DogCat(opt.test_data_root, train = False, test=True)
     test_dataloader = DataLoader(train_data, batch_size=opt.batch_size, shuffle=False, num_workers=opt.num_workers)
     results = []
+    cnt = 0 # 用于统计测试结果
     for ii, (data, path) in enumerate(test_dataloader):
         input = data
         if opt.use_gpu: input = input.cuda()
         score = model(input)
         probability = t.nn.functional.softmax(score)[:, 0].data.tolist()
         label = score.max(dim = 1)[1].data.tolist()
-
-        batch_results = [(label_, path_, probability_) for label_, path_, probability_ in zip(label, path, probability)]
+        for l in label:
+            cnt+=l
+        batch_results = [(label_, path_, probability_, cnt) for label_, path_, probability_ in zip(label, path, probability)]
 
         results += batch_results
     write_csv(results, opt.result_file)
-
+    print(cnt)
     return results
 
 
@@ -54,6 +57,7 @@ def train(**kwargs):
     # opt.parse(kwargs)
     vis = Visualizer(opt.env)
 
+    savingData = []#
     # step1: configure model
     model = getattr(models, opt.model)()
     if opt.load_model_path:
@@ -63,9 +67,12 @@ def train(**kwargs):
     # step2: data
     train_data = DogCat(opt.train_data_root, train=True)
     val_data = DogCat(opt.train_data_root, train=False)
+    test_data = DogCat(opt.test_data_root, test=True)
     train_dataloader = DataLoader(train_data, opt.batch_size,
                                   shuffle=True, num_workers=opt.num_workers)
     val_dataloader = DataLoader(val_data, opt.batch_size,
+                                shuffle=False, num_workers=opt.num_workers)
+    test_dataloader = DataLoader(test_data, opt.batch_size, 
                                 shuffle=False, num_workers=opt.num_workers)
 
     # step3: criterion and optimizer
@@ -79,10 +86,34 @@ def train(**kwargs):
     previous_loss = 1e100
 
     # train
-    for epoch in range(opt.max_epoch):
+    for epoch in range(opt.max_epoch+1):
+
+        # validate and visualize
+        val_cm, val_accuracy = val(model, val_dataloader)
+        test_cm, test_accuracy = val(model, test_dataloader)
+        vis.plot('test_accuracy', test_accuracy)
+        vis.plot('lr', lr)
+        vis.plot('val_accuracy', val_accuracy)
+        vis.log("epoch:{epoch},lr:{lr},loss:{loss},train_cm:{train_cm},val_cm:{val_cm},test_cm:{test_cm}".format(
+            epoch=epoch, loss=loss_meter.value()[0], val_cm=str(val_cm.value()), train_cm=str(confusion_matrix.value()), test_cm=str(test_cm.value()),
+            lr=lr))
+        print("epoch = ", epoch, "   loss = ", loss_meter.value()[0], "   lr = ", lr)
+        batch_results = [(epoch, loss_meter.value()[0], lr, str(val_cm.value()), str(confusion_matrix.value()), str(test_cm.value()), val_accuracy, test_accuracy)]#
+        savingData += batch_results#
+        save_training_data(savingData, opt.traingData_file)#
+        # update learning rate
+        # if loss_meter.value()[0] > previous_loss:
+        lr = lr * opt.lr_decay
+            # # 第二种降低学习率的方法:不会有moment等信息的丢失
+            # for param_group in optimizer.param_groups:
+            #     param_group['lr'] = lr
+
+        if epoch == opt.max_epoch:
+            return
+
+        previous_loss = loss_meter.value()[0]
         loss_meter.reset()
         confusion_matrix.reset()
-
         for ii, (data, label) in tqdm(enumerate(train_dataloader), total=len(train_data)/opt.batch_size):
 
             # train model 
@@ -109,27 +140,21 @@ def train(**kwargs):
                 if os.path.exists(opt.debug_file):
                     import ipdb;
                     ipdb.set_trace()
+                    
+        prefix = 'checkpoints/'
+        name = time.strftime(prefix + '%m%d_%H:%M:%S_'+str(epoch+1)+'.pth')
         if epoch == 0:
-            model.save()
-        if np.mod(epoch+1, 200) == 0:
-            model.save()
+            model.save(name)
+        if np.mod(epoch+1, 10) == 0:
+            model.save(name)
 
-        # validate and visualize
-        val_cm, val_accuracy = val(model, val_dataloader)
 
-        vis.plot('val_accuracy', val_accuracy)
-        vis.log("epoch:{epoch},lr:{lr},loss:{loss},train_cm:{train_cm},val_cm:{val_cm}".format(
-            epoch=epoch, loss=loss_meter.value()[0], val_cm=str(val_cm.value()), train_cm=str(confusion_matrix.value()),
-            lr=lr))
-        print("epoch = ", epoch+1, "   loss = ", loss_meter.value()[0], "   lr = ", lr)
-        # update learning rate
-        if loss_meter.value()[0] > previous_loss:
-            lr = lr * opt.lr_decay
-            # 第二种降低学习率的方法:不会有moment等信息的丢失
-            for param_group in optimizer.param_groups:
-                param_group['lr'] = lr
-
-        previous_loss = loss_meter.value()[0]
+def save_training_data(results, file_name):
+    import csv
+    with open(file_name, 'w') as f:
+        writer = csv.writer(f)
+        writer.writerow(['epoch', 'loss', 'lr', 'val_cm', 'train_cm', 'test_cm', 'val_accuracy', 'test_accuracy'])
+        writer.writerows(results)
 
 
 def val(model, dataloader):
