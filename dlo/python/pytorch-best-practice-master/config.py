@@ -8,9 +8,10 @@ class DefaultConfig(object):
 
     # train_data_root = '/home/hxz/data/crop/'  # 训练集存放路径
     train_data_root = '/home/lance/Data/7-CrossSquare/class/crop'
-    test_data_root = '/home/lance/Data/7-CrossSquare/class/test1'   # 测试集存放路径
+    # test_data_root = '/home/lance/Data/7-CrossSquare/class/test'   # 测试集存放路径
+    test_data_root = '/home/lance/Data/7-CrossSquare/class/cropdataset/2/1'   # 测试集存放路径
     # load_model_path = '/home/lance/Data/7-CrossSquare/class/model/0417_800.pth'
-    load_model_path = '/home/lance/Workspaces/hxz_ws/src/dlo/python/pytorch-best-practice-master/checkpoints/1119_23:20:17_4.pth'
+    load_model_path = '/home/lance/Workspaces/hxz_ws/src/dlo/python/pytorch-best-practice-master/checkpoints/1121_03:47:45_350.pth'
     # load_model_path = 'model_weights/crossnet_weights/0417_800.pth'
     # load_model_path = None   # 加载预训练的模型的路径，为None代表不加载
 

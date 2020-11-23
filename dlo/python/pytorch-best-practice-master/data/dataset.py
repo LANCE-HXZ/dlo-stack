@@ -19,7 +19,8 @@ class DogCat(data.Dataset):
         # test1: data/test1/8973.jpg
         # train: data/train/cat.10004.jpg 
         if self.test:
-            imgs = sorted(imgs, key=lambda x: int(x.split('.')[-2].split('/')[-1]))  # 切分出测试集图片编号
+            # imgs = sorted(imgs, key=lambda x: int(x.split('.')[-2].split('/')[-1]))
+            imgs = sorted(imgs, key=lambda x: int(x.split('.')[-2].split('/')[-1].split('_')[-2]+x.split('.')[-2].split('/')[-1].split('_')[-1]))  # 切分出测试集图片编号
         else:
             imgs = sorted(imgs, key=lambda x: int(x.split('.')[-2]))  # 切分出训练集图片编号
 
@@ -62,10 +63,10 @@ class DogCat(data.Dataset):
         一次返回一张图片的数据
         '''
         img_path = self.imgs[index]
-        if self.test and not self.train:
-            label = int(self.imgs[index].split('.')[-2].split('/')[-1])
-        else:  # 训练和验证集
-            label = 1 if 'up' in img_path.split('/')[-1] else 0
+        # if self.test and not self.train:
+        #     label = int(self.imgs[index].split('.')[-2].split('/')[-1])
+        # else:  # 训练和验证集
+        label = 1 if 'up' in img_path.split('/')[-1] else 0
         data = Image.open(img_path)
         data = self.transforms(data)
         return data, label
