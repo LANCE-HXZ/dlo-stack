@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     if(ic.flagCameraImgReady){
       // ic.ProcessShowCameraView();
       ic.flagCameraImgReady = 0;
-      if(ic.flagReady4Next)
+      // if(ic.flagReady4Next)
         ic.Init();
     }
     if(ic.flagBinaryImgReady){

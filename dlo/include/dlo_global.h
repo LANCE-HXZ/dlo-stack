@@ -10,7 +10,7 @@
 
 using namespace std;
 
-#define EDGE 80     // 图像四边增加边框的宽度
+#define EDGE 60     // 图像四边增加边框的宽度
 
 extern cv::Mat new_bw;
 extern vector<cv::Point> pt, cross, dir;

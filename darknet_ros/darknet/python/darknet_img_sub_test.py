@@ -35,6 +35,79 @@ class image_converter:
     self.bridge = CvBridge()
     self.image_sub = rospy.Subscriber("rgb_topic", String, self.callback)
 #   
+  def subpredict(self, y0, y1, x0, x1):
+    img = cv2.imread("pic_buffer/1_R.png")
+    img = img[y0:y1, x0:x1]
+    cv2.imwrite("pic_buffer/1_subR.png", img)
+    t = dn.detect(net, meta, b"pic_buffer/1_subR.png")
+    rt = []
+    for i in range(len(t)):
+        rt1 = rt2 = []
+        rt1.append(t[i][0])
+        rt1.append(t[i][1])
+        rt1.append(list(t[i][2]))
+        rt.append(rt1)
+    img = self.drawCrossings(img, rt)
+    cv2.imwrite("pic_buffer/1_subD.png", img)
+    for item in rt:
+        item[2][0] += x0
+        item[2][1] += y0
+    return rt
+
+  def removeDuplicate(self, r):
+    for item in r[:]: 
+        if 'endpoint' == item[0].decode('utf-8'):
+            r.remove(item)
+    rt = []
+    rt.append(r[0])
+    for item in r[1:]:
+        duplicate = False
+        for itemj in rt[:]:
+            dist = int(item[2][0]-itemj[2][0])**2+int(item[2][1]-itemj[2][1])**2
+            if dist <= 20**2:
+                itemj[2][0] = (item[2][0]+itemj[2][0])/2
+                itemj[2][1] = (item[2][1]+itemj[2][1])/2
+                duplicate = True
+                break
+        if duplicate == False:
+            rt.append(item)
+    return rt
+
+  def drawCrossings(self, img, r):
+    cntC = cntE = 0
+    c_index = 0
+    e_index = 65  # 'A'
+    for item in r:   #画方框和文字
+        ileft = int(item[2][0]-item[2][2]*0.5)##矩形点坐标##item[2][0]交点x轴坐标
+        iup = int(item[2][1]-item[2][3]*0.5)
+        iright = int(item[2][0]+item[2][2]*0.5)
+        ibtm = int(item[2][1]+ item[2][3]*0.5)
+        persent = str(round(item[1],2))
+        # name = item[0].decode('utf-8')
+        text = persent
+        loca = str(int(item[2][0]))+" "+str(int(item[2][1]))+"\n"+str(int(item[2][2]))+" "+str(int(item[2][3]))+"\n"
+        # if 'endpoint' == item[0].decode('utf-8'):
+        #     cntE+=1
+        #     text1 = chr(e_index)
+        #     e_index+=1
+        #     text = "Endpoint " + text1
+        #     cv2.rectangle (img, (ileft, iup), (iright, ibtm), (0, 0, 255), 2)
+        #     cv2.circle(img, (int(item[2][0]), int(item[2][1])), 3, (0, 0, 255), -1)
+        #     cv2.putText(img, text, (ileft, iup-8), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
+        # else:
+        if 'cross' == item[0].decode('utf-8'):
+            cntC+=1
+            text1 = str(c_index)
+            c_index+=1
+            text = "Cross " + text1
+            cv2.rectangle (img, (ileft, iup), (iright, ibtm), (255, 0, 0), 2)
+            cv2.circle(img, (int(item[2][0]), int(item[2][1])), 3, (255, 0, 0), -1)
+            cv2.putText(img, text, (ileft, iup-8), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
+            # print (item)   
+    print('\n', "Crossing: ", cntC, "\tEndpoint: ", cntE)
+    return img
+
+
   def callback(self,data):
     print('\n', 'Predicting')
     # try:
@@ -48,39 +121,17 @@ class image_converter:
     # im = array_to_image(cv_image)
     # dn.rgbgr_image(im)
     # # print(dn.detect(net, meta, im))
-    r = dn.detect(net, meta, b"pic_buffer/1_R.png")
     # print("===")
+    r = []
     img = cv2.imread("pic_buffer/1_R.png")
-    cntC = cntE = 0
-    c_index = 0
-    e_index = 65  # 'A'
-    for item in r:   #画方框和文字
-        ileft = int(item[2][0]-item[2][2]*0.5)##矩形点坐标##item[2][0]交点x轴坐标
-        iup = int(item[2][1]-item[2][3]*0.5)
-        iright = int(item[2][0]+item[2][2]*0.5)
-        ibtm = int(item[2][1]+ item[2][3]*0.5)
-        persent = str(round(item[1],2))
-        # name = item[0].decode('utf-8')
-        text = persent
-        loca = str(int(item[2][0]))+" "+str(int(item[2][1]))+"\n"+str(int(item[2][2]))+" "+str(int(item[2][3]))+"\n"
-        if 'endpoint' == item[0].decode('utf-8'):
-            cntE+=1
-            text1 = chr(e_index)
-            e_index+=1
-            text = "Endpoint " + text1
-            cv2.rectangle (img, (ileft, iup), (iright, ibtm), (0, 0, 255), 2)
-            cv2.circle(img, (int(item[2][0]), int(item[2][1])), 3, (0, 0, 255), -1)
-            cv2.putText(img, text, (ileft, iup-8), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
-        else:
-            cntC+=1
-            text1 = str(c_index)
-            c_index+=1
-            text = "Cross " + text1
-            cv2.rectangle (img, (ileft, iup), (iright, ibtm), (255, 0, 0), 2)
-            cv2.circle(img, (int(item[2][0]), int(item[2][1])), 3, (255, 0, 0), -1)
-            cv2.putText(img, text, (ileft, iup-8), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
-            # print (item)
+    sp = img.shape
+    r += self.subpredict(0, int(sp[0]/2), 0, sp[1])
+    r += self.subpredict(int(sp[0]/2), sp[0], 0, sp[1])
+    r += self.subpredict(int(sp[0]/4), int(sp[0]*3/4), 0, sp[1])
+    r += self.subpredict(int(sp[0]/4), int(sp[0]*3/4), int(sp[1]/3), sp[1])
+    r = self.removeDuplicate(r)
     
+    img = self.drawCrossings(img, r)
     cv2.imwrite("pic_buffer/2_D.png", img)
     
     boxes = BoundingBoxes()
@@ -102,13 +153,13 @@ class image_converter:
         # if b'cross' == r[i][0]:
         #     print('\t', r[i][0], r[i][1]*100, '%')
         #     # print('\t', r[i][2])
-    print('\n', "Crossing: ", cntC-22, "\tEndpoint: ", cntE-8)
     print('\n', 'Darknet waiting for rgb_img')
     time.sleep(0.5)
     try:
       self.boxes_pub.publish(boxes)
     except CvBridgeError as e:
       print(e)
+
 
 if __name__ == "__main__":
     #net = load_net("cfg/densenet201.cfg", "/home/pjreddie/trained/densenet201.weights", 0)

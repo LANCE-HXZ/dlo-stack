@@ -25,14 +25,15 @@ fps = 0
 f = open('detect_result.txt','w')
 
 while True:
-
          fps = fps+1
 
          f.write(str(fps)+"\n")
-         
-         img = cv2.imread('pic_buffer/1_R.png')
+         print("===1===")
          
          r = dn.detect(net, meta, "pic_buffer/1_R.png".encode('utf-8'))
+         print("===2===")
+         img = cv2.imread("pic_buffer/1_R.png")
+         print("===3===")
          for item in r:   #画方框和文字
             ileft = int(item[2][0]-item[2][2]*0.5)##矩形点坐标##item[2][0]交点x轴坐标
             iup = int(item[2][1]-item[2][3]*0.5)
