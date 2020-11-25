@@ -52,7 +52,7 @@ class image_converter:
     # cv_image = cv2.imread("/home/lance/Data/0-RGBimg/24.png") # 图像细化问题, 跳跃时找不到对面点
     # cv_image = cv2.imread("/home/lance/Data/0-RGBimg/T0859.png") # 提取轮廓出现断点
 
-    filename = "0_Alquchufencha"
+    filename = "20201123233331"
     # 实验合并图,先切割出原图
     cv_image = cv2.imread("/home/lance/Data/1124all/" + filename + ".png")
     cv_image = cv_image[0:480, 0:640]
@@ -63,7 +63,7 @@ class image_converter:
     # cv_image = cv2.copyMakeBorder(cv_image, edge, edge, edge, edge, cv2.BORDER_CONSTANT, value=[85, 120, 68])
     # cv_image = cv2.resize(cv_image, (640,400))
     # cv2.imwrite("pic_buffer/R.png", cv_image)
-    sp = cv_image.shape
+    # sp = cv_image.shape
     # cv_image = cv_image[15:sp[0]-25, 0:sp[1]]
     # cv_image = cv2.resize(cv_image, (640,320))
     # cv_image = cv_image[0:sp[0]/2, 0:sp[1]]
