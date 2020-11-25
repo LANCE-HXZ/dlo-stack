@@ -90,7 +90,6 @@ SOperation CStrategy::strategy(){
 		for(int i = 0; i < start.size(); i+=2){		//	先找出两个端点至少有一个不在视野边缘的一根线缆, 排除掉已经挑出的线缆
 			Point ptEnd1 = pt[ept[i]+1], ptEnd2 = pt[ept[i+1]-1];
 			if(IsPointInMatrix(ptEnd1) || IsPointInMatrix(ptEnd2)){
-				cout << "=======================================" << ept[i+1] - ept[i] << endl;
 				opt1_index = ept[i]+13;
 				opt2_index = ept[i+1]-13;
 				bGetLRindexOfOptionI = 1;
@@ -137,7 +136,6 @@ SOperation CStrategy::strategy(){
 			if(start[i] > start[i+1])	continue;		//	表示为全程无交叉的独立线缆
 			if(mul){
 				oprt_rt.strOperationType = "I";
-				cout << "=======================================" << ept[i+1] - ept[i] << endl;
 				opt1_index = ept[i]+20;
 				opt2_index = ept[i+1]-20;
 				bGetLRindexOfOptionI = 1;
@@ -256,13 +254,45 @@ SOperation CStrategy::strategy(){
 				oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
 				draw_point(pt[opt_index], "opt", blue);
 				draw_point(cross_t, "ref", green);
-				Point ptTarget = pt[opt_index] + (pt[opt_index] - cross_t);
+				Point ptTarget = pt[opt_index] + per_dir(cross_t, pt[opt_index], 30);
 				oprt_rt.vptPoint.push_back(ptTarget);
 				oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
 				draw_point(ptTarget, "tar", yellow);
 				// draw_point(pt[fix_index], "fix", purple);
+				int fakelength = abs(opt_index-ept[i]);
+				oprt_rt.vdAddInfo.push_back(fakelength/2.5);
 
 				break;
+			}
+		}
+		if(oprt_rt.strOperationType == "N"){
+			// === 检测V类交叉 ===
+			for(int i = 0; i < start.size(); ++i){
+				for(int j = i+1; j < start.size(); ++j){
+					if(g_vnCrossList[start[i]] == g_vnCrossList[start[j]]){
+						oprt_rt.strOperationType = "T";
+						cout << endl << "CLASS-X:" << endl;
+						cout << '\t' << "INDEX" << '\t' << "CROSS" << '\t' << "CLASS" << endl;
+						cout << '\t' << start[i] << '\t' << g_vnCrossList[start[i]] << '\t' << g_vnClassList[start[i]] << endl;
+						cout << '\t' << start[j] << '\t' << g_vnCrossList[start[j]] << '\t' << g_vnClassList[start[j]] << endl;
+
+						int ept_opt = g_vnClassList[start[i]] ? i : j;
+						int ept_ref = g_vnClassList[start[j]] ? i : j;
+						opt_index = (cpt[c1[g_vnCrossList[start[j]]]]+ept[ept_opt])/2;
+						ref_index = (cpt[c0[g_vnCrossList[start[j]]]]+ept[ept_ref])/2;
+
+						oprt_rt.vptPoint.push_back(pt[opt_index]);
+						oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
+						draw_point(pt[opt_index], "opt", blue);
+						draw_point(pt[ref_index], "ref", green);
+						target = pt[ref_index] + per_dir(pt[opt_index], pt[ref_index], 50);
+						oprt_rt.vptPoint.push_back(target);
+						oprt_rt.vdGripperDir.push_back(draw_grip_direction(opt_index));
+						draw_point(target, "target", yellow);
+						break;
+					}
+				}
+				if(oprt_rt.strOperationType == "T")		break;
 			}
 		}
 	}
